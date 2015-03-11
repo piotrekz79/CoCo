@@ -20,4 +20,12 @@ public class VpnsService {
     public List<Vpn> getVpns() {
         return vpnDao.getVpns();
     }
+    
+    public boolean addSite(String vpnName, String siteName) {
+        return vpnDao.addSite(vpnName, siteName);
+    }
+    
+    public boolean deleteSite(String siteName) {
+        return vpnDao.deleteSite(siteName);
+    }
 }

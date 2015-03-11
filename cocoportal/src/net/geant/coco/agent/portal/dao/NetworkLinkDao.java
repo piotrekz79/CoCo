@@ -28,7 +28,14 @@ public class NetworkLinkDao {
                 + "INNER JOIN switches AS switch1 "
                 + "ON (links.from = switch1.id) "
                 + "INNER JOIN switches AS switch2 "
-                + "ON (links.to = switch2.id);";
+                + "ON (links.to = switch2.id) " + "UNION "
+                + "SELECT sitelinks.id AS id, "
+                + "sites.x AS fromX, sites.y AS fromY, "
+                + "switches.x AS toX, switches.y AS toY " + "FROM sitelinks "
+                + "INNER JOIN sites " + "ON (sitelinks.site = sites.id) "
+                + "INNER JOIN switches " + "ON (sitelinks.switch = switches.id);";
+
+        //System.out.println("links query: " + query);
 
         return jdbc.query(query, new RowMapper<NetworkLink>() {
 
@@ -61,23 +68,22 @@ public class NetworkLinkDao {
                 + "INNER JOIN switches AS switch2 "
                 + "ON (links.to = switch2.id) " + "WHERE links.id = :id;";
 
-        return jdbc.queryForObject(query, params,
-                new RowMapper<NetworkLink>() {
+        return jdbc.queryForObject(query, params, new RowMapper<NetworkLink>() {
 
-                    @Override
-                    public NetworkLink mapRow(ResultSet rs, int rowNum)
-                            throws SQLException {
-                        NetworkLink networkLink = new NetworkLink();
+            @Override
+            public NetworkLink mapRow(ResultSet rs, int rowNum)
+                    throws SQLException {
+                NetworkLink networkLink = new NetworkLink();
 
-                        networkLink.setId(rs.getInt("id"));
-                        networkLink.setFromX(rs.getInt("fromX"));
-                        networkLink.setFromY(rs.getInt("fromY"));
-                        networkLink.setToX(rs.getInt("toX"));
-                        networkLink.setToY(rs.getInt("toY"));
+                networkLink.setId(rs.getInt("id"));
+                networkLink.setFromX(rs.getInt("fromX"));
+                networkLink.setFromY(rs.getInt("fromY"));
+                networkLink.setToX(rs.getInt("toX"));
+                networkLink.setToY(rs.getInt("toY"));
 
-                        return networkLink;
-                    }
+                return networkLink;
+            }
 
-                });
+        });
     }
 }

@@ -26,12 +26,21 @@
 		
 		
 		
+		<security:intercept-url pattern="/doupdatevpn"
+			access="isAuthenticated()" />
+		<security:intercept-url pattern="/updatevpn"
+			access="isAuthenticated()" />
+		
 		<security:intercept-url pattern="/**" access="denyAll" />
 		
 		
 		
 		
+		
+		
 		<security:form-login />
+
+
 
 
 

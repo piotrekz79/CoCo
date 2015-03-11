@@ -20,4 +20,8 @@ public class NetworkSitesService {
     public List<NetworkSite> getNetworkSites() {
         return networkSiteDao.getNetworkSites();
     }
+    
+    public List<NetworkSite> getNetworkSites(String vpnName) {
+        return networkSiteDao.getNetworkSites(vpnName);
+    }
 }

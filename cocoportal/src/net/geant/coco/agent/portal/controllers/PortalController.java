@@ -36,9 +36,10 @@ public class PortalController {
     public void setOffersService(OffersService offersService) {
         this.offersService = offersService;
     }
-    
+
     @Autowired
-    public void setNetworkSwitchService(NetworkSwitchesService networkSwitchesService) {
+    public void setNetworkSwitchService(
+            NetworkSwitchesService networkSwitchesService) {
         this.networkSwitchesService = networkSwitchesService;
     }
 
@@ -46,17 +47,17 @@ public class PortalController {
     public void setNetworkLinkService(NetworkLinksService networkLinksService) {
         this.networkLinksService = networkLinksService;
     }
-    
+
     @Autowired
     public void setNetworkSitesService(NetworkSitesService networkSitesService) {
         this.networkSitesService = networkSitesService;
     }
-    
+
     @Autowired
     public void setVpnsService(VpnsService vpnsService) {
         this.vpnsService = vpnsService;
     }
-    
+
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public String showTest(Model model, @RequestParam("id") String id) {
         System.out.println("Id is: " + id);
@@ -64,59 +65,158 @@ public class PortalController {
     }
 
     /*
-    @ExceptionHandler(DataAccessException.class)
-    public String handleDatabaseException(DataAccessException ex) {
-        return "error";
-    }
-    */
-    
+     * @ExceptionHandler(DataAccessException.class) public String
+     * handleDatabaseException(DataAccessException ex) { return "error"; }
+     */
+
     @RequestMapping("/offers")
     public String showPortal(Model model) {
 
-        //offersService.throwTestException();
-        
+        // offersService.throwTestException();
+
         List<Offer> offers = offersService.getCurrent();
 
         model.addAttribute("offers", offers);
         return "offers";
     }
-    
+
     @RequestMapping("/")
     public String showCoCoPortal(Model model) {
 
-        //offersService.throwTestException();
-        
-        List<NetworkSwitch> networkSwitches = networkSwitchesService.getNetworkSwitches();
+        // offersService.throwTestException();
+
+        List<NetworkSwitch> networkSwitches = networkSwitchesService
+                .getNetworkSwitches();
         List<NetworkLink> networkLinks = networkLinksService.getNetworkLinks();
         List<NetworkSite> networkSites = networkSitesService.getNetworkSites();
         List<Vpn> vpns = vpnsService.getVpns();
 
-        //model.addAttribute("switchNodes", switchNodes);
-        //return "switchNodes";
-        
+        // model.addAttribute("switchNodes", switchNodes);
+        // return "switchNodes";
+
         model.addAttribute("switches", networkSwitches);
         model.addAttribute("links", networkLinks);
         model.addAttribute("sites", networkSites);
         model.addAttribute("vpns", vpns);
         return "portal";
     }
-    
+
     @RequestMapping("/addsite")
     public String addSite(Model model) {
 
         model.addAttribute("site", new NetworkSite());
         return "addsite";
     }
-    
+
     @RequestMapping("/vpns")
-    public String manageVpns(Model model) {
+    public String manageVpns(@RequestParam("vpn") String vpnName, Model model) {
 
         List<Vpn> vpns = vpnsService.getVpns();
-        
+        List<NetworkSite> networkSites = networkSitesService
+                .getNetworkSites(vpnName);
+        List<NetworkSite> freeSites = networkSitesService
+                .getNetworkSites("all");
+
+        System.out.println("vpns: " + vpnName);
         model.addAttribute("vpns", vpns);
+        model.addAttribute("vpnname", vpnName);
+        model.addAttribute("sites", networkSites);
+        model.addAttribute("freesites", freeSites);
         return "vpns";
     }
 
+    @RequestMapping("/updatevpn")
+    public String updateVpn(
+            @RequestParam(value = "vpn", defaultValue = "") String vpnName,
+            @RequestParam(value = "deletesite", defaultValue = "") String deleteSiteName,
+            @RequestParam(value = "addsite", defaultValue = "") String addSiteName,
+            @RequestParam(value = "showvpn", defaultValue = "") String showVpn,
+            @RequestParam(value = "newvpn", defaultValue = "") String newVpn,
+            @RequestParam(value = "done", defaultValue = "") String done,
+            Model model) {
+        List<Vpn> vpns = vpnsService.getVpns();
+        List<NetworkSite> networkSites;
+        List<NetworkSite> freeSites = networkSitesService
+                .getNetworkSites("all");
+        List<NetworkSwitch> networkSwitches = networkSwitchesService
+                .getNetworkSwitches();
+        List<NetworkLink> networkLinks = networkLinksService.getNetworkLinks();
+
+        System.out.println("updatevpn vpn: " + vpnName);
+        System.out.println("updatevpn add site: " + addSiteName);
+        System.out.println("updatevpn delete site: " + deleteSiteName);
+        model.addAttribute("switches", networkSwitches);
+        model.addAttribute("links", networkLinks);
+        model.addAttribute("freesites", freeSites);
+        model.addAttribute("vpnname", vpnName);
+        model.addAttribute("vpns", vpns);
+        model.addAttribute("vpnname", vpnName);
+
+        if (!addSiteName.equals("")) {
+
+        }
+
+        // show another VPN
+        if (!showVpn.equals("") || (!done.equals(""))) {
+            networkSites = networkSitesService.getNetworkSites();
+            model.addAttribute("sites", networkSites);
+            return "portal";
+        }
+
+        // manage VPN
+        networkSites = networkSitesService.getNetworkSites(vpnName);
+        model.addAttribute("sites", networkSites);
+        return "updatevpn";
+    }
+
+    @RequestMapping("/doupdatevpn")
+    public String doUpdateVpn(
+            @RequestParam(value = "vpn", defaultValue = "") String vpnName,
+            @RequestParam(value = "deletesite", defaultValue = "") String deleteSiteName,
+            @RequestParam(value = "addsite", defaultValue = "") String addSiteName,
+            @RequestParam(value = "showvpn", defaultValue = "") String showVpn,
+            @RequestParam(value = "newvpn", defaultValue = "") String newVpn,
+            @RequestParam(value = "done", defaultValue = "") String done,
+            Model model) {
+
+        List<NetworkSite> networkSites;
+        List<Vpn> vpns = vpnsService.getVpns();
+
+        List<NetworkSwitch> networkSwitches = networkSwitchesService
+                .getNetworkSwitches();
+        List<NetworkLink> networkLinks = networkLinksService.getNetworkLinks();
+
+        System.out.println("doupdatevpn vpn: " + vpnName);
+        System.out.println("doupdatevpn add site: " + addSiteName);
+        System.out.println("doupdatevpn delete site: " + deleteSiteName);
+        model.addAttribute("switches", networkSwitches);
+        model.addAttribute("links", networkLinks);
+        model.addAttribute("vpnname", vpnName);
+        model.addAttribute("vpns", vpns);
+        model.addAttribute("vpnname", vpnName);
+
+        if (done.equals("done")) {
+            networkSites = networkSitesService.getNetworkSites();
+            model.addAttribute("sites", networkSites);
+            return "portal";
+        }
+
+        if (!addSiteName.equals("")) {
+            vpnsService.addSite(vpnName, addSiteName);
+        }
+
+        if (!deleteSiteName.equals("")) {
+            vpnsService.deleteSite(deleteSiteName);
+        }
+
+        networkSites = networkSitesService.getNetworkSites(vpnName);
+        List<NetworkSite> freeSites = networkSitesService
+                .getNetworkSites("all");
+        model.addAttribute("sites", networkSites);
+        model.addAttribute("freesites", freeSites);
+        
+        return "updatevpn";
+    }
 
     @RequestMapping("/createoffer")
     public String createOffer(Model model) {
@@ -130,7 +230,7 @@ public class PortalController {
         if (result.hasErrors()) {
             return "createoffer";
         }
-        //offersService.create(offer);
+        // offersService.create(offer);
         offersService.throwTestException();
         return "offercreated";
     }

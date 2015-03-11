@@ -122,5 +122,11 @@
   		<artifactId>spring-security-config</artifactId>
   		<version>3.2.5.RELEASE</version>
   	</dependency>
+  	<dependency>
+  		<groupId>maven</groupId>
+  		<artifactId>maven-war-plugin</artifactId>
+  		<version>1.6.2</version>
+  		<type>plugin</type>
+  	</dependency>
   </dependencies>
 </project>

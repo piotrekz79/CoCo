@@ -2,6 +2,7 @@
 	pageEncoding="US-ASCII"%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="sf" uri="http://www.springframework.org/tags/form"%>
 
 <!DOCTYPE html>
 <html>
@@ -47,15 +48,17 @@
 		<div id="vpns">
 			<div id="vpns-inner">
 				<h3>Provisioned VPNs:</h3>
-				<form action="${pageContext.request.contextPath}/" method="post">
+				<form action="${pageContext.request.contextPath}/updatevpn"
+					method="post">
 					<c:forEach var="vpn" items="${vpns}">
-						<input type='radio' name='vpn'
+						<input type='radio' name='showvpn'
 							value='<c:out value="${vpn.name}"></c:out>'
-							onclick='this.form.submit()'>VPN <c:out
-							value="${vpn.name}"></c:out>
-							<br>
+							onclick='this.form.submit()'>
+						<c:out value="${vpn.name}"></c:out>
+						<button name="vpn" value="<c:out value="${vpn.name}"></c:out>">update</button>
+						<br>
 					</c:forEach>
-
+					<button name="newvpn" value="newvpn">Create new VPN</button>
 				</form>
 			</div>
 		</div>
@@ -121,8 +124,6 @@
 			</c:forEach>
 		}
 	</script>
-	<p>
-		<a href="${pageContext.request.contextPath}/vpns">Manage VPNs.</a>
-	</p>
+
 </body>
 </html>
