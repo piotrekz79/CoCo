@@ -1,4 +1,4 @@
-package net.geant.coco.agent.portal.beans;
+package net.geant.coco.agent.portal.utils;
 
 
 public class CoCoLink {

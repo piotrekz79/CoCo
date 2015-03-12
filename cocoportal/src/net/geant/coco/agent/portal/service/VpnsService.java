@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.geant.coco.agent.portal.dao.Vpn;
 import net.geant.coco.agent.portal.dao.VpnDao;
+import net.geant.coco.agent.portal.utils.Topology;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 @Service("vpnsService")
 public class VpnsService {
     private VpnDao vpnDao;
+    private Topology topo = new Topology();
     
     @Autowired
     public void setVpnDao(VpnDao vpnDao) {

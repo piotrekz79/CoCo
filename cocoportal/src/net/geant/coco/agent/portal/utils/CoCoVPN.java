@@ -1,4 +1,4 @@
-package net.geant.coco.agent.portal.beans;
+package net.geant.coco.agent.portal.utils;
 
 import java.util.ArrayList;
 import java.util.List;
