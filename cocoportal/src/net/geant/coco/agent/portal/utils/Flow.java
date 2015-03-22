@@ -78,6 +78,7 @@ public class Flow {
 	}
 	
 	public void pushMplsLabel(String mplsLabel) {
+	    System.out.println("MPLS label is " + mplsLabel);
 		this.pushMplsLabel = mplsLabel;
 	}
 	

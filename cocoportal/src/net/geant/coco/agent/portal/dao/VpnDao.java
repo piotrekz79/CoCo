@@ -23,7 +23,7 @@ public class VpnDao {
 
     public List<Vpn> getVpns() {
         // VPN with id equal to 1 is special; it contains all free sites
-        return jdbc.query("select * from vpns where id != 1",
+        return jdbc.query("SELECT * FROM vpns WHERE id != 1",
                 new RowMapper<Vpn>() {
                     @Override
                     public Vpn mapRow(ResultSet rs, int rowNum)
@@ -39,6 +39,29 @@ public class VpnDao {
                 });
     }
 
+    public Vpn getVpn(String vpnName) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("name", vpnName);
+        String query = "SELECT * FROM vpns WHERE name = :name ;";
+        System.out.println(query);
+        List<Vpn> vpns = jdbc.query(query, params, new RowMapper<Vpn>() {
+            @Override
+            public Vpn mapRow(ResultSet rs, int rowNum) throws SQLException {
+                Vpn vpn = new Vpn();
+
+                vpn.setId(rs.getInt("id"));
+                vpn.setName(rs.getString("name"));
+                vpn.setMplsLabel(rs.getInt("mpls_label"));
+
+                return vpn;
+            }
+        });
+        if (vpns.isEmpty()) {
+            return null;
+        }
+        return vpns.get(0);
+    }
+
     public boolean addSite(String vpnName, String siteName) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("vpn", vpnName);
@@ -52,7 +75,7 @@ public class VpnDao {
         System.out.println("vpnDao addSite: " + query);
         return jdbc.update(query, params) == 1;
     }
-    
+
     public boolean deleteSite(String siteName) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("site", siteName);

@@ -40,6 +40,7 @@ public class NetworkSwitchDao {
                 networkSwitch.setName(rs.getString("name"));
                 networkSwitch.setX(rs.getInt("x"));
                 networkSwitch.setY(rs.getInt("y"));
+                networkSwitch.setMplsLabel(rs.getInt("mpls_label"));
 
                 return networkSwitch;
             }
@@ -64,6 +65,7 @@ public class NetworkSwitchDao {
                         networkSwitch.setName(rs.getString("name"));
                         networkSwitch.setX(rs.getInt("x"));
                         networkSwitch.setY(rs.getInt("y"));
+                        networkSwitch.setMplsLabel(rs.getInt("mpls_label"));
 
                         return networkSwitch;
                     }

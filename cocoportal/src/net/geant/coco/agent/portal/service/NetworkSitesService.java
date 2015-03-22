@@ -24,4 +24,8 @@ public class NetworkSitesService {
     public List<NetworkSite> getNetworkSites(String vpnName) {
         return networkSiteDao.getNetworkSites(vpnName);
     }
+    
+    public NetworkSite getNetworkSite(String siteName) {
+        return networkSiteDao.getNetworkSite(siteName);
+    }
 }

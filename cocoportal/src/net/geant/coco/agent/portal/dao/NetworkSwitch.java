@@ -36,6 +36,8 @@ public class NetworkSwitch {
     @NotNull
     private int y;
     
+    private int mplsLabel;
+    
     /**
      * @param args
      */
@@ -74,6 +76,14 @@ public class NetworkSwitch {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getMplsLabel() {
+        return mplsLabel;
+    }
+
+    public void setMplsLabel(int mplsLabel) {
+        this.mplsLabel = mplsLabel;
     }
 
 }

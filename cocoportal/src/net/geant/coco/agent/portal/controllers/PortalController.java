@@ -14,6 +14,7 @@ import net.geant.coco.agent.portal.service.NetworkSitesService;
 import net.geant.coco.agent.portal.service.OffersService;
 import net.geant.coco.agent.portal.service.NetworkSwitchesService;
 import net.geant.coco.agent.portal.service.VpnsService;
+import net.geant.coco.agent.portal.utils.Pce;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,6 +32,7 @@ public class PortalController {
     private NetworkLinksService networkLinksService;
     private NetworkSitesService networkSitesService;
     private VpnsService vpnsService;
+    private Pce pce;
 
     @Autowired
     public void setOffersService(OffersService offersService) {
@@ -91,6 +93,9 @@ public class PortalController {
         List<NetworkSite> networkSites = networkSitesService.getNetworkSites();
         List<Vpn> vpns = vpnsService.getVpns();
 
+        pce = new Pce(networkSwitches, networkSites);
+        pce.setupCoreForwarding();
+        
         // model.addAttribute("switchNodes", switchNodes);
         // return "switchNodes";
 
@@ -138,6 +143,8 @@ public class PortalController {
         List<NetworkSite> networkSites;
         List<NetworkSite> freeSites = networkSitesService
                 .getNetworkSites("all");
+        List<NetworkSite> vpnSites = networkSitesService
+        .getNetworkSites("vpn");
         List<NetworkSwitch> networkSwitches = networkSwitchesService
                 .getNetworkSwitches();
         List<NetworkLink> networkLinks = networkLinksService.getNetworkLinks();
@@ -145,6 +152,11 @@ public class PortalController {
         System.out.println("updatevpn vpn: " + vpnName);
         System.out.println("updatevpn add site: " + addSiteName);
         System.out.println("updatevpn delete site: " + deleteSiteName);
+        
+        //System.out.println(networkSitesService.getNetworkSite("site1"));
+        
+        //pce.addSiteToVpn(foo, vpnSites);
+
         model.addAttribute("switches", networkSwitches);
         model.addAttribute("links", networkLinks);
         model.addAttribute("freesites", freeSites);
@@ -203,6 +215,14 @@ public class PortalController {
 
         if (!addSiteName.equals("")) {
             vpnsService.addSite(vpnName, addSiteName);
+            // find site object
+            for (NetworkSite networkSite: networkSitesService.getNetworkSites()) {
+                if (networkSite.getName().equals(addSiteName)) {
+                    Vpn vpn = vpnsService.getVpn(vpnName);
+                    System.out.println("MPLS labl voor " + vpnName + " is " + vpn.getMplsLabel());
+                    pce.addSiteToVpn(networkSite, networkSitesService.getNetworkSites(vpnName));
+                }
+            }
         }
 
         if (!deleteSiteName.equals("")) {

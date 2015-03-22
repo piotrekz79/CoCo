@@ -13,7 +13,7 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
 public class RestClient {
-    private static int TIMEOUT = 2000;
+    private static int TIMEOUT = 3000;
 
     public static void clearAll() {
         // Delete all flows on switches

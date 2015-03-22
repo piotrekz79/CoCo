@@ -131,9 +131,9 @@ public class Topology {
             site.setVlan("101");
             site.setIpv4Prefix("10.101.0.0/24");
             site.setMac("fa:16:3e:bd:03:4a");
-            site.setPeMplsLabel("5101");
             nodeMap.put("site1", site);
             nodeMap.get("openflow:1").setType(NodeType.PE);
+            nodeMap.get("openflow:1").setPeMplsLabel("5101");
             srcdst = new CoCoLink(siteName, siteName, siteName + ":1",
                     "openflow:1", "openflow:1:51");
             srcdst.setSrcTpNr("1");
@@ -149,8 +149,8 @@ public class Topology {
             edges.add(srcdst);
             graph.addEdge(dst, src, dstsrc);
             edges.add(dstsrc);
-            System.out.println("addsite: " + src);
-            System.out.println("addsite: " + dst);
+            System.out
+                    .println("addsite: " + src.getId() + " to " + dst.getId());
 
             // add site2
             siteName = "site2";
@@ -160,9 +160,9 @@ public class Topology {
             site.setVlan("102");
             site.setIpv4Prefix("10.102.0.0/24");
             site.setMac("fa:16:3e:27:81:97");
-            site.setPeMplsLabel("5102");
             nodeMap.put("site2", site);
             nodeMap.get("openflow:1").setType(NodeType.PE);
+            nodeMap.get("openflow:1").setPeMplsLabel("5101");
             srcdst = new CoCoLink(siteName, siteName, siteName + ":1",
                     "openflow:1", "openflow:1:51");
             srcdst.setSrcTpNr("1");
@@ -178,8 +178,8 @@ public class Topology {
             edges.add(srcdst);
             graph.addEdge(dst, src, dstsrc);
             edges.add(dstsrc);
-            System.out.println("addsite: " + src);
-            System.out.println("addsite: " + dst);
+            System.out
+                    .println("addsite: " + src.getId() + " to " + dst.getId());
 
             // add site3
             siteName = "site3";
@@ -189,9 +189,9 @@ public class Topology {
             site.setVlan("103");
             site.setIpv4Prefix("10.103.0.0/24");
             site.setMac("fa:16:3e:9e:55:db");
-            site.setPeMplsLabel("5103");
             nodeMap.put("site3", site);
             nodeMap.get("openflow:4").setType(NodeType.PE);
+            nodeMap.get("openflow:4").setPeMplsLabel("5104");
             srcdst = new CoCoLink(siteName, siteName, siteName + ":1",
                     "openflow:4", "openflow:4:50");
             srcdst.setSrcTpNr("1");
@@ -207,8 +207,8 @@ public class Topology {
             edges.add(srcdst);
             graph.addEdge(dst, src, dstsrc);
             edges.add(dstsrc);
-            System.out.println("addsite: " + src);
-            System.out.println("addsite: " + dst);
+            System.out
+                    .println("addsite: " + src.getId() + " to " + dst.getId());
 
             // add site4
             siteName = "site4";
@@ -218,9 +218,9 @@ public class Topology {
             site.setVlan("104");
             site.setIpv4Prefix("10.104.0.0/24");
             site.setMac("fa:16:3e:d1:5a:02");
-            site.setPeMplsLabel("5104");
             nodeMap.put("site4", site);
             nodeMap.get("openflow:4").setType(NodeType.PE);
+            nodeMap.get("openflow:4").setPeMplsLabel("5104");
             srcdst = new CoCoLink(siteName, siteName, siteName + ":1",
                     "openflow:4", "openflow:4:50");
             srcdst.setSrcTpNr("1");
@@ -236,8 +236,8 @@ public class Topology {
             edges.add(srcdst);
             graph.addEdge(dst, src, dstsrc);
             edges.add(dstsrc);
-            System.out.println("addsite: " + src);
-            System.out.println("addsite: " + dst);
+            System.out
+                    .println("addsite: " + src.getId() + " to " + dst.getId());
 
             // add site7
             siteName = "site7";
@@ -247,9 +247,9 @@ public class Topology {
             site.setVlan("107");
             site.setIpv4Prefix("10.107.0.0/24");
             site.setMac("fa:16:3e:c6:dc:82");
-            site.setPeMplsLabel("5107");
             nodeMap.put("site7", site);
             nodeMap.get("openflow:3").setType(NodeType.PE);
+            nodeMap.get("openflow:3").setPeMplsLabel("5103");
             srcdst = new CoCoLink(siteName, siteName, siteName + ":1",
                     "openflow:3", "openflow:3:37");
             srcdst.setSrcTpNr("1");
@@ -265,8 +265,8 @@ public class Topology {
             edges.add(srcdst);
             graph.addEdge(dst, src, dstsrc);
             edges.add(dstsrc);
-            System.out.println("addsite: " + src);
-            System.out.println("addsite: " + dst);
+            System.out
+                    .println("addsite: " + src.getId() + " to " + dst.getId());
 
             // add site8
             siteName = "site8";
@@ -276,9 +276,9 @@ public class Topology {
             site.setVlan("108");
             site.setIpv4Prefix("10.108.0.0/24");
             site.setMac("fa:16:3e:0e:cb:7d");
-            site.setPeMplsLabel("5108");
             nodeMap.put("site8", site);
             nodeMap.get("openflow:3").setType(NodeType.PE);
+            nodeMap.get("openflow:3").setPeMplsLabel("5103");
             srcdst = new CoCoLink(siteName, siteName, siteName + ":1",
                     "openflow:3", "openflow:3:37");
             srcdst.setSrcTpNr("1");
@@ -294,8 +294,8 @@ public class Topology {
             edges.add(srcdst);
             graph.addEdge(dst, src, dstsrc);
             edges.add(dstsrc);
-            System.out.println("addsite: " + src);
-            System.out.println("addsite: " + dst);
+            System.out
+                    .println("addsite: " + src.getId() + " to " + dst.getId());
 
             // add uva1
             siteName = "uva1";
@@ -305,9 +305,9 @@ public class Topology {
             site.setVlan("109");
             site.setIpv4Prefix("10.109.0.0/24");
             site.setMac("fa:00:00:00:00:00");
-            site.setPeMplsLabel("5109");
             nodeMap.put("uva1", site);
             nodeMap.get("openflow:3").setType(NodeType.PE);
+            nodeMap.get("openflow:3").setPeMplsLabel("5103");
             srcdst = new CoCoLink(siteName, siteName, siteName + ":1",
                     "openflow:3", "openflow:3:52");
             srcdst.setSrcTpNr("1");
@@ -323,8 +323,8 @@ public class Topology {
             edges.add(srcdst);
             graph.addEdge(dst, src, dstsrc);
             edges.add(dstsrc);
-            System.out.println("addsite: " + src);
-            System.out.println("addsite: " + dst);
+            System.out
+                    .println("addsite: " + src.getId() + " to " + dst.getId());
 
             // add uva2
             siteName = "uva2";
@@ -334,9 +334,9 @@ public class Topology {
             site.setVlan("110");
             site.setIpv4Prefix("10.110.0.0/24");
             site.setMac("fa:00:00:00:00:00");
-            site.setPeMplsLabel("5110");
             nodeMap.put("uva2", site);
             nodeMap.get("openflow:3").setType(NodeType.PE);
+            nodeMap.get("openflow:3").setPeMplsLabel("5103");
             srcdst = new CoCoLink(siteName, siteName, siteName + ":1",
                     "openflow:3", "openflow:3:52");
             srcdst.setSrcTpNr("1");
@@ -352,8 +352,8 @@ public class Topology {
             edges.add(srcdst);
             graph.addEdge(dst, src, dstsrc);
             edges.add(dstsrc);
-            System.out.println("addsite: " + src);
-            System.out.println("addsite: " + dst);
+            System.out
+                    .println("addsite: " + src.getId() + " to " + dst.getId());
 
             System.out.println("graph = " + graph.toString());
         } catch (Exception e) {
@@ -558,6 +558,14 @@ public class Topology {
         }
     }
 
+    public List<CoCoLink> calculatePath(String fromSwitch, String toSwitch) {
+        System.out.printf("find path %s to %s\n", fromSwitch, toSwitch);
+        CoCoNode src = nodeMap.get(fromSwitch);
+        CoCoNode dst = nodeMap.get(toSwitch);
+
+        return DijkstraShortestPath.findPathBetween(graph, src, dst);
+    }
+
     public void removeAllVpns() {
         // set all nodes in the VPNs to free
         for (CoCoVPN vpn : vpns) {
@@ -589,6 +597,10 @@ public class Topology {
         List<CoCoNode> list;
         list = new ArrayList<CoCoNode>(nodeMap.values());
         return list;
+    }
+
+    public CoCoNode getNode(String name) {
+        return nodeMap.get(name);
     }
 
     public List<CoCoLink> getEdges() {
