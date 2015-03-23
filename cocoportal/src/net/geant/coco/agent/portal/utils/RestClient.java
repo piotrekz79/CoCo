@@ -24,8 +24,8 @@ public class RestClient {
     }
 
     private static URI getBaseURI() {
-        return UriBuilder.fromUri("http://192.168.56.125:8181/restconf")
-        //return UriBuilder.fromUri("http://192.168.255.59:8181/restconf")
+        //return UriBuilder.fromUri("http://192.168.56.125:8181/restconf")
+        return UriBuilder.fromUri("http://192.168.255.59:8181/restconf")
                 .build();
     }
 

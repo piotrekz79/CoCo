@@ -34,7 +34,9 @@ public class Topology {
     private int activeVpn = 1;
 
     public Topology() {
-
+        // remove all forwarding entries from switches
+        RestClient.clearAll();
+        
         System.out.println("Topology init");
         // make REST call to OpenDaylight to get topology info in JSON format
         String jsonTopo = RestClient.getJsonTopo();
@@ -485,7 +487,7 @@ public class Topology {
                                         // only push MPLS label if next switch
                                         // is a P switch
                                         if (d.getType() == NodeType.P) {
-                                            flow.pushMplsLabel(dst
+                                            flow.pushPeMplsLabel(dst
                                                     .getPeMplsLabel());
                                         }
                                         flow.setDstMAC(dst.getMac());
@@ -535,7 +537,7 @@ public class Topology {
                                     if (d.getType() == NodeType.PE) {
                                         // remove MPLS label when forwarding to
                                         // P switch
-                                        flow.popMplsLabel();
+                                        flow.popTwoMplsLabels();
                                     }
                                     flow.outPort(edge.getSrcTpNr());
                                     f = flow.buildFlow();

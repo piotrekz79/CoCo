@@ -23,10 +23,6 @@ public class Pce {
     }
 
     public void setupCoreForwarding() {
-        for (NetworkSite networkSite : networkSites) {
-            System.out.println("PCE site: " + networkSite.getName());
-        }
-
         /*
          * Loop through all pairs of sites. Using 'to' in outer loop causes
          * inner loop to have all paths towards a site.
@@ -48,14 +44,14 @@ public class Pce {
                     String switchName = edges[i - 1].getDstNode();
                     // check if this is a core P node
                     if (topology.getNode(switchName).getType() == NodeType.P) {
-                        System.out.println("P node config on " + switchName + ": "
-                                + edges[i - 1].getDstTp() + " -> "
+                        System.out.println("P node config on " + switchName
+                                + ": " + edges[i - 1].getDstTp() + " -> "
                                 + edges[i].getSrcTp());
                         Flow entry = new Flow(switchName, getNextFlowId());
                         entry.inPort(edges[i - 1].getDstTpNr());
+                        entry.matchMplsLabel(topology.getNode(
+                                toSite.getProviderSwitch()).getPeMplsLabel());
                         entry.outPort(edges[i].getSrcTpNr());
-                        entry.pushMplsLabel(topology.getNode(toSite.getProviderSwitch())
-                                .getPeMplsLabel());
                         System.out.println(entry.buildFlow());
                     }
                 }
@@ -63,8 +59,9 @@ public class Pce {
         }
     }
 
-    public void addSiteToVpn(NetworkSite toSite, List<NetworkSite> vpnSites) {
+    public void addSiteToVpn(NetworkSite toSite, int vpnMplsLabel, List<NetworkSite> vpnSites) {
         Flow flowEntry;
+        int flowNr;
 
         // loop through all the sites within the VPN
         for (NetworkSite fromSite : vpnSites) {
@@ -110,19 +107,34 @@ public class Pce {
                         fromSite.getName(), toSite.getName());
                 CoCoLink[] edges = edgesList.toArray(new CoCoLink[0]);
 
-                System.out.println("set ingress fwd entry on PE switch of "
+                System.out.println("set fwd entry on " + toSite.getProviderSwitch() + " PE switch of "
                         + fromSite.getName() + " --> " + toSite.getName());
+                flowNr = getNextFlowId();
                 flowEntry = new Flow(fromSite.getProviderSwitch(),
-                        getNextFlowId());
+                        flowNr);
                 flowEntry.inPort(edges[0].getDstTpNr());
                 flowEntry.matchVlan(String.valueOf(fromSite.getVlanId()));
                 flowEntry.matchDstIpv4Prefix(toSite.getIpv4Prefix());
-                System.out.println("provider switch of " + toSite + " is " + toSite.getProviderSwitch());
-                flowEntry.pushMplsLabel(topology.getNode(toSite.getProviderSwitch()).getPeMplsLabel());
-                System.out.println(flowEntry.buildFlow());
+                flowEntry.pushVpnMplsLabel(String.valueOf(vpnMplsLabel));
+                flowEntry.pushPeMplsLabel(topology.getNode(
+                        toSite.getProviderSwitch()).getPeMplsLabel());
+                flowEntry.outPort(edges[1].getSrcTpNr());
+                RestClient.sendtoSwitch(fromSite.getProviderSwitch(), flowEntry.buildFlow(), String.valueOf(flowNr));
+
+                System.out.println("set fwd entry on " + toSite.getProviderSwitch() + " PE switch of "
+                        + fromSite.getName() + " <-- " + toSite.getName());
+                flowNr = getNextFlowId();
+                flowEntry = new Flow(fromSite.getProviderSwitch(),
+                        flowNr);
+                flowEntry.inPort(edges[1].getSrcTpNr());
+                flowEntry.matchMplsLabel(topology.getNode(edges[0].getDstNode()).getPeMplsLabel());
+                flowEntry.matchDstIpv4Prefix(fromSite.getIpv4Prefix());
+                flowEntry.popTwoMplsLabels();
+                flowEntry.modVlan(String.valueOf(fromSite.getVlanId()));
+                flowEntry.setDstMAC(fromSite.getMacAddress());
+                flowEntry.outPort(edges[0].getDstTpNr());
+                RestClient.sendtoSwitch(fromSite.getProviderSwitch(), flowEntry.buildFlow(), String.valueOf(flowNr));
                 
-                System.out.println("set egress fwd entry on PE switch of "
-                        + fromSite.getName() + " --> " + toSite.getName());
                 System.out.println("set ingress fwd entry on PE switch of "
                         + toSite.getName() + " --> " + fromSite.getName());
                 System.out.println("set egress fwd entry on PE switch of "

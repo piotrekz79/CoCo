@@ -219,8 +219,8 @@ public class PortalController {
             for (NetworkSite networkSite: networkSitesService.getNetworkSites()) {
                 if (networkSite.getName().equals(addSiteName)) {
                     Vpn vpn = vpnsService.getVpn(vpnName);
-                    System.out.println("MPLS labl voor " + vpnName + " is " + vpn.getMplsLabel());
-                    pce.addSiteToVpn(networkSite, networkSitesService.getNetworkSites(vpnName));
+                    System.out.println("MPLS label for " + vpnName + " is " + vpn.getMplsLabel());
+                    pce.addSiteToVpn(networkSite, vpn.getMplsLabel(), networkSitesService.getNetworkSites(vpnName));
                 }
             }
         }
