@@ -2,6 +2,7 @@ package net.geant.coco.agent.portal.utils;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import net.geant.coco.agent.portal.dao.NetworkSite;
 import net.geant.coco.agent.portal.dao.NetworkSwitch;
@@ -83,6 +84,8 @@ public class Pce {
                 flowNr = getNextFlowId();
                 topology.getNode(toSite.getName()).addToFlowIds(
                         toSite.getProviderSwitch() + "/table/0/flow/" + flowNr);
+                topology.getNode(fromSite.getName()).addToFlowIds(
+                        toSite.getProviderSwitch() + "/table/0/flow/" + flowNr);
                 flowEntry = new Flow(toSite.getProviderSwitch(), flowNr);
 
                 flowEntry.inPort(String.valueOf(fromSite.getProviderPort()));
@@ -101,6 +104,8 @@ public class Pce {
                 // build outgoing flow from 'toSite' on its PE switch
                 flowNr = getNextFlowId();
                 topology.getNode(toSite.getName()).addToFlowIds(
+                        toSite.getProviderSwitch() + "/table/0/flow/" + flowNr);
+                topology.getNode(fromSite.getName()).addToFlowIds(
                         toSite.getProviderSwitch() + "/table/0/flow/" + flowNr);
                 flowEntry = new Flow(toSite.getProviderSwitch(), flowNr);
                 flowEntry.inPort(String.valueOf(toSite.getProviderPort()));
@@ -128,6 +133,9 @@ public class Pce {
                 topology.getNode(toSite.getName()).addToFlowIds(
                         fromSite.getProviderSwitch() + "/table/0/flow/"
                                 + flowNr);
+                topology.getNode(fromSite.getName()).addToFlowIds(
+                        fromSite.getProviderSwitch() + "/table/0/flow/"
+                                + flowNr);
                 flowEntry = new Flow(fromSite.getProviderSwitch(), flowNr);
                 flowEntry.inPort(edges[0].getDstTpNr());
                 flowEntry.matchEthertype(0x0800);
@@ -146,6 +154,9 @@ public class Pce {
                         + fromSite.getName() + " <-- " + toSite.getName());
                 flowNr = getNextFlowId();
                 topology.getNode(toSite.getName()).addToFlowIds(
+                        fromSite.getProviderSwitch() + "/table/0/flow/"
+                                + flowNr);
+                topology.getNode(fromSite.getName()).addToFlowIds(
                         fromSite.getProviderSwitch() + "/table/0/flow/"
                                 + flowNr);
                 flowEntry = new Flow(fromSite.getProviderSwitch(), flowNr);
@@ -167,6 +178,9 @@ public class Pce {
                 flowNr = getNextFlowId();
                 topology.getNode(toSite.getName()).addToFlowIds(
                         toSite.getProviderSwitch() + "/table/0/flow/" + flowNr);
+                topology.getNode(toSite.getName()).addToFlowIds(
+                        fromSite.getProviderSwitch() + "/table/0/flow/"
+                                + flowNr);
                 flowEntry = new Flow(toSite.getProviderSwitch(), flowNr);
                 flowEntry.inPort(edges[edges.length - 1].getSrcTpNr());
                 flowEntry.matchEthertype(0x0800);
@@ -185,6 +199,9 @@ public class Pce {
                 flowNr = getNextFlowId();
                 topology.getNode(toSite.getName()).addToFlowIds(
                         toSite.getProviderSwitch() + "/table/0/flow/" + flowNr);
+                topology.getNode(toSite.getName()).addToFlowIds(
+                        fromSite.getProviderSwitch() + "/table/0/flow/"
+                                + flowNr);
                 flowEntry = new Flow(toSite.getProviderSwitch(), flowNr);
                 flowEntry.inPort(edges[edges.length - 2].getDstTpNr());
                 flowEntry.matchEthertype(0x8847);
@@ -207,11 +224,15 @@ public class Pce {
             List<NetworkSite> vpnSites) {
 
         System.out.println("deleteSiteFromVpn: " + toSite.getName());
-        HashSet<String> flowIds = topology.getNode(toSite.getName())
-                .getFlowIds();
+        Set<String> flowIds = new HashSet<String>();
+        flowIds.addAll(topology.getNode(toSite.getName()).getFlowIds());
         for (String id : flowIds) {
             RestClient.sendtoSwitch("", "delete", id, "");
-
+            topology.getNode(toSite.getName()).deleteFromFlowIds(id);
+            // loop through all the sites within the VPN
+            for (NetworkSite fromSite : vpnSites) {
+                topology.getNode(fromSite.getName()).deleteFromFlowIds(id);
+            }
         }
     }
 }

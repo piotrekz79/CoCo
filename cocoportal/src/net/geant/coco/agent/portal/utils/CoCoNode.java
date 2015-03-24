@@ -1,8 +1,10 @@
 package net.geant.coco.agent.portal.utils;
 
+import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
 public class CoCoNode implements Comparable<CoCoNode> {
 
@@ -99,6 +101,10 @@ public class CoCoNode implements Comparable<CoCoNode> {
 	
 	public void addToFlowIds(String id) {
 	    flowIds.add(id);
+	}
+	
+	public void deleteFromFlowIds(String id) {
+	    flowIds.remove(id);
 	}
 	
 	public HashSet<String> getFlowIds() {
