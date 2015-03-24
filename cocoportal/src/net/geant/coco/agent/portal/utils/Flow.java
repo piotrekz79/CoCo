@@ -14,10 +14,10 @@ public class Flow {
     private String inport = null;
     private String outport = null;
     private String dlvlan = null;
-    private String dldst = null;
     private int ethertype = -1;
     private String matchMplsLabel = null;
     private String matchDstIpv4Prefix = null;
+    private String matchDlDst = null;
     private String pushVlanId = null;
     private String newVlanId = null;
     private String pushPeMplsLabel = null;
@@ -47,7 +47,7 @@ public class Flow {
     }
 
     public void matchDlDst(String dldst) {
-        this.dldst = dldst;
+        this.matchDlDst = dldst;
     }
 
     public void matchMplsLabel(String mplsLabel) {
@@ -94,7 +94,9 @@ public class Flow {
 
     public String buildFlow() {
         // add flow identifier
-        flow = flow + String.format("<flow-name>flow%d</flow-name>", id);
+        if (outport != null) {
+            flow = flow + String.format("<flow-name>flow%d</flow-name>", id);
+        }
         // flow = flow + "<hard-timeout>0</hard-timeout>";
         // flow = flow + "<idle-timeout>0</idle-timeout>";
 
@@ -109,11 +111,18 @@ public class Flow {
             flow += String.format("<vlan-id>%s</vlan-id>", dlvlan);
             flow += "</vlan-id></vlan-match>";
         }
+        flow += "<ethernet-match>";
         if (ethertype != -1) {
-            flow += "<ethernet-match><ethernet-type>";
+            flow += "<ethernet-type>";
             flow += String.format("<type>%s</type>", String.valueOf(ethertype));
-            flow += "</ethernet-type></ethernet-match>";
+            flow += "</ethernet-type>";
         }
+        if (matchDlDst != null) {
+            flow += String
+                    .format("<ethernet-destination><address>%s</address></ethernet-destination>",
+                            matchDlDst);
+        }
+        flow += "</ethernet-match>";
         if (matchMplsLabel != null) {
 
             flow += "<protocol-match-fields>";
@@ -126,82 +135,88 @@ public class Flow {
                     matchDstIpv4Prefix);
         }
         flow += "</match>";
-        flow += String.format("<id>%s</id>", id);
+        if (outport != null) {
+            flow += String.format("<id>%s</id>", id);
+        }
         flow += "<table_id>0</table_id>";
 
-        // add actions part
-        flow += "<instructions><instruction><order>0</order><apply-actions>";
-        int order = 0;
-        if (stripvlan) {
-            flow += String.format(
-                    "<action><order>%d</order><pop-vlan-action/></action>",
-                    order);
-            order++;
-        }
-        if (pushVlanId != null) {
-            flow += String.format(
-                    "<action><order>%d</order><push-vlan-action>", order);
-            order++;
-            flow += String.format("<ethernet-type>%s</ethernet-type>",
-                    String.valueOf(0x8100));
-            flow += "</push-vlan-action></action>";
-            flow += String
-                    .format("<action><order>%d</order><set-field><vlan-match><vlan-id>",
-                            order);
-            order++;
-            flow += "<vlan-id-present>true</vlan-id-present>";
-            flow += String.format("<vlan-id>%s</vlan-id>", pushVlanId);
-            flow += "</vlan-id></vlan-match></set-field></action>";
-        }
-        if (newVlanId != null) {
-            flow += String
-                    .format("<action><order>%d</order><set-field><vlan-match><vlan-id>",
-                            order);
-            order++;
-            flow += "<vlan-id-present>true</vlan-id-present>";
-            flow += String.format("<vlan-id>%s</vlan-id>", newVlanId);
-            flow += "</vlan-id></vlan-match></set-field></action>";
-        }
-        if (pushPeMplsLabel != null) {
-            flow += String.format(
-                    "<action><order>%d</order><push-mpls-action>", order);
-            order++;
-            flow += String.format("<ethernet-type>%s</ethernet-type>",
-                    String.valueOf(0x8847));
-            flow += "</push-mpls-action></action>";
-            flow += String
-                    .format("<action><order>%d</order><set-field><protocol-match-fields>",
-                            order);
-            order++;
-            flow += String.format("<mpls-label>%s</mpls-label>", pushPeMplsLabel);
-            flow += "</protocol-match-fields></set-field></action>";
-        }
-        if (popTwoMplsLabels) {
-            flow += String.format("<action><order>%d</order><pop-mpls-action>",
-                    order);
-            flow += String.format("<ethernet-type>%s</ethernet-type>",
-                    String.valueOf(0x0800));
-            flow += "</pop-mpls-action></action>";
-            order++;
-        }
-        if (dstMAC != null) {
-            flow += String
-                    .format("<action><order>%d</order><set-field><ethernet-match><ethernet-destination>",
-                            order);
-            order++;
-            flow += String.format("<address>%s</address>", dstMAC);
-            flow += "</ethernet-destination></ethernet-match></set-field></action>";
-        }
+        // add actions part, only present if outport != null
         if (outport != null) {
-            flow += String.format("<action><order>%d</order><output-action>",
-                    order);
-            order++;
-            flow += String.format(
-                    "<output-node-connector>%s</output-node-connector>",
-                    outport);
-            flow += "<max-length>60</max-length></output-action></action>";
+            flow += "<instructions><instruction><order>0</order><apply-actions>";
+            int order = 0;
+            if (stripvlan) {
+                flow += String.format(
+                        "<action><order>%d</order><pop-vlan-action/></action>",
+                        order);
+                order++;
+            }
+            if (pushVlanId != null) {
+                flow += String.format(
+                        "<action><order>%d</order><push-vlan-action>", order);
+                order++;
+                flow += String.format("<ethernet-type>%s</ethernet-type>",
+                        String.valueOf(0x8100));
+                flow += "</push-vlan-action></action>";
+                flow += String
+                        .format("<action><order>%d</order><set-field><vlan-match><vlan-id>",
+                                order);
+                order++;
+                flow += "<vlan-id-present>true</vlan-id-present>";
+                flow += String.format("<vlan-id>%s</vlan-id>", pushVlanId);
+                flow += "</vlan-id></vlan-match></set-field></action>";
+            }
+            if (newVlanId != null) {
+                flow += String
+                        .format("<action><order>%d</order><set-field><vlan-match><vlan-id>",
+                                order);
+                order++;
+                flow += "<vlan-id-present>true</vlan-id-present>";
+                flow += String.format("<vlan-id>%s</vlan-id>", newVlanId);
+                flow += "</vlan-id></vlan-match></set-field></action>";
+            }
+            if (pushPeMplsLabel != null) {
+                flow += String.format(
+                        "<action><order>%d</order><push-mpls-action>", order);
+                order++;
+                flow += String.format("<ethernet-type>%s</ethernet-type>",
+                        String.valueOf(0x8847));
+                flow += "</push-mpls-action></action>";
+                flow += String
+                        .format("<action><order>%d</order><set-field><protocol-match-fields>",
+                                order);
+                order++;
+                flow += String.format("<mpls-label>%s</mpls-label>",
+                        pushPeMplsLabel);
+                flow += "</protocol-match-fields></set-field></action>";
+            }
+            if (popTwoMplsLabels) {
+                flow += String.format(
+                        "<action><order>%d</order><pop-mpls-action>", order);
+                flow += String.format("<ethernet-type>%s</ethernet-type>",
+                        String.valueOf(0x0800));
+                flow += "</pop-mpls-action></action>";
+                order++;
+            }
+            if (dstMAC != null) {
+                flow += String
+                        .format("<action><order>%d</order><set-field><ethernet-match><ethernet-destination>",
+                                order);
+                order++;
+                flow += String.format("<address>%s</address>", dstMAC);
+                flow += "</ethernet-destination></ethernet-match></set-field></action>";
+            }
+            if (outport != null) {
+                flow += String.format(
+                        "<action><order>%d</order><output-action>", order);
+                order++;
+                flow += String.format(
+                        "<output-node-connector>%s</output-node-connector>",
+                        outport);
+                flow += "<max-length>60</max-length></output-action></action>";
+            }
+            flow += "</apply-actions></instruction></instructions>";
         }
-        flow += "</apply-actions></instruction></instructions></flow>";
+        flow += "</flow>";
 
         return (flow);
     }

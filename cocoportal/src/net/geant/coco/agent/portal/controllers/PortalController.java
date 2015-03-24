@@ -227,6 +227,14 @@ public class PortalController {
 
         if (!deleteSiteName.equals("")) {
             vpnsService.deleteSite(deleteSiteName);
+         // find site object
+            for (NetworkSite networkSite: networkSitesService.getNetworkSites()) {
+                if (networkSite.getName().equals(deleteSiteName)) {
+                    Vpn vpn = vpnsService.getVpn(vpnName);
+                    System.out.println("MPLS label for " + vpnName + " is " + vpn.getMplsLabel());
+                    pce.deleteSiteFromVpn(networkSite, vpn.getMplsLabel(), networkSitesService.getNetworkSites(vpnName));
+                }
+            }
         }
 
         networkSites = networkSitesService.getNetworkSites(vpnName);

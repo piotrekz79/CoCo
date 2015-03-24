@@ -2,6 +2,7 @@ package net.geant.coco.agent.portal.utils;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class CoCoNode implements Comparable<CoCoNode> {
 
@@ -13,6 +14,7 @@ public class CoCoNode implements Comparable<CoCoNode> {
 	private String peMplsLabel;
 	private int xPos;
 	private int yPos;
+	private HashSet<String> flowIds = new HashSet<String>();
 	private String colour;
 	private boolean inUse = false;
 	private HashMap<String, CoCoTerminationPoint> tpMap = new HashMap<String, CoCoTerminationPoint>();
@@ -89,6 +91,18 @@ public class CoCoNode implements Comparable<CoCoNode> {
 
 	public void setxPos(int xPos) {
 		this.xPos = xPos;
+	}
+	
+	public void emptyFlowIds() {
+	    flowIds.clear();
+	}
+	
+	public void addToFlowIds(String id) {
+	    flowIds.add(id);
+	}
+	
+	public HashSet<String> getFlowIds() {
+	    return flowIds;
 	}
 
 	public int getyPos() {

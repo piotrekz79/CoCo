@@ -36,7 +36,7 @@ public class Topology {
     public Topology() {
         // remove all forwarding entries from switches
         RestClient.clearAll();
-        
+
         System.out.println("Topology init");
         // make REST call to OpenDaylight to get topology info in JSON format
         String jsonTopo = RestClient.getJsonTopo();
@@ -493,7 +493,8 @@ public class Topology {
                                         flow.setDstMAC(dst.getMac());
                                         flow.outPort(edge.getSrcTpNr());
                                         f = flow.buildFlow();
-                                        RestClient.sendtoSwitch(s.getId(), f,
+                                        RestClient.sendtoSwitch(s.getId(),
+                                                "add", f,
                                                 String.valueOf(flowId));
                                     } else {
                                         // Provision egress flow
@@ -516,7 +517,8 @@ public class Topology {
                                         // flow.setDstMAC(dst.getMac());
                                         flow.outPort(edge.getSrcTpNr());
                                         f = flow.buildFlow();
-                                        RestClient.sendtoSwitch(s.getId(), f,
+                                        RestClient.sendtoSwitch(s.getId(),
+                                                "add", f,
                                                 String.valueOf(flowId));
                                     }
                                 } else {
@@ -541,8 +543,8 @@ public class Topology {
                                     }
                                     flow.outPort(edge.getSrcTpNr());
                                     f = flow.buildFlow();
-                                    RestClient.sendtoSwitch(s.getId(), f,
-                                            String.valueOf(flowId));
+                                    RestClient.sendtoSwitch(s.getId(), "add",
+                                            f, String.valueOf(flowId));
                                 }
                             }
                             inPort = edge.getDstTpNr();
