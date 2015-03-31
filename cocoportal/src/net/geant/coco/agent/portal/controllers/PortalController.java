@@ -6,12 +6,10 @@ import javax.validation.Valid;
 
 import net.geant.coco.agent.portal.dao.NetworkLink;
 import net.geant.coco.agent.portal.dao.NetworkSite;
-import net.geant.coco.agent.portal.dao.Offer;
 import net.geant.coco.agent.portal.dao.NetworkSwitch;
 import net.geant.coco.agent.portal.dao.Vpn;
 import net.geant.coco.agent.portal.service.NetworkLinksService;
 import net.geant.coco.agent.portal.service.NetworkSitesService;
-import net.geant.coco.agent.portal.service.OffersService;
 import net.geant.coco.agent.portal.service.NetworkSwitchesService;
 import net.geant.coco.agent.portal.service.VpnsService;
 import net.geant.coco.agent.portal.utils.Pce;
@@ -27,17 +25,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class PortalController {
 
-    private OffersService offersService;
     private NetworkSwitchesService networkSwitchesService;
     private NetworkLinksService networkLinksService;
     private NetworkSitesService networkSitesService;
     private VpnsService vpnsService;
     private Pce pce;
-
-    @Autowired
-    public void setOffersService(OffersService offersService) {
-        this.offersService = offersService;
-    }
 
     @Autowired
     public void setNetworkSwitchService(
@@ -70,17 +62,6 @@ public class PortalController {
      * @ExceptionHandler(DataAccessException.class) public String
      * handleDatabaseException(DataAccessException ex) { return "error"; }
      */
-
-    @RequestMapping("/offers")
-    public String showPortal(Model model) {
-
-        // offersService.throwTestException();
-
-        List<Offer> offers = offersService.getCurrent();
-
-        model.addAttribute("offers", offers);
-        return "offers";
-    }
 
     @RequestMapping("/")
     public String showCoCoPortal(Model model) {
@@ -244,22 +225,5 @@ public class PortalController {
         model.addAttribute("freesites", freeSites);
         
         return "updatevpn";
-    }
-
-    @RequestMapping("/createoffer")
-    public String createOffer(Model model) {
-
-        model.addAttribute("offer", new Offer());
-        return "createoffer";
-    }
-
-    @RequestMapping(value = "/docreate", method = RequestMethod.POST)
-    public String doCreate(Model model, @Valid Offer offer, BindingResult result) {
-        if (result.hasErrors()) {
-            return "createoffer";
-        }
-        // offersService.create(offer);
-        offersService.throwTestException();
-        return "offercreated";
     }
 }
