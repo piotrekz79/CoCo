@@ -6,11 +6,12 @@ import java.util.Set;
 
 import net.geant.coco.agent.portal.dao.NetworkSite;
 import net.geant.coco.agent.portal.dao.NetworkSwitch;
+import net.geant.coco.agent.portal.service.NetworkSitesService;
 
 public class Pce {
     private List<NetworkSwitch> networkSwitches;
     private List<NetworkSite> networkSites;
-    private Topology topology = new Topology();
+    // private Topology topology = new Topology(networkSites);
     private static int flowId = 1;
 
     private int getNextFlowId() {
@@ -29,6 +30,7 @@ public class Pce {
          * Loop through all pairs of sites. Using 'to' in outer loop causes
          * inner loop to have all paths towards a site.
          */
+        Topology topology = new Topology(networkSites);
         int flowNr;
         for (NetworkSite toSite : networkSites) {
             for (NetworkSite fromSite : networkSites) {
@@ -69,6 +71,7 @@ public class Pce {
             List<NetworkSite> vpnSites) {
         Flow flowEntry;
         int flowNr;
+        Topology topology = new Topology(networkSites);
 
         // loop through all the sites within the VPN
         for (NetworkSite fromSite : vpnSites) {
@@ -223,6 +226,7 @@ public class Pce {
     public void deleteSiteFromVpn(NetworkSite toSite, int vpnMplsLabel,
             List<NetworkSite> vpnSites) {
 
+        Topology topology = new Topology(networkSites);
         System.out.println("deleteSiteFromVpn: " + toSite.getName());
         Set<String> flowIds = new HashSet<String>();
         flowIds.addAll(topology.getNode(toSite.getName()).getFlowIds());

@@ -11,6 +11,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import net.geant.coco.agent.portal.dao.NetworkSite;
+import net.geant.coco.agent.portal.service.NetworkSitesService;
+import net.geant.coco.agent.portal.service.NetworkSwitchesService;
+
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.alg.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultDirectedGraph;
@@ -33,9 +37,9 @@ public class Topology {
     private static int flowId = 1;
     private int activeVpn = 1;
 
-    public Topology() {
+    public Topology(List<NetworkSite> networkSites) {
         // remove all forwarding entries from switches
-        RestClient.clearAll();
+        // RestClient.clearAll();
 
         System.out.println("Topology init");
         // make REST call to OpenDaylight to get topology info in JSON format
@@ -124,238 +128,179 @@ public class Topology {
             CoCoLink dstsrc;
             CoCoNode src;
             CoCoNode dst;
+            int MplsLabel = 5100;
 
-            // add site1
-            siteName = "site1";
-            site = new CoCoNode(siteName);
-            // Node type is Customer Edge
-            site.setType(NodeType.CE);
-            site.setVlan("101");
-            site.setIpv4Prefix("10.101.0.0/24");
-            site.setMac("fa:16:3e:bd:03:4a");
-            nodeMap.put("site1", site);
-            nodeMap.get("openflow:1").setType(NodeType.PE);
-            nodeMap.get("openflow:1").setPeMplsLabel("5101");
-            srcdst = new CoCoLink(siteName, siteName, siteName + ":1",
-                    "openflow:1", "openflow:1:51");
-            srcdst.setSrcTpNr("1");
-            srcdst.setDstTpNr("51");
-            dstsrc = new CoCoLink(siteName, "openflow:1", "openflow:1:51",
-                    siteName, siteName + ":1");
-            dstsrc.setSrcTpNr("51");
-            dstsrc.setDstTpNr("1");
-            src = nodeMap.get(siteName);
-            dst = nodeMap.get("openflow:1");
-            graph.addVertex(src);
-            graph.addEdge(src, dst, srcdst);
-            edges.add(srcdst);
-            graph.addEdge(dst, src, dstsrc);
-            edges.add(dstsrc);
-            System.out
-                    .println("addsite: " + src.getId() + " to " + dst.getId());
+            // add sites to graph
+            for (NetworkSite s : networkSites) {
+                siteName = s.getName();
+                site = new CoCoNode(siteName);
+                // Node type is Customer Edge
+                site.setType(NodeType.CE);
+                site.setVlan(Integer.toOctalString(s.getVlanId()));
+                site.setIpv4Prefix(s.getIpv4Prefix());
+                site.setMac(s.getMacAddress());
+                nodeMap.put("site1", site);
+                nodeMap.get(s.getProviderSwitch()).setType(NodeType.PE);
+                nodeMap.get(s.getProviderSwitch()).setPeMplsLabel(
+                        Integer.toString(MplsLabel++));
+                srcdst = new CoCoLink(siteName, siteName, siteName + ":1",
+                        s.getProviderSwitch(), s.getProviderSwitch()
+                                + s.getProviderPort());
+                srcdst.setSrcTpNr(Integer.toString(s.getCustomerPort()));
+                srcdst.setDstTpNr(Integer.toString(s.getProviderPort()));
+                dstsrc = new CoCoLink(siteName, s.getProviderSwitch(),
+                        s.getProviderSwitch() + s.getProviderPort(), siteName,
+                        siteName + Integer.toString(s.getCustomerPort()));
+                dstsrc.setSrcTpNr(Integer.toString(s.getProviderPort()));
+                dstsrc.setDstTpNr(Integer.toString(s.getCustomerPort()));
+                src = nodeMap.get(siteName);
+                dst = nodeMap.get(s.getProviderSwitch());
+                graph.addVertex(src);
+                graph.addEdge(src, dst, srcdst);
+                edges.add(srcdst);
+                graph.addEdge(dst, src, dstsrc);
+                edges.add(dstsrc);
+                System.out.println("addsite: " + src.getId() + " to "
+                        + dst.getId());
+            }
 
-            // add site2
-            siteName = "site2";
-            site = new CoCoNode(siteName);
-            // Node type is Customer Edge
-            site.setType(NodeType.CE);
-            site.setVlan("102");
-            site.setIpv4Prefix("10.102.0.0/24");
-            site.setMac("fa:16:3e:27:81:97");
-            nodeMap.put("site2", site);
-            nodeMap.get("openflow:1").setType(NodeType.PE);
-            nodeMap.get("openflow:1").setPeMplsLabel("5101");
-            srcdst = new CoCoLink(siteName, siteName, siteName + ":1",
-                    "openflow:1", "openflow:1:51");
-            srcdst.setSrcTpNr("1");
-            srcdst.setDstTpNr("51");
-            dstsrc = new CoCoLink(siteName, "openflow:1", "openflow:1:51",
-                    siteName, siteName + ":1");
-            dstsrc.setSrcTpNr("51");
-            dstsrc.setDstTpNr("1");
-            src = nodeMap.get(siteName);
-            dst = nodeMap.get("openflow:1");
-            graph.addVertex(src);
-            graph.addEdge(src, dst, srcdst);
-            edges.add(srcdst);
-            graph.addEdge(dst, src, dstsrc);
-            edges.add(dstsrc);
-            System.out
-                    .println("addsite: " + src.getId() + " to " + dst.getId());
-
-            // add site3
-            siteName = "site3";
-            site = new CoCoNode(siteName);
-            // Node type is Customer Edge
-            site.setType(NodeType.CE);
-            site.setVlan("103");
-            site.setIpv4Prefix("10.103.0.0/24");
-            site.setMac("fa:16:3e:9e:55:db");
-            nodeMap.put("site3", site);
-            nodeMap.get("openflow:4").setType(NodeType.PE);
-            nodeMap.get("openflow:4").setPeMplsLabel("5104");
-            srcdst = new CoCoLink(siteName, siteName, siteName + ":1",
-                    "openflow:4", "openflow:4:50");
-            srcdst.setSrcTpNr("1");
-            srcdst.setDstTpNr("50");
-            dstsrc = new CoCoLink(siteName, "openflow:4", "openflow:4:50",
-                    siteName, siteName + ":1");
-            dstsrc.setSrcTpNr("50");
-            dstsrc.setDstTpNr("1");
-            src = nodeMap.get(siteName);
-            dst = nodeMap.get("openflow:4");
-            graph.addVertex(src);
-            graph.addEdge(src, dst, srcdst);
-            edges.add(srcdst);
-            graph.addEdge(dst, src, dstsrc);
-            edges.add(dstsrc);
-            System.out
-                    .println("addsite: " + src.getId() + " to " + dst.getId());
-
-            // add site4
-            siteName = "site4";
-            site = new CoCoNode(siteName);
-            // Node type is Customer Edge
-            site.setType(NodeType.CE);
-            site.setVlan("104");
-            site.setIpv4Prefix("10.104.0.0/24");
-            site.setMac("fa:16:3e:d1:5a:02");
-            nodeMap.put("site4", site);
-            nodeMap.get("openflow:4").setType(NodeType.PE);
-            nodeMap.get("openflow:4").setPeMplsLabel("5104");
-            srcdst = new CoCoLink(siteName, siteName, siteName + ":1",
-                    "openflow:4", "openflow:4:50");
-            srcdst.setSrcTpNr("1");
-            srcdst.setDstTpNr("50");
-            dstsrc = new CoCoLink(siteName, "openflow:4", "openflow:4:50",
-                    siteName, siteName + ":1");
-            dstsrc.setSrcTpNr("50");
-            dstsrc.setDstTpNr("1");
-            src = nodeMap.get(siteName);
-            dst = nodeMap.get("openflow:4");
-            graph.addVertex(src);
-            graph.addEdge(src, dst, srcdst);
-            edges.add(srcdst);
-            graph.addEdge(dst, src, dstsrc);
-            edges.add(dstsrc);
-            System.out
-                    .println("addsite: " + src.getId() + " to " + dst.getId());
-
-            // add site7
-            siteName = "site7";
-            site = new CoCoNode(siteName);
-            // Node type is Customer Edge
-            site.setType(NodeType.CE);
-            site.setVlan("107");
-            site.setIpv4Prefix("10.107.0.0/24");
-            site.setMac("fa:16:3e:c6:dc:82");
-            nodeMap.put("site7", site);
-            nodeMap.get("openflow:3").setType(NodeType.PE);
-            nodeMap.get("openflow:3").setPeMplsLabel("5103");
-            srcdst = new CoCoLink(siteName, siteName, siteName + ":1",
-                    "openflow:3", "openflow:3:37");
-            srcdst.setSrcTpNr("1");
-            srcdst.setDstTpNr("37");
-            dstsrc = new CoCoLink(siteName, "openflow:3", "openflow:3:37",
-                    siteName, siteName + ":1");
-            dstsrc.setSrcTpNr("37");
-            dstsrc.setDstTpNr("1");
-            src = nodeMap.get(siteName);
-            dst = nodeMap.get("openflow:3");
-            graph.addVertex(src);
-            graph.addEdge(src, dst, srcdst);
-            edges.add(srcdst);
-            graph.addEdge(dst, src, dstsrc);
-            edges.add(dstsrc);
-            System.out
-                    .println("addsite: " + src.getId() + " to " + dst.getId());
-
-            // add site8
-            siteName = "site8";
-            site = new CoCoNode(siteName);
-            // Node type is Customer Edge
-            site.setType(NodeType.CE);
-            site.setVlan("108");
-            site.setIpv4Prefix("10.108.0.0/24");
-            site.setMac("fa:16:3e:0e:cb:7d");
-            nodeMap.put("site8", site);
-            nodeMap.get("openflow:3").setType(NodeType.PE);
-            nodeMap.get("openflow:3").setPeMplsLabel("5103");
-            srcdst = new CoCoLink(siteName, siteName, siteName + ":1",
-                    "openflow:3", "openflow:3:37");
-            srcdst.setSrcTpNr("1");
-            srcdst.setDstTpNr("37");
-            dstsrc = new CoCoLink(siteName, "openflow:3", "openflow:3:37",
-                    siteName, siteName + ":1");
-            dstsrc.setSrcTpNr("37");
-            dstsrc.setDstTpNr("1");
-            src = nodeMap.get(siteName);
-            dst = nodeMap.get("openflow:3");
-            graph.addVertex(src);
-            graph.addEdge(src, dst, srcdst);
-            edges.add(srcdst);
-            graph.addEdge(dst, src, dstsrc);
-            edges.add(dstsrc);
-            System.out
-                    .println("addsite: " + src.getId() + " to " + dst.getId());
-
-            // add uva1
-            siteName = "uva1";
-            site = new CoCoNode(siteName);
-            // Node type is Customer Edge
-            site.setType(NodeType.CE);
-            site.setVlan("109");
-            site.setIpv4Prefix("10.109.0.0/24");
-            site.setMac("fa:00:00:00:00:00");
-            nodeMap.put("uva1", site);
-            nodeMap.get("openflow:3").setType(NodeType.PE);
-            nodeMap.get("openflow:3").setPeMplsLabel("5103");
-            srcdst = new CoCoLink(siteName, siteName, siteName + ":1",
-                    "openflow:3", "openflow:3:52");
-            srcdst.setSrcTpNr("1");
-            srcdst.setDstTpNr("52");
-            dstsrc = new CoCoLink(siteName, "openflow:3", "openflow:3:52",
-                    siteName, siteName + ":1");
-            dstsrc.setSrcTpNr("52");
-            dstsrc.setDstTpNr("1");
-            src = nodeMap.get(siteName);
-            dst = nodeMap.get("openflow:3");
-            graph.addVertex(src);
-            graph.addEdge(src, dst, srcdst);
-            edges.add(srcdst);
-            graph.addEdge(dst, src, dstsrc);
-            edges.add(dstsrc);
-            System.out
-                    .println("addsite: " + src.getId() + " to " + dst.getId());
-
-            // add uva2
-            siteName = "uva2";
-            site = new CoCoNode(siteName);
-            // Node type is Customer Edge
-            site.setType(NodeType.CE);
-            site.setVlan("110");
-            site.setIpv4Prefix("10.110.0.0/24");
-            site.setMac("fa:00:00:00:00:00");
-            nodeMap.put("uva2", site);
-            nodeMap.get("openflow:3").setType(NodeType.PE);
-            nodeMap.get("openflow:3").setPeMplsLabel("5103");
-            srcdst = new CoCoLink(siteName, siteName, siteName + ":1",
-                    "openflow:3", "openflow:3:52");
-            srcdst.setSrcTpNr("1");
-            srcdst.setDstTpNr("52");
-            dstsrc = new CoCoLink(siteName, "openflow:3", "openflow:3:52",
-                    siteName, siteName + ":1");
-            dstsrc.setSrcTpNr("52");
-            dstsrc.setDstTpNr("1");
-            src = nodeMap.get(siteName);
-            dst = nodeMap.get("openflow:3");
-            graph.addVertex(src);
-            graph.addEdge(src, dst, srcdst);
-            edges.add(srcdst);
-            graph.addEdge(dst, src, dstsrc);
-            edges.add(dstsrc);
-            System.out
-                    .println("addsite: " + src.getId() + " to " + dst.getId());
+            /*
+             * // add site1 siteName = "site1"; site = new CoCoNode(siteName);
+             * // Node type is Customer Edge site.setType(NodeType.CE);
+             * site.setVlan("101"); site.setIpv4Prefix("10.101.0.0/24");
+             * site.setMac("fa:16:3e:bd:03:4a"); nodeMap.put("site1", site);
+             * nodeMap.get("openflow:1").setType(NodeType.PE);
+             * nodeMap.get("openflow:1").setPeMplsLabel("5101"); srcdst = new
+             * CoCoLink(siteName, siteName, siteName + ":1", "openflow:1",
+             * "openflow:1:51"); srcdst.setSrcTpNr("1");
+             * srcdst.setDstTpNr("51"); dstsrc = new CoCoLink(siteName,
+             * "openflow:1", "openflow:1:51", siteName, siteName + ":1");
+             * dstsrc.setSrcTpNr("51"); dstsrc.setDstTpNr("1"); src =
+             * nodeMap.get(siteName); dst = nodeMap.get("openflow:1");
+             * graph.addVertex(src); graph.addEdge(src, dst, srcdst);
+             * edges.add(srcdst); graph.addEdge(dst, src, dstsrc);
+             * edges.add(dstsrc); System.out .println("addsite: " + src.getId()
+             * + " to " + dst.getId());
+             * 
+             * // add site2 siteName = "site2"; site = new CoCoNode(siteName);
+             * // Node type is Customer Edge site.setType(NodeType.CE);
+             * site.setVlan("102"); site.setIpv4Prefix("10.102.0.0/24");
+             * site.setMac("fa:16:3e:27:81:97"); nodeMap.put("site2", site);
+             * nodeMap.get("openflow:1").setType(NodeType.PE);
+             * nodeMap.get("openflow:1").setPeMplsLabel("5101"); srcdst = new
+             * CoCoLink(siteName, siteName, siteName + ":1", "openflow:1",
+             * "openflow:1:51"); srcdst.setSrcTpNr("1");
+             * srcdst.setDstTpNr("51"); dstsrc = new CoCoLink(siteName,
+             * "openflow:1", "openflow:1:51", siteName, siteName + ":1");
+             * dstsrc.setSrcTpNr("51"); dstsrc.setDstTpNr("1"); src =
+             * nodeMap.get(siteName); dst = nodeMap.get("openflow:1");
+             * graph.addVertex(src); graph.addEdge(src, dst, srcdst);
+             * edges.add(srcdst); graph.addEdge(dst, src, dstsrc);
+             * edges.add(dstsrc); System.out .println("addsite: " + src.getId()
+             * + " to " + dst.getId());
+             * 
+             * // add site3 siteName = "site3"; site = new CoCoNode(siteName);
+             * // Node type is Customer Edge site.setType(NodeType.CE);
+             * site.setVlan("103"); site.setIpv4Prefix("10.103.0.0/24");
+             * site.setMac("fa:16:3e:9e:55:db"); nodeMap.put("site3", site);
+             * nodeMap.get("openflow:4").setType(NodeType.PE);
+             * nodeMap.get("openflow:4").setPeMplsLabel("5104"); srcdst = new
+             * CoCoLink(siteName, siteName, siteName + ":1", "openflow:4",
+             * "openflow:4:50"); srcdst.setSrcTpNr("1");
+             * srcdst.setDstTpNr("50"); dstsrc = new CoCoLink(siteName,
+             * "openflow:4", "openflow:4:50", siteName, siteName + ":1");
+             * dstsrc.setSrcTpNr("50"); dstsrc.setDstTpNr("1"); src =
+             * nodeMap.get(siteName); dst = nodeMap.get("openflow:4");
+             * graph.addVertex(src); graph.addEdge(src, dst, srcdst);
+             * edges.add(srcdst); graph.addEdge(dst, src, dstsrc);
+             * edges.add(dstsrc); System.out .println("addsite: " + src.getId()
+             * + " to " + dst.getId());
+             * 
+             * // add site4 siteName = "site4"; site = new CoCoNode(siteName);
+             * // Node type is Customer Edge site.setType(NodeType.CE);
+             * site.setVlan("104"); site.setIpv4Prefix("10.104.0.0/24");
+             * site.setMac("fa:16:3e:d1:5a:02"); nodeMap.put("site4", site);
+             * nodeMap.get("openflow:4").setType(NodeType.PE);
+             * nodeMap.get("openflow:4").setPeMplsLabel("5104"); srcdst = new
+             * CoCoLink(siteName, siteName, siteName + ":1", "openflow:4",
+             * "openflow:4:50"); srcdst.setSrcTpNr("1");
+             * srcdst.setDstTpNr("50"); dstsrc = new CoCoLink(siteName,
+             * "openflow:4", "openflow:4:50", siteName, siteName + ":1");
+             * dstsrc.setSrcTpNr("50"); dstsrc.setDstTpNr("1"); src =
+             * nodeMap.get(siteName); dst = nodeMap.get("openflow:4");
+             * graph.addVertex(src); graph.addEdge(src, dst, srcdst);
+             * edges.add(srcdst); graph.addEdge(dst, src, dstsrc);
+             * edges.add(dstsrc); System.out .println("addsite: " + src.getId()
+             * + " to " + dst.getId());
+             * 
+             * // add site7 siteName = "site7"; site = new CoCoNode(siteName);
+             * // Node type is Customer Edge site.setType(NodeType.CE);
+             * site.setVlan("107"); site.setIpv4Prefix("10.107.0.0/24");
+             * site.setMac("fa:16:3e:c6:dc:82"); nodeMap.put("site7", site);
+             * nodeMap.get("openflow:3").setType(NodeType.PE);
+             * nodeMap.get("openflow:3").setPeMplsLabel("5103"); srcdst = new
+             * CoCoLink(siteName, siteName, siteName + ":1", "openflow:3",
+             * "openflow:3:37"); srcdst.setSrcTpNr("1");
+             * srcdst.setDstTpNr("37"); dstsrc = new CoCoLink(siteName,
+             * "openflow:3", "openflow:3:37", siteName, siteName + ":1");
+             * dstsrc.setSrcTpNr("37"); dstsrc.setDstTpNr("1"); src =
+             * nodeMap.get(siteName); dst = nodeMap.get("openflow:3");
+             * graph.addVertex(src); graph.addEdge(src, dst, srcdst);
+             * edges.add(srcdst); graph.addEdge(dst, src, dstsrc);
+             * edges.add(dstsrc); System.out .println("addsite: " + src.getId()
+             * + " to " + dst.getId());
+             * 
+             * // add site8 siteName = "site8"; site = new CoCoNode(siteName);
+             * // Node type is Customer Edge site.setType(NodeType.CE);
+             * site.setVlan("108"); site.setIpv4Prefix("10.108.0.0/24");
+             * site.setMac("fa:16:3e:0e:cb:7d"); nodeMap.put("site8", site);
+             * nodeMap.get("openflow:3").setType(NodeType.PE);
+             * nodeMap.get("openflow:3").setPeMplsLabel("5103"); srcdst = new
+             * CoCoLink(siteName, siteName, siteName + ":1", "openflow:3",
+             * "openflow:3:37"); srcdst.setSrcTpNr("1");
+             * srcdst.setDstTpNr("37"); dstsrc = new CoCoLink(siteName,
+             * "openflow:3", "openflow:3:37", siteName, siteName + ":1");
+             * dstsrc.setSrcTpNr("37"); dstsrc.setDstTpNr("1"); src =
+             * nodeMap.get(siteName); dst = nodeMap.get("openflow:3");
+             * graph.addVertex(src); graph.addEdge(src, dst, srcdst);
+             * edges.add(srcdst); graph.addEdge(dst, src, dstsrc);
+             * edges.add(dstsrc); System.out .println("addsite: " + src.getId()
+             * + " to " + dst.getId());
+             * 
+             * // add uva1 siteName = "uva1"; site = new CoCoNode(siteName); //
+             * Node type is Customer Edge site.setType(NodeType.CE);
+             * site.setVlan("109"); site.setIpv4Prefix("10.109.0.0/24");
+             * site.setMac("fa:00:00:00:00:00"); nodeMap.put("uva1", site);
+             * nodeMap.get("openflow:3").setType(NodeType.PE);
+             * nodeMap.get("openflow:3").setPeMplsLabel("5103"); srcdst = new
+             * CoCoLink(siteName, siteName, siteName + ":1", "openflow:3",
+             * "openflow:3:52"); srcdst.setSrcTpNr("1");
+             * srcdst.setDstTpNr("52"); dstsrc = new CoCoLink(siteName,
+             * "openflow:3", "openflow:3:52", siteName, siteName + ":1");
+             * dstsrc.setSrcTpNr("52"); dstsrc.setDstTpNr("1"); src =
+             * nodeMap.get(siteName); dst = nodeMap.get("openflow:3");
+             * graph.addVertex(src); graph.addEdge(src, dst, srcdst);
+             * edges.add(srcdst); graph.addEdge(dst, src, dstsrc);
+             * edges.add(dstsrc); System.out .println("addsite: " + src.getId()
+             * + " to " + dst.getId());
+             * 
+             * // add uva2 siteName = "uva2"; site = new CoCoNode(siteName); //
+             * Node type is Customer Edge site.setType(NodeType.CE);
+             * site.setVlan("110"); site.setIpv4Prefix("10.110.0.0/24");
+             * site.setMac("fa:00:00:00:00:00"); nodeMap.put("uva2", site);
+             * nodeMap.get("openflow:3").setType(NodeType.PE);
+             * nodeMap.get("openflow:3").setPeMplsLabel("5103"); srcdst = new
+             * CoCoLink(siteName, siteName, siteName + ":1", "openflow:3",
+             * "openflow:3:52"); srcdst.setSrcTpNr("1");
+             * srcdst.setDstTpNr("52"); dstsrc = new CoCoLink(siteName,
+             * "openflow:3", "openflow:3:52", siteName, siteName + ":1");
+             * dstsrc.setSrcTpNr("52"); dstsrc.setDstTpNr("1"); src =
+             * nodeMap.get(siteName); dst = nodeMap.get("openflow:3");
+             * graph.addVertex(src); graph.addEdge(src, dst, srcdst);
+             * edges.add(srcdst); graph.addEdge(dst, src, dstsrc);
+             * edges.add(dstsrc); System.out .println("addsite: " + src.getId()
+             * + " to " + dst.getId());
+             */
 
             System.out.println("graph = " + graph.toString());
         } catch (Exception e) {
