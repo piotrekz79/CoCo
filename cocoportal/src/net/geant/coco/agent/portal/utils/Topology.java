@@ -121,6 +121,11 @@ public class Topology {
                 }
 
             }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
 
             String siteName;
             CoCoNode site;
@@ -139,11 +144,12 @@ public class Topology {
                 site.setVlan(Integer.toOctalString(s.getVlanId()));
                 site.setIpv4Prefix(s.getIpv4Prefix());
                 site.setMac(s.getMacAddress());
-                nodeMap.put("site1", site);
+                nodeMap.put(s.getName(), site);
                 nodeMap.get(s.getProviderSwitch()).setType(NodeType.PE);
                 nodeMap.get(s.getProviderSwitch()).setPeMplsLabel(
                         Integer.toString(MplsLabel++));
-                srcdst = new CoCoLink(siteName, siteName, siteName + ":1",
+                srcdst = new CoCoLink(siteName, siteName, siteName
+                        + Integer.toHexString(s.getCustomerPort()),
                         s.getProviderSwitch(), s.getProviderSwitch()
                                 + s.getProviderPort());
                 srcdst.setSrcTpNr(Integer.toString(s.getCustomerPort()));
@@ -508,11 +514,17 @@ public class Topology {
     }
 
     public List<CoCoLink> calculatePath(String fromSwitch, String toSwitch) {
+        List<CoCoLink> path = new ArrayList<CoCoLink>();
         System.out.printf("find path %s to %s\n", fromSwitch, toSwitch);
-        CoCoNode src = nodeMap.get(fromSwitch);
-        CoCoNode dst = nodeMap.get(toSwitch);
+        try {
+            CoCoNode src = nodeMap.get(fromSwitch);
+            CoCoNode dst = nodeMap.get(toSwitch);
 
-        return DijkstraShortestPath.findPathBetween(graph, src, dst);
+            path = DijkstraShortestPath.findPathBetween(graph, src, dst);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return path;
     }
 
     public void removeAllVpns() {
