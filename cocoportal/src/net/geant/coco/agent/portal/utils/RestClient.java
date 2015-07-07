@@ -24,8 +24,8 @@ public class RestClient {
     }
 
     private static URI getBaseURI() {
-        return UriBuilder.fromUri("http://192.168.56.125:8181/restconf")
-        // return UriBuilder.fromUri("http://192.168.255.59:8181/restconf")
+        // return UriBuilder.fromUri("http://192.168.56.125:8181/restconf")
+        return UriBuilder.fromUri("http://192.168.255.59:8181/restconf")
                 .build();
     }
 
@@ -111,6 +111,70 @@ public class RestClient {
                 String path = String
                         .format("config/opendaylight-inventory:nodes/node/%s/table/0/flow/",
                                 switchID);
+                System.out.println(flow);
+                System.out.flush();
+                r = service.path(path).path(flowNr)
+                        .type(javax.ws.rs.core.MediaType.APPLICATION_XML)
+                        .accept(MediaType.APPLICATION_XML)
+                        .put(ClientResponse.class, flow);
+                error = r.getEntity(String.class);
+                System.out.println(r.getStatus());
+            } else if (command.equals("delete")) {
+
+                String path = String
+                        .format("config/opendaylight-inventory:nodes/node/%s",
+                                flow);
+                System.out.println(flow);
+                System.out.flush();
+                r = service.path(path)
+                        .type(javax.ws.rs.core.MediaType.APPLICATION_XML)
+                        .accept(MediaType.APPLICATION_XML)
+                        .delete(ClientResponse.class);
+                //service.header("X-HTTP-Method-Override", "DELETE");
+                error = r.getEntity(String.class);
+                System.out.println(r.getStatus());
+            } else {
+                error = "unknown command";
+            }
+            System.out.println(error);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    
+    public static void sendtoSwitch(String switchID, String command,
+            String flow, String flowNr, String tableId) {
+        try {
+            ClientConfig config = new DefaultClientConfig();
+            Client client = Client.create(config);
+            ClientResponse r;
+            String error = "";
+            client.addFilter(new HTTPBasicAuthFilter("admin", "admin"));
+            WebResource service = client.resource(getBaseURI());
+
+            if (command.equals("clear")) {
+                // Get inventory first. Needed to avoid error on DELETE???
+                System.out.println("inventory on switch " + switchID);
+                r = service.path("operational/opendaylight-inventory:nodes")
+                        .type(javax.ws.rs.core.MediaType.APPLICATION_XML)
+                        .accept(MediaType.APPLICATION_XML)
+                        .get(ClientResponse.class);
+
+                // Delete all flows on switch
+                System.out.println("clear on switch " + switchID);
+                String path = String.format(
+                        "opendaylight-inventory:nodes/node/%s", switchID);
+                r = service.path("config").path(path)
+                        .type(javax.ws.rs.core.MediaType.APPLICATION_XML)
+                        .accept(MediaType.APPLICATION_XML)
+                        .delete(ClientResponse.class);
+            } else if (command.equals("add")) {
+                System.out.println("config on switch " + switchID);
+
+                String path = String
+                        .format("config/opendaylight-inventory:nodes/node/%s/table/%s/flow/",
+                                switchID, tableId);
                 System.out.println(flow);
                 System.out.flush();
                 r = service.path(path).path(flowNr)
