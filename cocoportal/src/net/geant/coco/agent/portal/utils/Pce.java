@@ -118,7 +118,7 @@ public class Pce {
                 flowEntry.inPort(String.valueOf(toSite.getProviderPort()));
                 flowEntry.matchEthertype(0x0800);
                 //flowEntry.matchVlan(topology.getNode(toSite.getName()).getVlan());
-                flowEntry.modVlan(String.valueOf(toSite.getVlanId()));
+                flowEntry.matchVlan(String.valueOf(toSite.getVlanId()));
                 flowEntry.matchDstIpv4Prefix(topology.getNode(
                         fromSite.getName()).getIpv4Prefix());
                 flowEntry.setDstMAC(topology.getNode(fromSite.getName())
