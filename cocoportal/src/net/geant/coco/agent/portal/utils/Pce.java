@@ -95,13 +95,15 @@ public class Pce {
 
                 flowEntry.inPort(String.valueOf(fromSite.getProviderPort()));
                 flowEntry.matchEthertype(0x0800);
-                flowEntry.matchVlan(topology.getNode(fromSite.getName())
-                        .getVlan());
+                //flowEntry.matchVlan(topology.getNode(fromSite.getName()).getVlan()); // error here, takes vlan 145 instead of 101 for example (in flows installed)
+                flowEntry.matchVlan(String.valueOf(fromSite.getVlanId()));
+                
                 flowEntry.matchDstIpv4Prefix(topology.getNode(toSite.getName())
                         .getIpv4Prefix());
                 flowEntry
                         .setDstMAC(topology.getNode(toSite.getName()).getMac());
-                flowEntry.modVlan(topology.getNode(toSite.getName()).getVlan());
+                //flowEntry.modVlan(topology.getNode(toSite.getName()).getVlan());
+                flowEntry.modVlan(String.valueOf(toSite.getVlanId()));
                 flowEntry.outPort(String.valueOf(toSite.getProviderPort()));
                 RestClient.sendtoSwitch(toSite.getProviderSwitch(), "add",
                         flowEntry.buildFlow(), String.valueOf(flowNr));
