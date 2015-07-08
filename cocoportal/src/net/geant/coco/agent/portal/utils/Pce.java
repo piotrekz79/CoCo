@@ -117,14 +117,14 @@ public class Pce {
                 flowEntry = new Flow(toSite.getProviderSwitch(), flowNr);
                 flowEntry.inPort(String.valueOf(toSite.getProviderPort()));
                 flowEntry.matchEthertype(0x0800);
-                flowEntry.matchVlan(topology.getNode(toSite.getName())
-                        .getVlan());
+                //flowEntry.matchVlan(topology.getNode(toSite.getName()).getVlan());
+                flowEntry.modVlan(String.valueOf(toSite.getVlanId()));
                 flowEntry.matchDstIpv4Prefix(topology.getNode(
                         fromSite.getName()).getIpv4Prefix());
                 flowEntry.setDstMAC(topology.getNode(fromSite.getName())
                         .getMac());
-                flowEntry.modVlan(topology.getNode(fromSite.getName())
-                        .getVlan());
+                //flowEntry.modVlan(topology.getNode(fromSite.getName()).getVlan());
+                flowEntry.modVlan(String.valueOf(fromSite.getVlanId()));
                 flowEntry.outPort(String.valueOf(fromSite.getProviderPort()));
                 RestClient.sendtoSwitch(toSite.getProviderSwitch(), "add",
                         flowEntry.buildFlow(), String.valueOf(flowNr));
