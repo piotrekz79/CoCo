@@ -1,6 +1,7 @@
 package net.geant.coco.agent.portal.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -31,6 +32,7 @@ public class TestApp {
     private static NetworkSitesService networkSitesService;
     private static VpnsService vpnsService;
     private static Pce pce;
+	private static long testTime;
 	    
 	    
 	public static void main(String[] args) {
@@ -76,28 +78,59 @@ public class TestApp {
         pce = new Pce(networkSwitches, networkSites);
         pce.setupCoreForwarding();
         
-//        List<String> siteNamesToAddToVpn = new ArrayList<String>();
-//        
-//        for (String s: args) {
-//        	siteNamesToAddToVpn.add(s);
-//            System.out.println(s);
-//        }
+        List<String> argumentList = new ArrayList<String>(Arrays.asList(args));
+        
+        if (argumentList.size() <= 1) {
+        	System.out.println("Usage: pass <experimentTime>, <list of sites to connect to vpn> as arguments.");
+        }
+        testTime = Long.parseLong(argumentList.remove(0), 10);
+        
+        List<String> siteNamesToAddToVpn = new ArrayList<String>();
+        
+        System.out.println("Sites added to VPN:");
+        for (String s: argumentList) {
+        	siteNamesToAddToVpn.add(s);
+            System.out.println(s);
+        }
+       
         
         String vpnName = "vpn1";
-        String site1 = "h1";
-        String site2 = "h4";
-        doUpdateVpn(vpnName, site1, "");
-        doUpdateVpn(vpnName, site2, "");
+        
+        for (String site : siteNamesToAddToVpn) {
+        	doUpdateVpn(vpnName, "", site);
+        }
+        
+        
+        for (String site : siteNamesToAddToVpn) {
+        	doUpdateVpn(vpnName, site, "");
+        }
         
         try {
-			Thread.sleep(4000);
+			Thread.sleep(testTime);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
         
-        doUpdateVpn(vpnName, "", site1);
-        doUpdateVpn(vpnName, "", site2);
+        for (String site : siteNamesToAddToVpn) {
+        	doUpdateVpn(vpnName, "", site);
+        }
+        
+//        String vpnName = "vpn1";
+//        String site1 = "h1";
+//        String site2 = "h4";
+//        doUpdateVpn(vpnName, site1, "");
+//        doUpdateVpn(vpnName, site2, "");
+//        
+//        try {
+//			Thread.sleep(4000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//        
+//        doUpdateVpn(vpnName, "", site1);
+//        doUpdateVpn(vpnName, "", site2);
 		
 	}
 	
