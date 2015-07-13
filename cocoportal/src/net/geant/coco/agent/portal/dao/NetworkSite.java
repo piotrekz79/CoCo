@@ -20,6 +20,18 @@ public class NetworkSite {
         this.macAddress = macAddress;
         this.vpnName = vpnName;
     }
+    
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        String NEW_LINE = "_";
+
+        result.append(this.getName() + NEW_LINE);
+        result.append(this.getIpv4Prefix() + NEW_LINE);
+        result.append(this.getMacAddress() + NEW_LINE);
+
+        return result.toString();
+      }
 
     private int id;
     private String name;

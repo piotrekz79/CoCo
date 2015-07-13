@@ -19,6 +19,7 @@ import net.geant.coco.agent.portal.service.NetworkSwitchesService;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.alg.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -29,7 +30,9 @@ import org.json.simple.parser.JSONParser;
  */
 public class Topology {
 
-    private DirectedGraph<CoCoNode, CoCoLink> graph = new DefaultDirectedGraph<CoCoNode, CoCoLink>(
+	//private DirectedGraph<CoCoNode, CoCoLink> graph = new DefaultDirectedWeightedGraph<CoCoNode, CoCoLink>(CoCoLink.class);
+	// adding weights to break symmetry in the topology
+    private DefaultDirectedWeightedGraph<CoCoNode, CoCoLink> graph = new DefaultDirectedWeightedGraph<CoCoNode, CoCoLink>(
             CoCoLink.class);
     private HashMap<String, CoCoNode> nodeMap = new HashMap<String, CoCoNode>();
     private List<CoCoLink> edges = new ArrayList<CoCoLink>();
@@ -46,6 +49,8 @@ public class Topology {
         // make REST call to OpenDaylight to get topology info in JSON format
         String jsonTopo = RestClient.getJsonTopo();
 
+        double edgeWeight = 1;
+        
         // Parse the JSON info in 'jsonTopo'
         try {
             // Store nodes in HashMap 'nodeMap' with 'node-id' as key
@@ -80,6 +85,7 @@ public class Topology {
                     graph.addVertex(n);
                 }
 
+                
                 // Parse JSON info and store links
                 JSONArray linkList = (JSONArray) topo.get("link");
                 for (int m = 0; m < linkList.size(); m++) {
@@ -111,6 +117,8 @@ public class Topology {
                     CoCoNode src = nodeMap.get(sourceNode);
                     CoCoNode dst = nodeMap.get(dstNode);
                     graph.addEdge(src, dst, e);
+                    graph.setEdgeWeight(graph.getEdge(src, dst), edgeWeight);
+                    edgeWeight = edgeWeight*2;
                     edges.add(e);
 
                     // update interface types of termination points in src and
@@ -176,8 +184,12 @@ public class Topology {
                 dst = nodeMap.get(s.getProviderSwitch());
                 graph.addVertex(src);
                 graph.addEdge(src, dst, srcdst);
+                graph.setEdgeWeight(graph.getEdge(src, dst), edgeWeight);
+                edgeWeight = edgeWeight*2;
                 edges.add(srcdst);
                 graph.addEdge(dst, src, dstsrc);
+                graph.setEdgeWeight(graph.getEdge(src, dst), edgeWeight);
+                edgeWeight = edgeWeight*2;
                 edges.add(dstsrc);
                 System.out.println("addsite: " + src.getId() + " to "
                         + dst.getId());

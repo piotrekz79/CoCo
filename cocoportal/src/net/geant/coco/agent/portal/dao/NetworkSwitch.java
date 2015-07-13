@@ -38,13 +38,17 @@ public class NetworkSwitch {
     
     private int mplsLabel;
     
-    /**
-     * @param args
-     */
-    public static void main(String[] args) {
-        // TODO Auto-generated method stub
+    
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        String NEW_LINE = "_";
 
-    }
+        result.append(this.getName() + NEW_LINE);
+        result.append(Integer.toString(this.getMplsLabel()) + NEW_LINE);
+        
+        return result.toString();
+      }
 
     public String getName() {
         return name;

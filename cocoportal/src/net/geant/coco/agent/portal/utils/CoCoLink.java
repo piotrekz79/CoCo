@@ -1,7 +1,9 @@
 package net.geant.coco.agent.portal.utils;
 
+import org.jgrapht.graph.DefaultWeightedEdge;
 
-public class CoCoLink {
+
+public class CoCoLink extends DefaultWeightedEdge {
 	private String id;
 	private String srcNode;
 	private String srcTp;
