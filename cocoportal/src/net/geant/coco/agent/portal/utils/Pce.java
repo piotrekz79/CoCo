@@ -24,7 +24,7 @@ public class Pce {
             List<NetworkSite> networkSites) {
         this.networkSwitches = networkSwitches;
         this.networkSites = networkSites;
-        this.topology = new Topology(networkSites);
+        this.topology = new Topology(networkSites, networkSwitches);
     }
 
     public void setupCoreForwarding() {

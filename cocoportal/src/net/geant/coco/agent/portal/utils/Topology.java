@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 import net.geant.coco.agent.portal.dao.NetworkSite;
+import net.geant.coco.agent.portal.dao.NetworkSwitch;
 import net.geant.coco.agent.portal.service.NetworkSitesService;
 import net.geant.coco.agent.portal.service.NetworkSwitchesService;
 
@@ -37,7 +38,7 @@ public class Topology {
     private static int flowId = 1;
     private int activeVpn = 1;
 
-    public Topology(List<NetworkSite> networkSites) {
+    public Topology(List<NetworkSite> networkSites, List<NetworkSwitch> networkSwitches) {
         // remove all forwarding entries from switches
         // RestClient.clearAll();
 
@@ -133,7 +134,7 @@ public class Topology {
             CoCoLink dstsrc;
             CoCoNode src;
             CoCoNode dst;
-            int MplsLabel = 5100;
+            //int MplsLabel = 5100;
 
             // add sites to graph
             for (NetworkSite s : networkSites) {
@@ -146,8 +147,20 @@ public class Topology {
                 site.setMac(s.getMacAddress());
                 nodeMap.put(s.getName(), site);
                 nodeMap.get(s.getProviderSwitch()).setType(NodeType.PE);
-                nodeMap.get(s.getProviderSwitch()).setPeMplsLabel(
-                        Integer.toString(MplsLabel++));
+                
+                CoCoNode currentSwitch = nodeMap.get(s.getProviderSwitch());
+               
+                for (NetworkSwitch netSwitch : networkSwitches) {
+                	if (netSwitch.getName().equalsIgnoreCase(currentSwitch.getId())) {
+                		currentSwitch.setPeMplsLabel(
+                                Integer.toString(netSwitch.getMplsLabel()));
+                        
+                	}
+                }
+                
+                //curentSwitch.setPeMplsLabel(Integer.toString(MplsLabel++));
+                
+                
                 srcdst = new CoCoLink(siteName, siteName, siteName
                         + Integer.toHexString(s.getCustomerPort()),
                         s.getProviderSwitch(), s.getProviderSwitch()
