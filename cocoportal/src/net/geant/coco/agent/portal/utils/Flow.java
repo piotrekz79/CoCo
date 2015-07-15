@@ -91,7 +91,7 @@ public class Flow {
         System.out.println("VPN MPLS label is " + vpnMplsLabel);
         this.pushVpnMplsLabel = vpnMplsLabel;
     }
-
+    
     public String buildFlow() {
         // add flow identifier
         if (outport != null) {

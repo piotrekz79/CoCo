@@ -1,5 +1,6 @@
 package net.geant.coco.agent.portal.utils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -76,8 +77,20 @@ public class TestApp {
         List<Vpn> vpns = vpnsService.getVpns();
 
         pce = new Pce(networkSwitches, networkSites);
+        
+        //Topology topo = pce.getTopology();
+        
+        //List<CoCoLink> pathList = topo.calculatePath("h1", "h5");
+        //pathList = topo.calculatePath("h5", "h1");
+        
+//        pathList = topo.calculatePath("h1", "h5");
+//        
+//        pathList = topo.calculatePath("h5", "h1");
+        
         pce.setupCoreForwarding();
         
+        
+        // real thing
         List<String> argumentList = new ArrayList<String>(Arrays.asList(args));
         
         if (argumentList.size() <= 1) {
@@ -96,34 +109,45 @@ public class TestApp {
         
         String vpnName = "vpn1";
         
-        for (String site : siteNamesToAddToVpn) {
-        	doUpdateVpn(vpnName, "", site);
-        }
+//        for (String site : siteNamesToAddToVpn) {
+//        	doUpdateVpn(vpnName, "", site);
+//        }
         
         
         for (String site : siteNamesToAddToVpn) {
         	doUpdateVpn(vpnName, site, "");
         }
         
+        System.out.println("Press any key...");
         try {
-			Thread.sleep(testTime);
-		} catch (InterruptedException e) {
+			System.in.read();
+		} catch (IOException e1) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e1.printStackTrace();
 		}
+        
+//        try {
+//			Thread.sleep(testTime);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
         
         for (String site : siteNamesToAddToVpn) {
         	doUpdateVpn(vpnName, "", site);
         }
         
+        // test setup
+        
 //        String vpnName = "vpn1";
 //        String site1 = "h1";
-//        String site2 = "h4";
+//        String site2 = "h5";
+//        
 //        doUpdateVpn(vpnName, site1, "");
 //        doUpdateVpn(vpnName, site2, "");
 //        
 //        try {
-//			Thread.sleep(4000);
+//			Thread.sleep(5000);
 //		} catch (InterruptedException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();

@@ -12,7 +12,12 @@ public class Pce {
     private List<NetworkSwitch> networkSwitches;
     private List<NetworkSite> networkSites;
     private Topology topology;
-    // private Topology topology = new Topology(networkSites);
+    
+    public Topology getTopology() {
+		return topology;
+	}
+
+	// private Topology topology = new Topology(networkSites);
     private static int flowId = 1;
 
     private int getNextFlowId() {
@@ -51,9 +56,7 @@ public class Pce {
                     String switchName = edges[i - 1].getDstNode();
                     // check if this is a core P node
                     if (topology.getNode(switchName).getType() == NodeType.P) {
-                        System.out.println("P node config on " + switchName
-                                + ": " + edges[i - 1].getDstTp() + " -> "
-                                + edges[i].getSrcTp());
+                        //System.out.println("P node config on " + switchName + ": " + edges[i - 1].getDstTp() + " -> " + edges[i].getSrcTp());
                         flowNr = getNextFlowId();
                         Flow entry = new Flow(switchName, flowNr);
                         entry.inPort(edges[i - 1].getDstTpNr());

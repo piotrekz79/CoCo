@@ -21,6 +21,16 @@ public class CoCoNode implements Comparable<CoCoNode> {
 	private boolean inUse = false;
 	private HashMap<String, CoCoTerminationPoint> tpMap = new HashMap<String, CoCoTerminationPoint>();
 	
+	private String peSwitch;
+	
+	public String getPeSwitch() {
+		return peSwitch;
+	}
+
+	public void setPeSwitch(String peSwitch) {
+		this.peSwitch = peSwitch;
+	}
+
 	public CoCoNode(String id) {
 		this.id = id;
 	}
@@ -31,9 +41,9 @@ public class CoCoNode implements Comparable<CoCoNode> {
         String NEW_LINE = "_";
 
         result.append(this.getId() + NEW_LINE);
-        result.append(this.getIpv4Prefix() + NEW_LINE);
-        result.append(this.getPeMplsLabel() + NEW_LINE);
-        result.append(this.getVlan() + NEW_LINE);
+        //result.append(this.getIpv4Prefix() + NEW_LINE);
+        //result.append(this.getPeMplsLabel() + NEW_LINE);
+        //result.append(this.getVlan() + NEW_LINE);
         
         return result.toString();
       }

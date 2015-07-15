@@ -40,6 +40,9 @@ public class Topology {
     private String id;
     private static int flowId = 1;
     private int activeVpn = 1;
+    
+    private List<CoCoNode> listOfEndNodes = new ArrayList<CoCoNode>();
+    private List<CoCoNode> listOfEdgeSwitches = new ArrayList<CoCoNode>();
 
     public Topology(List<NetworkSite> networkSites, List<NetworkSwitch> networkSwitches) {
         // remove all forwarding entries from switches
@@ -118,7 +121,7 @@ public class Topology {
                     CoCoNode dst = nodeMap.get(dstNode);
                     graph.addEdge(src, dst, e);
                     graph.setEdgeWeight(graph.getEdge(src, dst), edgeWeight);
-                    edgeWeight = edgeWeight*2;
+                    edgeWeight = edgeWeight+1;
                     edges.add(e);
 
                     // update interface types of termination points in src and
@@ -155,6 +158,8 @@ public class Topology {
                 site.setMac(s.getMacAddress());
                 nodeMap.put(s.getName(), site);
                 nodeMap.get(s.getProviderSwitch()).setType(NodeType.PE);
+                
+                site.setPeSwitch(s.getProviderSwitch());
                 
                 CoCoNode currentSwitch = nodeMap.get(s.getProviderSwitch());
                
@@ -337,6 +342,20 @@ public class Topology {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+        
+        
+       	for (CoCoNode node : nodeMap.values()) {
+       		if (node.getType() == NodeType.CE) {
+       			listOfEndNodes.add(node);
+       		}
+       	}
+
+       	for (CoCoNode node : nodeMap.values()) {
+       		if (node.getType() == NodeType.PE) {
+       			listOfEdgeSwitches.add(node);
+       		}
+       	}
+       	
     }
 
     private String getPortName(String nodeId, String portId) {
@@ -541,11 +560,27 @@ public class Topology {
     public List<CoCoLink> calculatePath(String fromSwitch, String toSwitch) {
         List<CoCoLink> path = new ArrayList<CoCoLink>();
         System.out.printf("find path %s to %s\n", fromSwitch, toSwitch);
+        
+        DefaultDirectedWeightedGraph<CoCoNode, CoCoLink> tempGraph = (DefaultDirectedWeightedGraph<CoCoNode, CoCoLink>) graph.clone();
+        
         try {
             CoCoNode src = nodeMap.get(fromSwitch);
             CoCoNode dst = nodeMap.get(toSwitch);
 
-            path = DijkstraShortestPath.findPathBetween(graph, src, dst);
+           	for (CoCoNode node : listOfEndNodes) {
+           		if (!node.getId().equalsIgnoreCase(fromSwitch) && !node.getId().equalsIgnoreCase(toSwitch)) {
+           			tempGraph.removeVertex(node);
+           		}
+           	}
+
+           	
+           	for (CoCoNode node : listOfEdgeSwitches) {
+           		if (!src.getPeSwitch().equals(node.getId()) && !dst.getPeSwitch().equals(node.getId())) {
+           			tempGraph.removeVertex(node);
+           		}
+           	}
+
+            path = DijkstraShortestPath.findPathBetween(tempGraph, src, dst);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
