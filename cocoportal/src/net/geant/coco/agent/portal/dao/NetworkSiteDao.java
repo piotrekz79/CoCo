@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
@@ -13,6 +15,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class NetworkSiteDao {
     private NamedParameterJdbcTemplate jdbc;
@@ -169,7 +172,7 @@ public class NetworkSiteDao {
         String query = "SELECT sites.* FROM sites "
                 + "JOIN switches WHERE sites.switch = switches.id "
                 + "AND sites.name = :name;";
-        System.out.println("getNetworkSite " + siteName + "  " + query);
+        log.trace("getNetworkSite " + siteName + "  " + query);
         return jdbc.query(query, params, new ResultSetExtractor<NetworkSite>() {
 
             @Override

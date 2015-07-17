@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import lombok.extern.slf4j.Slf4j;
 import net.geant.coco.agent.portal.dao.NetworkSite;
 import net.geant.coco.agent.portal.dao.NetworkSwitch;
 import net.geant.coco.agent.portal.service.NetworkSitesService;
@@ -28,6 +29,7 @@ import org.json.simple.parser.JSONParser;
  * @author rvdp
  *
  */
+@Slf4j
 public class Topology {
 
 	//private DirectedGraph<CoCoNode, CoCoLink> graph = new DefaultDirectedWeightedGraph<CoCoNode, CoCoLink>(CoCoLink.class);
@@ -48,7 +50,7 @@ public class Topology {
         // remove all forwarding entries from switches
         // RestClient.clearAll();
 
-        System.out.println("Topology init");
+        log.info("Topology init");
         // make REST call to OpenDaylight to get topology info in JSON format
         String jsonTopo = RestClient.getJsonTopo();
 
@@ -65,6 +67,7 @@ public class Topology {
                     .get("network-topology");
             JSONArray topologyList = (JSONArray) networkTopology
                     .get("topology");
+            log.info("Topology - store nodes");
             for (int i = 0; i < topologyList.size(); i++) {
                 JSONObject topo = (JSONObject) topologyList.get(i);
                 JSONArray nodeList = (JSONArray) topo.get("node");
@@ -74,24 +77,24 @@ public class Topology {
                     CoCoNode n = new CoCoNode(nodeId);
                     JSONArray tpList = (JSONArray) node
                             .get("termination-point");
-                    System.out.printf("Topology node %s: ", nodeId);
+                    log.trace(String.format("Topology node %s: ", nodeId));
                     // add all termination points to the CoCoNode object n
                     for (int k = 0; k < tpList.size(); k++) {
                         JSONObject tp = (JSONObject) tpList.get(k);
                         String tpId = (String) tp.get("tp-id");
-                        System.out.printf("%s ", tpId);
+                        log.trace(String.format("%s ", tpId));
                         n.addTp(tpId);
                     }
-                    System.out.println();
                     nodeMap.put(nodeId, n);
                     // Store the node in the graph too
                     graph.addVertex(n);
                 }
 
-                
+                log.info("Topology - store links");
                 // Parse JSON info and store links
                 JSONArray linkList = (JSONArray) topo.get("link");
                 for (int m = 0; m < linkList.size(); m++) {
+                	log.info(Integer.toString(m) + " out of " + Integer.toString(linkList.size()));
                     JSONObject link = (JSONObject) linkList.get(m);
                     String linkId = (String) link.get("link-id");
 
@@ -113,9 +116,9 @@ public class Topology {
                     String dstTpNr = getPortName(dstNode, dstTp);
                     e.setSrcTpNr(sourceTpNr);
                     e.setDstTpNr(dstTpNr);
-                    System.out.printf(
+                    log.trace(String.format(
                             "link %s: from %s port %s to %s port %s\n", linkId,
-                            sourceNode, sourceTpNr, dstNode, dstTpNr);
+                            sourceNode, sourceTpNr, dstNode, dstTpNr));
 
                     CoCoNode src = nodeMap.get(sourceNode);
                     CoCoNode dst = nodeMap.get(dstNode);
@@ -145,7 +148,7 @@ public class Topology {
 
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.trace(e.getMessage());
         }
 
         try {
@@ -160,6 +163,7 @@ public class Topology {
 
             // add sites to graph
             for (NetworkSite s : networkSites) {
+            	log.info("Topology - setting up site " + s.getName());
                 siteName = s.getName();
                 site = new CoCoNode(siteName);
                 // Node type is Customer Edge
@@ -208,7 +212,7 @@ public class Topology {
                 dstsrc.weight = edgeWeight;
                 edgeWeight = edgeWeight*2;
                 edges.add(dstsrc);
-                System.out.println("addsite: " + src.getId() + " to "
+                log.trace("addsite: " + src.getId() + " to "
                         + dst.getId());
             }
 
@@ -350,9 +354,9 @@ public class Topology {
              * + " to " + dst.getId());
              */
 
-            System.out.println("graph = " + graph.toString());
+            log.trace("graph = " + graph.toString());
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.trace(e.getMessage());
         }
         
         
@@ -390,7 +394,7 @@ public class Topology {
             }
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.trace(e.getMessage());
         }
         return null;
     }
@@ -437,13 +441,12 @@ public class Topology {
             for (int i = 0; i < sites.length; i++) {
                 for (int j = 0; j < sites.length; j++) {
                     if (i != j) {
-                        System.out.printf("find path %s to %s\n", sites[i],
-                                sites[j]);
+                        log.trace(String.format("find path %s to %s\n", sites[i], sites[j]));
                         CoCoNode src = nodeMap.get(sites[i]);
                         src.setInUse(true);
                         CoCoNode dst = nodeMap.get(sites[j]);
-                        // System.out.println("getpath site1 " + src);
-                        // System.out.println("getpath site3 " + dst);
+                        // log.trace("getpath site1 " + src);
+                        // log.trace("getpath site3 " + dst);
                         // DijkstraShortestPath<CoCoNode, CoCoLink> path = new
                         // DijkstraShortestPath<CoCoNode, CoCoLink>(
                         // graph, src, dst);
@@ -451,7 +454,7 @@ public class Topology {
                         List<CoCoLink> newEdges = new ArrayList<CoCoLink>();
                         List<CoCoLink> edges = DijkstraShortestPath
                                 .findPathBetween(graph, src, dst);
-                        System.out.println("edges = " + edges);
+                        log.trace("edges = " + edges);
                         newEdges.addAll(edges);
                         newEdges.addAll(vpn.getEdges());
                         vpn.setEdges(newEdges);
@@ -462,10 +465,10 @@ public class Topology {
                         while (iter.hasNext()) {
                             CoCoLink edge = iter.next();
 
-                            System.out.printf(
+                            log.trace(String.format(
                                     "path link: %s port %s to %s port %s\n",
                                     edge.getSrcNode(), edge.getSrcTpNr(),
-                                    edge.getDstNode(), edge.getDstTpNr());
+                                    edge.getDstNode(), edge.getDstTpNr()));
 
                             if (inPort != null) {
                                 CoCoNode s = nodeMap.get(edge.getSrcNode());
@@ -475,14 +478,13 @@ public class Topology {
                                     // Provision Provider Edge switches
                                     if (s.getTp(edge.getSrcTp()).getType() == InterfaceType.NNI) {
                                         // Provision ingress flow
-                                        System.out
-                                                .printf("flow rule on %s match inport %s, vlan %s, dst prefix %s, action set_vlan %s, add_mpls %s, output %s\n",
+                                    	log.trace(String.format("flow rule on %s match inport %s, vlan %s, dst prefix %s, action set_vlan %s, add_mpls %s, output %s\n",
                                                         s.getId(), inPort,
                                                         src.getVlan(),
                                                         dst.getIpv4Prefix(),
                                                         vpn.getVpnVlanId(),
                                                         dst.getPeMplsLabel(),
-                                                        edge.getSrcTpNr());
+                                                        edge.getSrcTpNr()));
                                         flow = new Flow(s.getId(), flowId);
                                         flow.inPort(inPort);
                                         flow.matchVlan(src.getVlan());
@@ -505,13 +507,12 @@ public class Topology {
                                                 String.valueOf(flowId));
                                     } else {
                                         // Provision egress flow
-                                        System.out
-                                                .printf("flow rule on %s match inport %s, mpls %s, action set_vlan %s, pop_mpls, set_mac %s, output %s\n",
+                                    	log.trace(String.format("flow rule on %s match inport %s, mpls %s, action set_vlan %s, pop_mpls, set_mac %s, output %s\n",
                                                         s.getId(), inPort,
                                                         dst.getPeMplsLabel(),
                                                         dst.getVlan(),
                                                         dst.getMac(),
-                                                        edge.getSrcTpNr());
+                                                        edge.getSrcTpNr()));
                                         flow = new Flow(s.getId(), flowId);
                                         flow.inPort(inPort);
                                         flow.matchEthertype(0x0800);
@@ -530,11 +531,10 @@ public class Topology {
                                     }
                                 } else {
                                     // Provision Provider (P) switches
-                                    System.out
-                                            .printf("flow rule on %s match %s, action to %s\n",
+                                	log.trace(String.format("flow rule on %s match %s, action to %s\n",
                                                     s.getId(),
                                                     dst.getPeMplsLabel(),
-                                                    edge.getSrcTpNr());
+                                                    edge.getSrcTpNr()));
                                     flow = new Flow(s.getId(), flowId);
                                     flow.inPort(inPort);
                                     flow.matchEthertype(0x8847);
@@ -565,13 +565,13 @@ public class Topology {
             vpns.add(vpn);
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.trace(e.getMessage());
         }
     }
 
     public List<CoCoLink> calculatePath(String fromSwitch, String toSwitch) {
         List<CoCoLink> path = new ArrayList<CoCoLink>();
-        System.out.printf("find path %s to %s\n", fromSwitch, toSwitch);
+        log.trace(String.format("find path %s to %s\n", fromSwitch, toSwitch));
         
         DefaultDirectedWeightedGraph<CoCoNode, CoCoLink> tempGraph = (DefaultDirectedWeightedGraph<CoCoNode, CoCoLink>) graph.clone();
         
@@ -594,7 +594,7 @@ public class Topology {
 
             path = DijkstraShortestPath.findPathBetween(tempGraph, src, dst);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.trace(e.getMessage());
         }
         return path;
     }

@@ -12,6 +12,8 @@ import java.util.Scanner;
 
 import javax.sql.DataSource;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -30,6 +32,7 @@ import net.geant.coco.agent.portal.service.NetworkSitesService;
 import net.geant.coco.agent.portal.service.NetworkSwitchesService;
 import net.geant.coco.agent.portal.service.VpnsService;
 
+@Slf4j
 @Component
 public class TestApp {
 	
@@ -44,7 +47,10 @@ public class TestApp {
 	    
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		System.out.print("Test");
+		log.info("Start test app");
+		
+		//System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "ERROR");
+
 		
 		BasicDataSource dataSource = new BasicDataSource();
 
@@ -92,10 +98,11 @@ public class TestApp {
 			e2.printStackTrace();
 		}
         
+        log.info("Creating Pce object...");
         //pce = new Pce(networkSwitches, networkSites);
         pce = new Pce(networkSwitches, networkSites, lastFlowNumber);
         //Topology topo = pce.getTopology();
-        
+        log.info("Pce object creataion done");
         //List<CoCoLink> pathList = topo.calculatePath("h1", "h5");
         //pathList = topo.calculatePath("h5", "h1");
         
@@ -103,8 +110,9 @@ public class TestApp {
 //        
 //        pathList = topo.calculatePath("h5", "h1");
         
+        log.info("Setting up core forwarding...");
         pce.setupCoreForwarding();
-        
+        log.info("Core forwarding done.");
         
         // real thing
         List<String> argumentList = new ArrayList<String>(Arrays.asList(args));
@@ -116,12 +124,11 @@ public class TestApp {
         
         List<String> siteNamesToAddToVpn = new ArrayList<String>();
         
-        System.out.println("Sites added to VPN:");
+        log.info("Sites added to VPN: ");
         for (String s: argumentList) {
         	siteNamesToAddToVpn.add(s);
-            System.out.println(s);
+        	log.info(s + " ");
         }
-       
         
         String vpnName = "vpn1";
         
@@ -129,10 +136,11 @@ public class TestApp {
 //        	doUpdateVpn(vpnName, "", site);
 //        }
         
-        
+        log.info("Adding sites to vpn...");
         for (String site : siteNamesToAddToVpn) {
         	doUpdateVpn(vpnName, site, "");
         }
+        log.info("Adding sites to vpn done.");
         
         System.out.println("Press any key...");
         try {
@@ -190,9 +198,9 @@ public class TestApp {
 	}
 	
 	public static void doUpdateVpn(String vpnName, String addSiteName, String deleteSiteName) {
-        System.out.println("doupdatevpn vpn: " + vpnName);
-        System.out.println("doupdatevpn add site: " + addSiteName);
-        System.out.println("doupdatevpn delete site: " + deleteSiteName);
+        //System.out.println("doupdatevpn vpn: " + vpnName);
+		log.info("doupdatevpn adding site: " + addSiteName);
+        //System.out.println("doupdatevpn delete site: " + deleteSiteName);
        
 
         if (!addSiteName.equals("")) {
@@ -201,7 +209,7 @@ public class TestApp {
             for (NetworkSite networkSite: networkSitesService.getNetworkSites()) {
                 if (networkSite.getName().equals(addSiteName)) {
                     Vpn vpn = vpnsService.getVpn(vpnName);
-                    System.out.println("MPLS label for " + vpnName + " is " + vpn.getMplsLabel());
+                    //System.out.println("MPLS label for " + vpnName + " is " + vpn.getMplsLabel());
                     pce.addSiteToVpn(networkSite, vpn.getMplsLabel(), networkSitesService.getNetworkSites(vpnName));
                 }
             }
@@ -213,7 +221,7 @@ public class TestApp {
             for (NetworkSite networkSite: networkSitesService.getNetworkSites()) {
                 if (networkSite.getName().equals(deleteSiteName)) {
                     Vpn vpn = vpnsService.getVpn(vpnName);
-                    System.out.println("MPLS label for " + vpnName + " is " + vpn.getMplsLabel());
+                    //System.out.println("MPLS label for " + vpnName + " is " + vpn.getMplsLabel());
                     pce.deleteSiteFromVpn(networkSite, vpn.getMplsLabel(), networkSitesService.getNetworkSites(vpnName));
                 }
             }

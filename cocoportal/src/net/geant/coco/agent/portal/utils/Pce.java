@@ -4,10 +4,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import lombok.extern.slf4j.Slf4j;
 import net.geant.coco.agent.portal.dao.NetworkSite;
 import net.geant.coco.agent.portal.dao.NetworkSwitch;
 import net.geant.coco.agent.portal.service.NetworkSitesService;
 
+@Slf4j
 public class Pce {
     private List<NetworkSwitch> networkSwitches;
     private List<NetworkSite> networkSites;
@@ -52,6 +54,7 @@ public class Pce {
         //Topology topology = new Topology(networkSites);
         int flowNr;
         for (NetworkSite toSite : networkSites) {
+        	log.info("Setting up core for site " + toSite.getName());
             for (NetworkSite fromSite : networkSites) {
                 // skip if 'from' and 'to' are the same site
                 if (fromSite.getName().equals(toSite.getName())) {
@@ -60,7 +63,7 @@ public class Pce {
                 List<CoCoLink> edgesList = topology.calculatePath(
                         fromSite.getName(), toSite.getName());
                 if (edgesList == null) {
-                    System.out.println("no path");
+                    log.trace("no path");
                     continue;
                 }
                 CoCoLink[] edges = edgesList.toArray(new CoCoLink[0]);
@@ -96,7 +99,7 @@ public class Pce {
                 continue;
             }
 
-            System.out.println("addSiteToVpn: " + toSite.getName());
+            log.trace("addSiteToVpn: " + toSite.getName());
 
             // check if both sites are on the same switch
             if (fromSite.getProviderSwitch().equals(toSite.getProviderSwitch())) {
@@ -255,7 +258,7 @@ public class Pce {
             List<NetworkSite> vpnSites) {
 
     	//Topology topology = new Topology(networkSites);
-        System.out.println("deleteSiteFromVpn: " + toSite.getName());
+        log.trace("deleteSiteFromVpn: " + toSite.getName());
         Set<String> flowIds = new HashSet<String>();
         flowIds.addAll(topology.getNode(toSite.getName()).getFlowIds());
         for (String id : flowIds) {

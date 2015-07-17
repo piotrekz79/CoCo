@@ -3,10 +3,13 @@
  */
 package net.geant.coco.agent.portal.utils;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author rvdp@surfnet.nl
  *
  */
+@Slf4j
 public class Flow {
     private String device = null;
     private int id = -1;
@@ -79,7 +82,7 @@ public class Flow {
     }
 
     public void pushPeMplsLabel(String peMplsLabel) {
-        System.out.println("PE MPLS label is " + peMplsLabel);
+    	log.trace("PE MPLS label is " + peMplsLabel);
         this.pushPeMplsLabel = peMplsLabel;
     }
 
@@ -88,7 +91,7 @@ public class Flow {
     }
 
     public void pushVpnMplsLabel(String vpnMplsLabel) {
-        System.out.println("VPN MPLS label is " + vpnMplsLabel);
+        log.trace("VPN MPLS label is " + vpnMplsLabel);
         this.pushVpnMplsLabel = vpnMplsLabel;
     }
     

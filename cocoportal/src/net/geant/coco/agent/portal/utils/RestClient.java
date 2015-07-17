@@ -5,6 +5,8 @@ import java.net.URI;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
+import lombok.extern.slf4j.Slf4j;
+
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -12,9 +14,10 @@ import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
+@Slf4j
 public class RestClient {
     private static int TIMEOUT = 3000;
-
+    
     public static void clearAll() {
         // Delete all flows on switches
         sendtoSwitch("openflow:1", "clear", null, null);
@@ -50,7 +53,7 @@ public class RestClient {
                 return out;
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+        	log.warn(e.getMessage());
         }
         return null;
     }
@@ -74,7 +77,7 @@ public class RestClient {
                 return out;
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.trace(e.getMessage());
         }
         return null;
     }
@@ -91,14 +94,14 @@ public class RestClient {
 
             if (command.equals("clear")) {
                 // Get inventory first. Needed to avoid error on DELETE???
-                System.out.println("inventory on switch " + switchID);
+                log.trace("inventory on switch " + switchID);
                 r = service.path("operational/opendaylight-inventory:nodes")
                         .type(javax.ws.rs.core.MediaType.APPLICATION_XML)
                         .accept(MediaType.APPLICATION_XML)
                         .get(ClientResponse.class);
 
                 // Delete all flows on switch
-                System.out.println("clear on switch " + switchID);
+                log.trace("clear on switch " + switchID);
                 String path = String.format(
                         "opendaylight-inventory:nodes/node/%s", switchID);
                 r = service.path("config").path(path)
@@ -106,25 +109,25 @@ public class RestClient {
                         .accept(MediaType.APPLICATION_XML)
                         .delete(ClientResponse.class);
             } else if (command.equals("add")) {
-                System.out.println("config on switch " + switchID);
+                log.trace("config on switch " + switchID);
 
                 String path = String
                         .format("config/opendaylight-inventory:nodes/node/%s/table/0/flow/",
                                 switchID);
-                //System.out.println(flow);
+                //log.trace(flow);
                 System.out.flush();
                 r = service.path(path).path(flowNr)
                         .type(javax.ws.rs.core.MediaType.APPLICATION_XML)
                         .accept(MediaType.APPLICATION_XML)
                         .put(ClientResponse.class, flow);
                 error = r.getEntity(String.class);
-                System.out.println(r.getStatus());
+                log.trace(Integer.toString(r.getStatus()));
             } else if (command.equals("delete")) {
 
                 String path = String
                         .format("config/opendaylight-inventory:nodes/node/%s",
                                 flow);
-                System.out.println(flow);
+                log.trace(flow);
                 System.out.flush();
                 r = service.path(path)
                         .type(javax.ws.rs.core.MediaType.APPLICATION_XML)
@@ -132,13 +135,13 @@ public class RestClient {
                         .delete(ClientResponse.class);
                 //service.header("X-HTTP-Method-Override", "DELETE");
                 error = r.getEntity(String.class);
-                System.out.println(r.getStatus());
+                log.trace(Integer.toString(r.getStatus()));
             } else {
                 error = "unknown command";
             }
-            System.out.println(error);
+            log.trace(error);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.trace(e.getMessage());
         }
     }
     
@@ -155,14 +158,14 @@ public class RestClient {
 
             if (command.equals("clear")) {
                 // Get inventory first. Needed to avoid error on DELETE???
-                System.out.println("inventory on switch " + switchID);
+                log.trace("inventory on switch " + switchID);
                 r = service.path("operational/opendaylight-inventory:nodes")
                         .type(javax.ws.rs.core.MediaType.APPLICATION_XML)
                         .accept(MediaType.APPLICATION_XML)
                         .get(ClientResponse.class);
 
                 // Delete all flows on switch
-                System.out.println("clear on switch " + switchID);
+                log.trace("clear on switch " + switchID);
                 String path = String.format(
                         "opendaylight-inventory:nodes/node/%s", switchID);
                 r = service.path("config").path(path)
@@ -170,25 +173,25 @@ public class RestClient {
                         .accept(MediaType.APPLICATION_XML)
                         .delete(ClientResponse.class);
             } else if (command.equals("add")) {
-                System.out.println("config on switch " + switchID);
+                log.trace("config on switch " + switchID);
 
                 String path = String
                         .format("config/opendaylight-inventory:nodes/node/%s/table/%s/flow/",
                                 switchID, tableId);
-                System.out.println(flow);
+                log.trace(flow);
                 System.out.flush();
                 r = service.path(path).path(flowNr)
                         .type(javax.ws.rs.core.MediaType.APPLICATION_XML)
                         .accept(MediaType.APPLICATION_XML)
                         .put(ClientResponse.class, flow);
                 error = r.getEntity(String.class);
-                System.out.println(r.getStatus());
+                log.trace(Integer.toString(r.getStatus()));
             } else if (command.equals("delete")) {
 
                 String path = String
                         .format("config/opendaylight-inventory:nodes/node/%s",
                                 flow);
-                System.out.println(flow);
+                log.trace(flow);
                 System.out.flush();
                 r = service.path(path)
                         .type(javax.ws.rs.core.MediaType.APPLICATION_XML)
@@ -196,13 +199,13 @@ public class RestClient {
                         .delete(ClientResponse.class);
                 //service.header("X-HTTP-Method-Override", "DELETE");
                 error = r.getEntity(String.class);
-                System.out.println(r.getStatus());
+                log.trace(Integer.toString(r.getStatus()));
             } else {
                 error = "unknown command";
             }
-            System.out.println(error);
+            log.trace(error);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.trace(e.getMessage());
         }
     }
 }
