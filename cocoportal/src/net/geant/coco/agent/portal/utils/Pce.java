@@ -149,9 +149,7 @@ public class Pce {
                         fromSite.getName(), toSite.getName());
                 CoCoLink[] edges = edgesList.toArray(new CoCoLink[0]);
 
-                System.out.println("set fwd entry on "
-                        + toSite.getProviderSwitch() + " PE switch of "
-                        + fromSite.getName() + " --> " + toSite.getName());
+                //System.out.println("set fwd entry on " + toSite.getProviderSwitch() + " PE switch of " + fromSite.getName() + " --> " + toSite.getName());
                 flowNr = getNextFlowId();
                 topology.getNode(toSite.getName()).addToFlowIds(
                         fromSite.getProviderSwitch() + "/table/0/flow/"
@@ -174,8 +172,7 @@ public class Pce {
                 RestClient.sendtoSwitch(fromSite.getProviderSwitch(), "add",
                         flowEntry.buildFlow(), String.valueOf(flowNr));
 
-                System.out.println("set ingress fwd entry on PE switch of "
-                        + toSite.getName() + " --> " + fromSite.getName());
+                //System.out.println("set ingress fwd entry on PE switch of " + toSite.getName() + " --> " + fromSite.getName());
                 flowNr = getNextFlowId();
                 topology.getNode(toSite.getName()).addToFlowIds(
                         toSite.getProviderSwitch() + "/table/0/flow/" + flowNr);
@@ -200,8 +197,7 @@ public class Pce {
                 
       
                 // Michal addition 2
-                System.out.println("second entry Michal on PE switch of "
-                        + toSite.getName() + " --> " + fromSite.getName());
+                //System.out.println("second entry Michal on PE switch of " + toSite.getName() + " --> " + fromSite.getName());
                 flowNr = getNextFlowId();
                 
                 topology.getNode(toSite.getName()).addToFlowIds(
@@ -230,8 +226,7 @@ public class Pce {
                 
       
                 // Michal addition 2 - other switch
-                System.out.println("second entry Michal on PE switch of "
-                        + toSite.getName() + " --> " + fromSite.getName());
+                //System.out.println("second entry Michal on PE switch of " + toSite.getName() + " --> " + fromSite.getName());
                 flowNr = getNextFlowId();
                 
                 topology.getNode(toSite.getName()).addToFlowIds(

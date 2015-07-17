@@ -111,7 +111,7 @@ public class RestClient {
                 String path = String
                         .format("config/opendaylight-inventory:nodes/node/%s/table/0/flow/",
                                 switchID);
-                System.out.println(flow);
+                //System.out.println(flow);
                 System.out.flush();
                 r = service.path(path).path(flowNr)
                         .type(javax.ws.rs.core.MediaType.APPLICATION_XML)
