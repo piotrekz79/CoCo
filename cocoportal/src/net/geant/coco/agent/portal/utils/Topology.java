@@ -120,8 +120,19 @@ public class Topology {
                     CoCoNode src = nodeMap.get(sourceNode);
                     CoCoNode dst = nodeMap.get(dstNode);
                     graph.addEdge(src, dst, e);
-                    graph.setEdgeWeight(graph.getEdge(src, dst), edgeWeight);
-                    edgeWeight = edgeWeight*2;
+                    
+                    CoCoLink oppositeEdge = graph.getEdge(dst, src);
+                    
+                    if (oppositeEdge != null) {
+                    	graph.setEdgeWeight(e, oppositeEdge.weight);
+                    	e.weight = oppositeEdge.weight;
+                    }
+                    else {
+                    	graph.setEdgeWeight(e, edgeWeight);
+                    	e.weight = edgeWeight;
+                        edgeWeight = edgeWeight*2;
+                    }
+                    
                     edges.add(e);
 
                     // update interface types of termination points in src and
@@ -189,11 +200,12 @@ public class Topology {
                 dst = nodeMap.get(s.getProviderSwitch());
                 graph.addVertex(src);
                 graph.addEdge(src, dst, srcdst);
-                graph.setEdgeWeight(graph.getEdge(src, dst), edgeWeight);
-                edgeWeight = edgeWeight*2;
+                graph.setEdgeWeight(srcdst, edgeWeight);
+                srcdst.weight = edgeWeight;
                 edges.add(srcdst);
                 graph.addEdge(dst, src, dstsrc);
-                graph.setEdgeWeight(graph.getEdge(src, dst), edgeWeight);
+                graph.setEdgeWeight(dstsrc, edgeWeight);
+                dstsrc.weight = edgeWeight;
                 edgeWeight = edgeWeight*2;
                 edges.add(dstsrc);
                 System.out.println("addsite: " + src.getId() + " to "

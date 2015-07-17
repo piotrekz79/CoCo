@@ -11,6 +11,7 @@ public class CoCoLink extends DefaultWeightedEdge {
 	private String dstNode;
 	private String dstTp;
 	private String dstTpNr;
+	public double weight;
 	
 	public CoCoLink(String id, String srcNode, String srcTp, String dstNode, String dstTp) {
 		this.id = id;
