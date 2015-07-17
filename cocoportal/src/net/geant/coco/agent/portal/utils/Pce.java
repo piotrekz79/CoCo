@@ -20,6 +20,10 @@ public class Pce {
 	// private Topology topology = new Topology(networkSites);
     private static int flowId = 1;
 
+    public int getFlowId() {
+    	return flowId;
+    }
+    
     private int getNextFlowId() {
         flowId++;
         return flowId;
@@ -27,6 +31,14 @@ public class Pce {
 
     public Pce(List<NetworkSwitch> networkSwitches,
             List<NetworkSite> networkSites) {
+        this.networkSwitches = networkSwitches;
+        this.networkSites = networkSites;
+        this.topology = new Topology(networkSites, networkSwitches);
+    }
+    
+    public Pce(List<NetworkSwitch> networkSwitches,
+            List<NetworkSite> networkSites, int lastFlowId) {
+    	this.flowId = lastFlowId;
         this.networkSwitches = networkSwitches;
         this.networkSites = networkSites;
         this.topology = new Topology(networkSites, networkSwitches);

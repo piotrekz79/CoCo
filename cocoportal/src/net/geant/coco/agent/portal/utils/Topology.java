@@ -121,7 +121,7 @@ public class Topology {
                     CoCoNode dst = nodeMap.get(dstNode);
                     graph.addEdge(src, dst, e);
                     graph.setEdgeWeight(graph.getEdge(src, dst), edgeWeight);
-                    edgeWeight = edgeWeight+1;
+                    edgeWeight = edgeWeight*2;
                     edges.add(e);
 
                     // update interface types of termination points in src and

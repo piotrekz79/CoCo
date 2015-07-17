@@ -1,9 +1,14 @@
 package net.geant.coco.agent.portal.utils;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 import javax.sql.DataSource;
 
@@ -34,7 +39,8 @@ public class TestApp {
     private static VpnsService vpnsService;
     private static Pce pce;
 	private static long testTime;
-	    
+	
+	private static final String lastFlowFilename = "lastFlowNumber.txt";
 	    
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -76,8 +82,18 @@ public class TestApp {
         List<NetworkSite> networkSites = networkSitesService.getNetworkSites();
         List<Vpn> vpns = vpnsService.getVpns();
 
-        pce = new Pce(networkSwitches, networkSites);
         
+        int lastFlowNumber = 1;
+        try {
+			Scanner in = new Scanner(new FileReader(lastFlowFilename));
+			lastFlowNumber = in.nextInt();
+		} catch (FileNotFoundException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+        
+        //pce = new Pce(networkSwitches, networkSites);
+        pce = new Pce(networkSwitches, networkSites, lastFlowNumber);
         //Topology topo = pce.getTopology();
         
         //List<CoCoLink> pathList = topo.calculatePath("h1", "h5");
@@ -136,6 +152,21 @@ public class TestApp {
         for (String site : siteNamesToAddToVpn) {
         	doUpdateVpn(vpnName, "", site);
         }
+        
+        
+		try {
+			PrintWriter writer = new PrintWriter(lastFlowFilename, "UTF-8");
+	        writer.println(Integer.toString(pce.getFlowId()));
+	        writer.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+        
         
         // test setup
         
