@@ -15,6 +15,7 @@ import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.dbcp.BasicDataSource;
+import org.jgrapht.Graph;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
@@ -57,7 +58,7 @@ public class TestApp {
 		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
 		dataSource.setUsername("coco");
 		dataSource.setPassword("cocorules!");
-		dataSource.setUrl("jdbc:mysql://127.0.0.1:3306/CoCoDB");
+		dataSource.setUrl("jdbc:mysql://134.221.121.203:3306/CoCoDB");
 		dataSource.setMaxActive(10);
 		dataSource.setMaxIdle(5);
 		dataSource.setInitialSize(5);
@@ -97,6 +98,10 @@ public class TestApp {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
+        
+        Topology topology = new Topology(networkSites, networkSwitches);
+        topology.printGraph();
+        Graph graph = topology.getGraph();
         
         log.info("Creating Pce object...");
         //pce = new Pce(networkSwitches, networkSites);

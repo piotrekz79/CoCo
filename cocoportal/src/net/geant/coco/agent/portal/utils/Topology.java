@@ -18,6 +18,7 @@ import net.geant.coco.agent.portal.service.NetworkSitesService;
 import net.geant.coco.agent.portal.service.NetworkSwitchesService;
 
 import org.jgrapht.DirectedGraph;
+import org.jgrapht.Graph;
 import org.jgrapht.alg.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
@@ -413,6 +414,10 @@ public class Topology {
             }
             System.out.println();
         }
+    }
+    
+    public Graph<CoCoNode, CoCoLink> getGraph() {
+    	return graph;
     }
 
     public Set<String> getUniPorts() {

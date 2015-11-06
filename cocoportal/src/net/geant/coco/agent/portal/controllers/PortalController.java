@@ -1,5 +1,6 @@
 package net.geant.coco.agent.portal.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -21,6 +22,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -232,4 +234,28 @@ public class PortalController {
         
         return "updatevpn";
     }
+    
+    
+    @RequestMapping(value="student", headers="Accept=*/*", method=RequestMethod.GET)  
+    public @ResponseBody  
+    Student getStudent() {  
+     return new Student(23, "meghna", "Naidu", "meghna@gmail.com",  
+       "8978767878");  
+    }  
+     
+    @RequestMapping(value="studentlist", headers="Accept=*/*", method=RequestMethod.GET)  
+    public @ResponseBody  
+    List<Student> getStudentList() {  
+     List<Student> studentList = new ArrayList<Student>();  
+     studentList.add(new Student(23, "Meghna", "Naidu", "meghna@gmail.com",  
+       "8978767878"));  
+     studentList.add(new Student(3, "Robert", "Parera", "robert@gmail.com",  
+       "8978767878"));  
+     studentList.add(new Student(93, "Andrew", "Strauss",  
+       "andrew@gmail.com", "8978767878"));  
+     studentList.add(new Student(239, "Eddy", "Knight", "knight@gmail.com",  
+       "7978767878"));  
+     
+     return studentList;  
+    }  
 }
