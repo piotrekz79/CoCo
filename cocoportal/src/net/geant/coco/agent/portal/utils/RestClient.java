@@ -25,10 +25,12 @@ public class RestClient {
         sendtoSwitch("openflow:3", "clear", null, null);
         sendtoSwitch("openflow:4", "clear", null, null);
     }
-
+    
     private static URI getBaseURI() {
         // return UriBuilder.fromUri("http://192.168.56.125:8181/restconf")
-        return UriBuilder.fromUri("http://192.168.255.59:8181/restconf")
+        //return UriBuilder.fromUri("http://192.168.255.59:8181/restconf")
+                //.build();
+        return UriBuilder.fromUri("http://134.221.121.203:8181/restconf")
                 .build();
     }
 

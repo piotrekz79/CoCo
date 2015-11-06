@@ -11,6 +11,10 @@
 	rel="stylesheet" type="text/css" />
 <link href="${pageContext.request.contextPath}/static/css/coco.css"
 	rel="stylesheet" type="text/css" />
+	
+	<script src="${pageContext.request.contextPath}/static/vis/dist/vis.js"></script>
+  	<link href="${pageContext.request.contextPath}/static/vis/dist/vis.css" rel="stylesheet" type="text/css" />
+  
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>Insert title here</title>
 </head>
@@ -63,6 +67,37 @@
 			</div>
 		</div>
 	</div>
+
+
+<div id="visualization"></div>
+
+<script type="text/javascript">
+  var container = document.getElementById('visualization');
+
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    {id: 1, label: 'Node 1'},
+    {id: 2, label: 'Node 2'},
+    {id: 3, label: 'Node 3'},
+    {id: 4, label: 'Node 4'},
+    {id: 5, label: 'Node 5'}
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    {from: 1, to: 3},
+    {from: 1, to: 2},
+    {from: 2, to: 4},
+    {from: 2, to: 5}
+  ]);
+
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
 
 	<canvas id="canvas" width="870px" height="924px"></canvas>
 
@@ -124,6 +159,5 @@
 			</c:forEach>
 		}
 	</script>
-
 </body>
 </html>
