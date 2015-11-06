@@ -68,7 +68,7 @@
 		</div>
 	</div>
 
-
+<!-- 
 <div id="visualization"></div>
 
 <script type="text/javascript">
@@ -97,7 +97,7 @@
   };
   var options = {};
   var network = new vis.Network(container, data, options);
-</script>
+</script> -->
 
 	<canvas id="canvas" width="870px" height="924px"></canvas>
 

@@ -22,6 +22,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Controller
 public class PortalController {
 
@@ -54,7 +57,7 @@ public class PortalController {
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public String showTest(Model model, @RequestParam("id") String id) {
-        System.out.println("Id is: " + id);
+        log.info("Id is: " + id);
         return "portal";
     }
 
@@ -103,7 +106,7 @@ public class PortalController {
         List<NetworkSite> freeSites = networkSitesService
                 .getNetworkSites("all");
 
-        System.out.println("vpns: " + vpnName);
+        log.info("vpns: " + vpnName);
         model.addAttribute("vpns", vpns);
         model.addAttribute("vpnname", vpnName);
         model.addAttribute("sites", networkSites);
@@ -130,10 +133,12 @@ public class PortalController {
                 .getNetworkSwitches();
         List<NetworkLink> networkLinks = networkLinksService.getNetworkLinks();
 
-        System.out.println("updatevpn vpn: " + vpnName);
-        System.out.println("updatevpn add site: " + addSiteName);
-        System.out.println("updatevpn delete site: " + deleteSiteName);
+        log.info("updatevpn vpn: " + vpnName);
+        log.info("updatevpn add site: " + addSiteName);
+        log.info("updatevpn delete site: " + deleteSiteName);
         
+        List<NetworkSwitch> networkSwitchesWithNni = networkSwitchesService.getNetworkSwitchesWithNni();
+
         //System.out.println(networkSitesService.getNetworkSite("site1"));
         
         //pce.addSiteToVpn(foo, vpnSites);
@@ -144,7 +149,8 @@ public class PortalController {
         model.addAttribute("vpnname", vpnName);
         model.addAttribute("vpns", vpns);
         model.addAttribute("vpnname", vpnName);
-
+        model.addAttribute("ext_switches", networkSwitchesWithNni);
+        
         if (!addSiteName.equals("")) {
 
         }
@@ -179,9 +185,9 @@ public class PortalController {
                 .getNetworkSwitches();
         List<NetworkLink> networkLinks = networkLinksService.getNetworkLinks();
 
-        System.out.println("doupdatevpn vpn: " + vpnName);
-        System.out.println("doupdatevpn add site: " + addSiteName);
-        System.out.println("doupdatevpn delete site: " + deleteSiteName);
+        log.info("doupdatevpn vpn: " + vpnName);
+        log.info("doupdatevpn add site: " + addSiteName);
+        log.info("doupdatevpn delete site: " + deleteSiteName);
         model.addAttribute("switches", networkSwitches);
         model.addAttribute("links", networkLinks);
         model.addAttribute("vpnname", vpnName);
@@ -200,7 +206,7 @@ public class PortalController {
             for (NetworkSite networkSite: networkSitesService.getNetworkSites()) {
                 if (networkSite.getName().equals(addSiteName)) {
                     Vpn vpn = vpnsService.getVpn(vpnName);
-                    System.out.println("MPLS label for " + vpnName + " is " + vpn.getMplsLabel());
+                    log.info("MPLS label for " + vpnName + " is " + vpn.getMplsLabel());
                     pce.addSiteToVpn(networkSite, vpn.getMplsLabel(), networkSitesService.getNetworkSites(vpnName));
                 }
             }
@@ -212,7 +218,7 @@ public class PortalController {
             for (NetworkSite networkSite: networkSitesService.getNetworkSites()) {
                 if (networkSite.getName().equals(deleteSiteName)) {
                     Vpn vpn = vpnsService.getVpn(vpnName);
-                    System.out.println("MPLS label for " + vpnName + " is " + vpn.getMplsLabel());
+                    log.info("MPLS label for " + vpnName + " is " + vpn.getMplsLabel());
                     pce.deleteSiteFromVpn(networkSite, vpn.getMplsLabel(), networkSitesService.getNetworkSites(vpnName));
                 }
             }
