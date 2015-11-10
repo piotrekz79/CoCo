@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import net.geant.coco.agent.portal.dao.NetworkInterface;
 import net.geant.coco.agent.portal.dao.NetworkLink;
 import net.geant.coco.agent.portal.dao.NetworkSite;
 import net.geant.coco.agent.portal.dao.NetworkSwitch;
@@ -12,6 +13,7 @@ import net.geant.coco.agent.portal.dao.Vpn;
 import net.geant.coco.agent.portal.service.NetworkLinksService;
 import net.geant.coco.agent.portal.service.NetworkSitesService;
 import net.geant.coco.agent.portal.service.NetworkSwitchesService;
+import net.geant.coco.agent.portal.service.TopologyService;
 import net.geant.coco.agent.portal.service.VpnsService;
 import net.geant.coco.agent.portal.utils.Pce;
 
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,6 +37,7 @@ public class PortalController {
     private NetworkLinksService networkLinksService;
     private NetworkSitesService networkSitesService;
     private VpnsService vpnsService;
+    private TopologyService topologyService;
     private Pce pce;
 
     @Autowired
@@ -55,6 +59,11 @@ public class PortalController {
     @Autowired
     public void setVpnsService(VpnsService vpnsService) {
         this.vpnsService = vpnsService;
+    }
+    
+    @Autowired
+    public void setTopologyService(TopologyService topologyService) {
+        this.topologyService = topologyService;
     }
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
@@ -236,14 +245,21 @@ public class PortalController {
     }
     
     
-    @RequestMapping(value="student", headers="Accept=*/*", method=RequestMethod.GET)  
+    
+    @RequestMapping(value="topology", method=RequestMethod.GET)  
+    public @ResponseBody  
+    List<NetworkInterface> getTopology() {  
+     return topologyService.getNetworkInterfaces();
+    } 
+    
+    @RequestMapping(value="student", method=RequestMethod.GET)  
     public @ResponseBody  
     Student getStudent() {  
      return new Student(23, "meghna", "Naidu", "meghna@gmail.com",  
        "8978767878");  
     }  
      
-    @RequestMapping(value="studentlist", headers="Accept=*/*", method=RequestMethod.GET)  
+    @RequestMapping(value="studentlist", method=RequestMethod.GET)  
     public @ResponseBody  
     List<Student> getStudentList() {  
      List<Student> studentList = new ArrayList<Student>();  
@@ -257,5 +273,17 @@ public class PortalController {
        "7978767878"));  
      
      return studentList;  
-    }  
+    }
+    
+    @RequestMapping(value = "{name}", method = RequestMethod.GET)
+	public @ResponseBody
+	Shop getShopInJSON(@PathVariable String name) {
+
+		Shop shop = new Shop();
+		shop.setName(name);
+		shop.setStaffName(new String[] { "mkyong1", "mkyong2" });
+
+		return shop;
+
+	}
 }

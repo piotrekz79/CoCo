@@ -10,13 +10,13 @@ import javax.validation.constraints.Size;
  * @author rvdp
  *
  */
-public class NetworkSwitch {
+public class NetworkSwitch extends NetworkElement {
     public NetworkSwitch() {
         
     }
     
-    public NetworkSwitch(String name, int x, int y) {
-        super();
+    public NetworkSwitch(int id, String name, int x, int y) {
+        super(id, name, NODE_TYPE.SWITCH);
         this.name = name;
         this.x = x;
         this.y = y;

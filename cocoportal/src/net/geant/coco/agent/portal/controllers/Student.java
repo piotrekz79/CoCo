@@ -1,11 +1,11 @@
 package net.geant.coco.agent.portal.controllers;
 
 public class Student {  
-	 private int id;  
-	 private String firstName;  
-	 private String lastName;  
-	 private String email;  
-	 private String phone;  
+	 public int id;  
+	 public String firstName;  
+	 public String lastName;  
+	 public String email;  
+	 public String phone;  
 	  
 	 protected Student() {  
 	 }  
