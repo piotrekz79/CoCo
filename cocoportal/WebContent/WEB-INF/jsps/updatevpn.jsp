@@ -42,12 +42,6 @@
 			<br>
 		</c:forEach>
 		
-<%--   		<h3>External switches:</h3>
-		<c:forEach var="switch" items="${ext_switches}">
-			<c:out value="${switch.name}"></c:out>
-			<button name="addswitch" value="<c:out value="${switch.name}"></c:out>">add</button>
-			<br>
-		</c:forEach>  --%>
 		
 		<h3>External switches:</h3>
 		<c:forEach var="sw" items="${ext_switches}">

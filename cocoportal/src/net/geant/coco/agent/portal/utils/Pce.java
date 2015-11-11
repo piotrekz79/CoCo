@@ -71,7 +71,7 @@ public class Pce {
                     String switchName = edges[i - 1].getDstNode();
                     // check if this is a core P node
                     if (topology.getNode(switchName).getType() == NodeType.P) {
-                        //System.out.println("P node config on " + switchName + ": " + edges[i - 1].getDstTp() + " -> " + edges[i].getSrcTp());
+                        log.trace("P node config on " + switchName + ": " + edges[i - 1].getDstTp() + " -> " + edges[i].getSrcTp());
                         flowNr = getNextFlowId();
                         Flow entry = new Flow(switchName, flowNr);
                         entry.inPort(edges[i - 1].getDstTpNr());

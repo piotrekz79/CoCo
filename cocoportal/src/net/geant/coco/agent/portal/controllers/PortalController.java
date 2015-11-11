@@ -1,10 +1,13 @@
 package net.geant.coco.agent.portal.controllers;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.validation.Valid;
 
+import net.geant.coco.agent.portal.dao.NetworkElement;
 import net.geant.coco.agent.portal.dao.NetworkInterface;
 import net.geant.coco.agent.portal.dao.NetworkLink;
 import net.geant.coco.agent.portal.dao.NetworkSite;
@@ -132,6 +135,7 @@ public class PortalController {
             @RequestParam(value = "addsite", defaultValue = "") String addSiteName,
             @RequestParam(value = "showvpn", defaultValue = "") String showVpn,
             @RequestParam(value = "newvpn", defaultValue = "") String newVpn,
+            @RequestParam(value = "addswitch", defaultValue = "") String addSwitch,
             @RequestParam(value = "done", defaultValue = "") String done,
             Model model) {
         List<Vpn> vpns = vpnsService.getVpns();
@@ -186,6 +190,7 @@ public class PortalController {
             @RequestParam(value = "addsite", defaultValue = "") String addSiteName,
             @RequestParam(value = "showvpn", defaultValue = "") String showVpn,
             @RequestParam(value = "newvpn", defaultValue = "") String newVpn,
+            @RequestParam(value = "addswitch", defaultValue = "") String addSwitch,
             @RequestParam(value = "done", defaultValue = "") String done,
             Model model) {
 
@@ -250,6 +255,52 @@ public class PortalController {
     public @ResponseBody  
     List<NetworkInterface> getTopology() {  
      return topologyService.getNetworkInterfaces();
+    }
+    
+    @RequestMapping(value="topology/vis", method=RequestMethod.GET)  
+    public @ResponseBody  
+    String getTopologyVis() {
+    	StringBuilder visJson = new StringBuilder();
+    	
+    	Set<NetworkElement> nodeSet = new HashSet<NetworkElement>();
+    	
+    	List<NetworkInterface> networkInterfaces = topologyService.getNetworkInterfaces();
+    	
+    	for (NetworkInterface networkInterface : networkInterfaces) {
+    		if (!nodeSet.contains(networkInterface.source)) {
+    			nodeSet.add(networkInterface.source);
+    		}
+    		
+    		if (!nodeSet.contains(networkInterface.neighbour)) {
+    			nodeSet.add(networkInterface.neighbour);
+    		}
+		}
+    	visJson.append("{\"nodes\" : [ ");
+    	for (NetworkElement networkElement : nodeSet) {
+			visJson.append("{\"id\": \"");
+			visJson.append(networkElement.name);
+			visJson.append("\", \"label\": \"");
+			visJson.append(networkElement.name);
+			visJson.append("\", \"group\": \"");
+			visJson.append(networkElement.nodeType);
+			visJson.append("\"}, ");
+		}
+
+    	visJson.deleteCharAt(visJson.lastIndexOf(","));
+    	visJson.append("],");
+    	visJson.append("\"edges\" : [");
+    	
+    	for (NetworkInterface networkInterface : networkInterfaces) {
+    		visJson.append("{\"from\": \"");
+    		visJson.append(networkInterface.source.name);
+    		visJson.append("\", \"to\": \"");
+    		visJson.append(networkInterface.neighbour.name);
+    		visJson.append("\"}, ");
+		}
+    	visJson.deleteCharAt(visJson.lastIndexOf(","));
+    	visJson.append("]}");
+    	
+    	return visJson.toString();
     } 
     
     @RequestMapping(value="student", method=RequestMethod.GET)  
