@@ -476,22 +476,36 @@ function connect_sites()
 	
 	
 	var vpn = {};
-	vpn["vpn"] = currentVPN;
+	vpn["id"] = parseInt(currentVPN);
+	vpn["name"] = currentVPN;
 	vpn["sites"] = sitelist;
 	
 	console.log(vpn);
 	
 	console.log(JSON.stringify(vpn));
 	
-	/* MICHAL CHANGE THIS !
-	$.post('./json/connect', vpn, function(response) {
+	/* MICHAL CHANGE THIS ! */
+	$.postJSON('../rest/vpn/create', vpn, function(response) {
 		// Do something with the request
 		console.log(response);
 	}, 'json');
-	*/
 	
 	populate_sitelist(currentVPN);
 }
+
+$.postJSON = function(url, data, callback) {
+    return jQuery.ajax({
+    headers: { 
+        'Accept': 'application/json',
+        'Content-Type': 'application/json' 
+    },
+    'type': 'POST',
+    'url': url,
+    'data': JSON.stringify(data),
+    'dataType': 'json',
+    'success': callback
+    });
+};
 
 function disconnect_sites()
 {

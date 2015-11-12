@@ -19,6 +19,7 @@ import net.geant.coco.agent.portal.dao.Vpn;
 import net.geant.coco.agent.portal.rest.RestVpnURIConstants;
 import net.geant.coco.agent.portal.rest.Shop;
 import net.geant.coco.agent.portal.rest.Student;
+import net.geant.coco.agent.portal.rest.RestSite;
 import net.geant.coco.agent.portal.rest.RestVpn;
 import net.geant.coco.agent.portal.service.NetworkLinksService;
 import net.geant.coco.agent.portal.service.NetworkSitesService;
@@ -111,32 +112,34 @@ public class PortalController {
 
     }
 
-    public void setUpPce(List<NetworkSwitch> networkSwitches, List<NetworkSite> networkSites, List<NetworkSwitch> networkSwitchesWithEnni) {
+	public void setUpPce(List<NetworkSwitch> networkSwitches, List<NetworkSite> networkSites,
+			List<NetworkSwitch> networkSwitchesWithEnni) {
 
-        class SetupThread implements Runnable {
+		class SetupThread implements Runnable {
 
-        	List<NetworkSwitch> networkSwitches;
-        	List<NetworkSite> networkSites;
-        	List<NetworkSwitch> networkSwitchesWithEnni;
-        	
-        	   public SetupThread(List<NetworkSwitch> networkSwitches, List<NetworkSite> networkSites, List<NetworkSwitch> networkSwitchesWithEnni) {
-        	       this.networkSwitches = networkSwitches;
-        	       this.networkSites = networkSites;
-        	       this.networkSwitchesWithEnni = networkSwitchesWithEnni;
-        	   }
+			List<NetworkSwitch> networkSwitches;
+			List<NetworkSite> networkSites;
+			List<NetworkSwitch> networkSwitchesWithEnni;
 
-        	   public void run() {
-        	    	pce = new Pce(networkSwitches, networkSites, networkSwitchesWithEnni);
-        	        pce.setupCoreForwarding();
-        	   }
-        	}
-        
-        Runnable setupThreadRunnable = new SetupThread(networkSwitches, networkSites, networkSwitchesWithEnni);
-        log.debug("Starting core provisioning thread");
-        new Thread(setupThreadRunnable).start();
-        log.debug("Started core provisioning thread");
-    }
-    
+			public SetupThread(List<NetworkSwitch> networkSwitches, List<NetworkSite> networkSites,
+					List<NetworkSwitch> networkSwitchesWithEnni) {
+				this.networkSwitches = networkSwitches;
+				this.networkSites = networkSites;
+				this.networkSwitchesWithEnni = networkSwitchesWithEnni;
+			}
+
+			public void run() {
+				pce = new Pce(networkSwitches, networkSites, networkSwitchesWithEnni);
+				pce.setupCoreForwarding();
+			}
+		}
+
+		Runnable setupThreadRunnable = new SetupThread(networkSwitches, networkSites, networkSwitchesWithEnni);
+		log.debug("Starting core provisioning thread");
+		new Thread(setupThreadRunnable).start();
+		log.debug("Started core provisioning thread");
+	}
+
     @RequestMapping("/addsite")
     public String addSite(Model model) {
 
@@ -274,8 +277,7 @@ public class PortalController {
         }
 
         networkSites = networkSitesService.getNetworkSites(vpnName);
-        List<NetworkSite> freeSites = networkSitesService
-                .getNetworkSites("all");
+        List<NetworkSite> freeSites = networkSitesService.getNetworkSites("all");
         model.addAttribute("sites", networkSites);
         model.addAttribute("freesites", freeSites);
         
@@ -407,43 +409,35 @@ public class PortalController {
     }
      
     @RequestMapping(value = RestVpnURIConstants.GET_ALL_VPN, method = RequestMethod.GET)
-    public @ResponseBody List<Vpn> getAllVpns() {
+    public @ResponseBody List<RestVpn> getAllVpns() {
         log.info("Start getAllVpns.");
-        
-        /*
-        List<vpns> this.vpnsService.getVpns();
-        
-        List<RestVpn> vpns = new ArrayList<RestVpn>();
-        Set<Integer> vpnIdKeys = vpnData.keySet();
-        for(Integer i : vpnIdKeys){
-            vpns.add(vpnData.get(i));
-        }
-        */
-        return vpnsService.getVpns();
+
+        List<Vpn> vpnsFromDao = vpnsService.getVpns();
+
+        // TODO - this is from database, synch with state in vpnData
+        // where should I get the data from?
+		for (Vpn vpnFromDao : vpnsFromDao) {
+			List<NetworkSite> networkSites = networkSitesService.getNetworkSites(vpnFromDao.getName());
+			RestVpn restVpn = new RestVpn(vpnFromDao);
+			restVpn.setSites(siteToRest(networkSites));
+			vpnData.put(restVpn.getId(), restVpn);
+		}
+
+        return new ArrayList<RestVpn>(vpnData.values());
     }
     
     @RequestMapping(value = RestVpnURIConstants.GET_ALL_SITES, method = RequestMethod.GET)
     public @ResponseBody List<NetworkSite> getAllSites(@PathVariable("id") int vpnID) {
         log.info("Start getall sites.");
-        
-        /*
-        List<vpns> this.vpnsService.getVpns();
-        
-        List<RestVpn> vpns = new ArrayList<RestVpn>();
-        Set<Integer> vpnIdKeys = vpnData.keySet();
-        for(Integer i : vpnIdKeys){
-            vpns.add(vpnData.get(i));
-        }
-        */
+
         Vpn vpn = vpnsService.getVpn(vpnID);
-        
         return networkSitesService.getNetworkSites(vpn.getName());
     }
      
     @RequestMapping(value = RestVpnURIConstants.CREATE_VPN, method = RequestMethod.POST)
     public @ResponseBody RestVpn createVpn(@RequestBody RestVpn vpn) {
     	log.info("Start createVpn.");
-        //emp.setCreatedDate(new Date());
+    
         vpnData.put(vpn.getId(), vpn);
         return vpn;
     }
@@ -454,5 +448,54 @@ public class PortalController {
         RestVpn vpn = vpnData.get(vpnId);
         vpnData.remove(vpnId);
         return vpn;
+    }
+    
+    private List<RestVpn> vpnToRest(List<Vpn> vpns) {
+    	List<RestVpn> restVpns = new ArrayList<RestVpn>();
+    	
+    	for (Vpn vpn : vpns) {
+    		restVpns.add(new RestVpn(vpn));
+		}
+    	
+    	return restVpns;
+    }
+    
+    private List<RestSite> siteToRest(List<NetworkSite> sites) {
+    	List<RestSite> restSites = new ArrayList<RestSite>();
+    	
+    	for (NetworkSite site : sites) {
+    		restSites.add(new RestSite(site));
+		}
+    	
+    	return restSites;
+    }
+    
+    private void configureVpn(RestVpn vpn) {
+    	
+    	/*
+    	for
+    	if (!addSiteName.equals("")) {
+            vpnsService.addSite(vpnName, addSiteName);
+            // find site object
+            for (NetworkSite networkSite: networkSitesService.getNetworkSites()) {
+                if (networkSite.getName().equals(addSiteName)) {
+                    Vpn vpn = vpnsService.getVpn(vpnName);
+                    log.info("MPLS label for " + vpnName + " is " + vpn.getMplsLabel());
+                    pce.addSiteToVpn(networkSite, vpn.getMplsLabel(), networkSitesService.getNetworkSites(vpnName));
+                }
+            }
+        }
+
+        if (!deleteSiteName.equals("")) {
+            vpnsService.deleteSite(deleteSiteName);
+         // find site object
+            for (NetworkSite networkSite: networkSitesService.getNetworkSites()) {
+                if (networkSite.getName().equals(deleteSiteName)) {
+                    Vpn vpn = vpnsService.getVpn(vpnName);
+                    log.info("MPLS label for " + vpnName + " is " + vpn.getMplsLabel());
+                    pce.deleteSiteFromVpn(networkSite, vpn.getMplsLabel(), networkSitesService.getNetworkSites(vpnName));
+                }
+            }
+        }*/
     }
 }
