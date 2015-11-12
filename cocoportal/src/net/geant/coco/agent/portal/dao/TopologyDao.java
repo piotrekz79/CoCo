@@ -56,11 +56,12 @@ public class TopologyDao {
         String query = ""
         		+ "select switches.id, switches.name, switches_to.id AS id_to, switches_to.name AS name_to from switches "
         		+ "INNER JOIN links ON switches.id=links.from "
-        		+ "INNER JOIN switches AS switches_to ON links.to=switches_to.id "
+        		+ "INNER JOIN switches AS switches_to ON links.to=switches_to.id ";
+        		/*
         		+ "UNION "
         		+ "select switches.id, switches.name, switches_to.id AS id_to, switches_to.name AS name_to from switches "
         		+ "INNER JOIN links ON switches.id=links.to "
-        		+ "INNER JOIN switches AS switches_to ON links.from=switches_to.id;";
+        		+ "INNER JOIN switches AS switches_to ON links.from=switches_to.id;";*/
 
      
         

@@ -21,6 +21,8 @@ import net.geant.coco.agent.portal.service.VpnsService;
 import net.geant.coco.agent.portal.utils.Pce;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -85,25 +87,48 @@ public class PortalController {
 
         // offersService.throwTestException();
 
-        List<NetworkSwitch> networkSwitches = networkSwitchesService
-                .getNetworkSwitches();
+        List<NetworkSwitch> networkSwitches = networkSwitchesService.getNetworkSwitches();
+        List<NetworkSwitch> networkSwitchesWithEnni = networkSwitchesService.getNetworkSwitchesWithNni();
         List<NetworkLink> networkLinks = networkLinksService.getNetworkLinks();
         List<NetworkSite> networkSites = networkSitesService.getNetworkSites();
         List<Vpn> vpns = vpnsService.getVpns();
-
-        pce = new Pce(networkSwitches, networkSites);
-        pce.setupCoreForwarding();
-        
-        // model.addAttribute("switchNodes", switchNodes);
-        // return "switchNodes";
 
         model.addAttribute("switches", networkSwitches);
         model.addAttribute("links", networkLinks);
         model.addAttribute("sites", networkSites);
         model.addAttribute("vpns", vpns);
+        
+        setUpPce(networkSwitches, networkSites, networkSwitchesWithEnni);
         return "portal";
+
     }
 
+    public void setUpPce(List<NetworkSwitch> networkSwitches, List<NetworkSite> networkSites, List<NetworkSwitch> networkSwitchesWithEnni) {
+
+        class SetupThread implements Runnable {
+
+        	List<NetworkSwitch> networkSwitches;
+        	List<NetworkSite> networkSites;
+        	List<NetworkSwitch> networkSwitchesWithEnni;
+        	
+        	   public SetupThread(List<NetworkSwitch> networkSwitches, List<NetworkSite> networkSites, List<NetworkSwitch> networkSwitchesWithEnni) {
+        	       this.networkSwitches = networkSwitches;
+        	       this.networkSites = networkSites;
+        	       this.networkSwitchesWithEnni = networkSwitchesWithEnni;
+        	   }
+
+        	   public void run() {
+        	    	pce = new Pce(networkSwitches, networkSites, networkSwitchesWithEnni);
+        	        pce.setupCoreForwarding();
+        	   }
+        	}
+        
+        Runnable setupThreadRunnable = new SetupThread(networkSwitches, networkSites, networkSwitchesWithEnni);
+        log.debug("Starting core provisioning thread");
+        new Thread(setupThreadRunnable).start();
+        log.debug("Started core provisioning thread");
+    }
+    
     @RequestMapping("/addsite")
     public String addSite(Model model) {
 

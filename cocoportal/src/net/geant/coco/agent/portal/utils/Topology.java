@@ -584,7 +584,7 @@ public class Topology {
             CoCoNode src = nodeMap.get(fromSwitch);
             CoCoNode dst = nodeMap.get(toSwitch);
 
-           	for (CoCoNode node : listOfEndNodes) {
+           	/*for (CoCoNode node : listOfEndNodes) {
            		if (!node.getId().equalsIgnoreCase(fromSwitch) && !node.getId().equalsIgnoreCase(toSwitch)) {
            			tempGraph.removeVertex(node);
            		}
@@ -595,7 +595,7 @@ public class Topology {
            		if (!src.getPeSwitch().equals(node.getId()) && !dst.getPeSwitch().equals(node.getId())) {
            			tempGraph.removeVertex(node);
            		}
-           	}
+           	}*/
 
             path = DijkstraShortestPath.findPathBetween(tempGraph, src, dst);
         } catch (Exception e) {
