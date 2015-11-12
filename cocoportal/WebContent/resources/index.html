@@ -230,8 +230,8 @@ var currentVPN = -1;
 populate_vpnlist();
 
 function populate_vpnlist(){
-	$.getJSON("./json/getVpns", function(data) {
-		var vpns = data["vpns"];
+	$.getJSON("../rest/vpns", function(data) {
+		var vpns = data;
 		var i;
 		for ( i =0; i < vpns.length; i++)
 		{
@@ -241,7 +241,7 @@ function populate_vpnlist(){
 			
 			
 			$("#vpn-list").append(
-				'<li id="vpn-' + vpn.id + '" href="#" class="list-group-item" onclick="vpn_list_on_click();">' + vpn.name +
+				'<li id="vpn-' + vpn.id + '" href="#" class="list-group-item" onclick="vpn_list_on_click(\'' + vpn.id + '\');">' + vpn.name +
 				'<div class="text-right">' +
 				'	<input type="checkbox" name="' + 'vpn-checkbox-' + vpn.id + '" data-off-text="Private" data-on-text="Public" ' + checked + '>' +
 				'</div>' + 
@@ -276,12 +276,13 @@ function populate_vpnlist(){
 add_list_on_click();
 
 
-function vpn_list_on_click(){
+function vpn_list_on_click(id){
 	$(this).parent().children().removeClass("active");
 	$(this).addClass("active");
-	console.log("vpn-on-click");
-	
-	currentVPN = $(this).attr('id');
+	//console.log("vpn-on-click");
+	//console.log($(this).attr('id'));
+	console.log(id);
+	currentVPN = id;//$(this).attr('id');
 	populate_sitelist(currentVPN);
 	
 }
@@ -363,7 +364,7 @@ function populate_remote_vpn_list(valueName)
 		.end();
 	
 	
-	$.getJSON("./json/getRemoteVpns", function(data) {
+	$.getJSON("../rest/remoteVpns", function(data) {
 		var vpns = data["remotevpns"];
 		var i;
 		for ( i =0; i < vpns.length; i++)
@@ -387,17 +388,18 @@ function populate_sitelist(vpnID)
 	
 	
 	// TODO: Add parameter !
-	$.getJSON("./json/getVpn", function(data) {
-		var vpn = data["vpn"][0];
-		var sites = vpn.sites;
+	$.getJSON("../rest/sites/" + vpnID, function(data) {
+		//var vpn = data["vpn"][0];
+		var sites = data;
 		var i;
 		for ( i =0; i < sites.length; i++)
 		{
 			var site = sites[i];
-			$('#site-list').append("<li id=\"node-" + site.id + "\" href=\"#\" class=\"list-group-item\">" + site.label + "</li>");
+			$('#site-list').append("<li id=\"node-" + site.id + "\" href=\"#\" class=\"list-group-item\">" + site.name + "</li>");
 		}
 		add_list_on_click();
 
+		/*
 		edgs = vpn.edges;
 		
 		
@@ -426,7 +428,7 @@ function populate_sitelist(vpnID)
 			
 		
 		}
-		
+		*/
 
 		
 	});

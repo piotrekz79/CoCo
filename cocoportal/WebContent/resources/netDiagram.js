@@ -4,7 +4,7 @@ var edges = new vis.DataSet();
 	//alert($.getJSON("./json/getNetwork"));
 
 	//$.getJSON("./json/getNetwork", function(data) {
-	$.getJSON("http://localhost:8080/CoCo-agent/topology/vis", function(data) {
+	$.getJSON("../topology/vis", function(data) {
   console.log( "success" );
   	nodes.add(data.nodes);
 	edges.add(data.edges);

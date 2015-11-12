@@ -8,4 +8,5 @@ public class RestVpnURIConstants {
     public static final String GET_ALL_VPN = "/rest/vpns";
     public static final String CREATE_VPN = "/rest/vpn/create";
     public static final String DELETE_VPN = "/rest/vpn/delete/{id}";
+    public static final String GET_ALL_SITES = "/rest/sites/{id}";
 }
