@@ -1,8 +1,11 @@
 package net.geant.coco.agent.portal.controllers;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.validation.Valid;
@@ -13,6 +16,10 @@ import net.geant.coco.agent.portal.dao.NetworkLink;
 import net.geant.coco.agent.portal.dao.NetworkSite;
 import net.geant.coco.agent.portal.dao.NetworkSwitch;
 import net.geant.coco.agent.portal.dao.Vpn;
+import net.geant.coco.agent.portal.rest.RestVpnURIConstants;
+import net.geant.coco.agent.portal.rest.Shop;
+import net.geant.coco.agent.portal.rest.Student;
+import net.geant.coco.agent.portal.rest.RestVpn;
 import net.geant.coco.agent.portal.service.NetworkLinksService;
 import net.geant.coco.agent.portal.service.NetworkSitesService;
 import net.geant.coco.agent.portal.service.NetworkSwitchesService;
@@ -27,6 +34,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -362,4 +370,66 @@ public class PortalController {
 		return shop;
 
 	}
+    
+    
+    //Map to store employees, ideally we should use database
+    Map<Integer, RestVpn> vpnData = new HashMap<Integer, RestVpn>();
+     
+    @RequestMapping(value = RestVpnURIConstants.DUMMY_VPN, method = RequestMethod.GET)
+    public @ResponseBody RestVpn getDummyVpn() {
+    	log.info("Start getDummyVpn");
+        RestVpn vpn = new RestVpn();
+        vpn.setId(9999);
+        vpn.setName("Dummy");
+        //emp.setCreatedDate(new Date());
+        vpnData.put(9999, vpn);
+        return vpn;
+    }
+     
+    @RequestMapping(value = RestVpnURIConstants.GET_VPN, method = RequestMethod.GET)
+    public @ResponseBody RestVpn getVpn(@PathVariable("id") int vpnId) {
+    	log.info("Start getVpn. ID="+vpnId);
+         
+        return vpnData.get(vpnId);
+    }
+    
+    @RequestMapping(value = RestVpnURIConstants.UPDATE_VPN, method = RequestMethod.PUT)
+    public @ResponseBody RestVpn updateVpn(@PathVariable("id") int vpnId, @RequestBody RestVpn vpn) {
+    	log.info("Start updateVpn. ID="+vpnId);
+    	
+    	RestVpn vpn_current = vpnData.get(vpnId);
+    	if (vpn_current != null ) {
+    		vpn_current.setName(vpn.getName());
+            vpnData.put(vpn.getId(), vpn_current);
+    	}
+
+        return vpnData.get(vpnId);
+    }
+     
+    @RequestMapping(value = RestVpnURIConstants.GET_ALL_VPN, method = RequestMethod.GET)
+    public @ResponseBody List<RestVpn> getAllVpns() {
+        log.info("Start getAllVpns.");
+        List<RestVpn> vpns = new ArrayList<RestVpn>();
+        Set<Integer> vpnIdKeys = vpnData.keySet();
+        for(Integer i : vpnIdKeys){
+            vpns.add(vpnData.get(i));
+        }
+        return vpns;
+    }
+     
+    @RequestMapping(value = RestVpnURIConstants.CREATE_VPN, method = RequestMethod.POST)
+    public @ResponseBody RestVpn createVpn(@RequestBody RestVpn vpn) {
+    	log.info("Start createVpn.");
+        //emp.setCreatedDate(new Date());
+        vpnData.put(vpn.getId(), vpn);
+        return vpn;
+    }
+     
+    @RequestMapping(value = RestVpnURIConstants.DELETE_VPN, method = RequestMethod.PUT)
+    public @ResponseBody RestVpn deleteVpn(@PathVariable("id") int vpnId) {
+    	log.info("Start deleteVpn.");
+        RestVpn vpn = vpnData.get(vpnId);
+        vpnData.remove(vpnId);
+        return vpn;
+    }
 }

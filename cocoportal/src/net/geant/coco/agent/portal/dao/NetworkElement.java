@@ -1,8 +1,5 @@
 package net.geant.coco.agent.portal.dao;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class NetworkElement {
 
 	public String name;

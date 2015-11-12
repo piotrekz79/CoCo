@@ -10,6 +10,7 @@
 		<spring.version>3.2.2.RELEASE</spring.version>
 		<jackson.version>1.9.10</jackson.version>
 		<jdk.version>1.7</jdk.version>
+		<jackson.databind-version>2.2.3</jackson.databind-version>
 	</properties>
 
 	<build>
@@ -157,10 +158,17 @@
 			<scope>compile</scope>
 		</dependency>
 		<!-- Jackson JSON Mapper -->
-		<dependency>
+		<!--<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>${jackson.version}</version>
-		</dependency>
+		</dependency>-->
+		
+		<!-- Jackson -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.databind-version}</version>
+        </dependency>
 	</dependencies>
 </project>

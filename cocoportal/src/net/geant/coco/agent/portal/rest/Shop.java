@@ -1,4 +1,4 @@
-package net.geant.coco.agent.portal.controllers;
+package net.geant.coco.agent.portal.rest;
 
 public class Shop {
 
