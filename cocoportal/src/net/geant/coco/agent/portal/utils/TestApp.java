@@ -85,7 +85,8 @@ public class TestApp {
 		vpnsService.setVpnDao(vpnsDao);
 		
 		List<NetworkSwitch> networkSwitches = networkSwitchesService.getNetworkSwitches();
-        List<NetworkLink> networkLinks = networkLinksService.getNetworkLinks();
+		List<NetworkSwitch> networkSwitchesWithEnni = networkSwitchesService.getNetworkSwitchesWithNni();
+		List<NetworkLink> networkLinks = networkLinksService.getNetworkLinks();
         List<NetworkSite> networkSites = networkSitesService.getNetworkSites();
         List<Vpn> vpns = vpnsService.getVpns();
 
@@ -99,7 +100,8 @@ public class TestApp {
 			e2.printStackTrace();
 		}
         
-        Topology topology = new Topology(networkSites, networkSwitches);
+        //TODO fix that
+        Topology topology = new Topology(networkSites, networkSwitches, networkSwitchesWithEnni);
         topology.printGraph();
         Graph graph = topology.getGraph();
         

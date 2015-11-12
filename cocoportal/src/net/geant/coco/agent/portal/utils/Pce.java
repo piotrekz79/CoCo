@@ -1,5 +1,6 @@
 package net.geant.coco.agent.portal.utils;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,20 +41,20 @@ public class Pce {
 		this.networkSwitches = networkSwitches;
 		this.networkSites = networkSites;
 		this.networkSwitchesWithEnni = networkSwitchesWithEnni;
-		this.topology = new Topology(networkSites, networkSwitches);
+		this.topology = new Topology(networkSites, networkSwitches, networkSwitchesWithEnni);
 	}
 	
 	public Pce(List<NetworkSwitch> networkSwitches, List<NetworkSite> networkSites) {
 		this.networkSwitches = networkSwitches;
 		this.networkSites = networkSites;
-		this.topology = new Topology(networkSites, networkSwitches);
+		this.topology = new Topology(networkSites, networkSwitches, new ArrayList<NetworkSwitch>());
 	}
 
 	public Pce(List<NetworkSwitch> networkSwitches, List<NetworkSite> networkSites, int lastFlowId) {
 		this.flowId = lastFlowId;
 		this.networkSwitches = networkSwitches;
 		this.networkSites = networkSites;
-		this.topology = new Topology(networkSites, networkSwitches);
+		this.topology = new Topology(networkSites, networkSwitches, new ArrayList<NetworkSwitch>());
 	}
 
 	public void setupCoreForwarding() {
