@@ -65,6 +65,29 @@ public class VpnDao {
         return vpns.get(0);
     }
 
+    public Vpn getVpn(int vpnID) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("name", vpnID);
+        String query = "SELECT * FROM vpns WHERE id = :name ;";
+        log.trace(query);
+        List<Vpn> vpns = jdbc.query(query, params, new RowMapper<Vpn>() {
+            @Override
+            public Vpn mapRow(ResultSet rs, int rowNum) throws SQLException {
+                Vpn vpn = new Vpn();
+
+                vpn.setId(rs.getInt("id"));
+                vpn.setName(rs.getString("name"));
+                vpn.setMplsLabel(rs.getInt("mpls_label"));
+
+                return vpn;
+            }
+        });
+        if (vpns.isEmpty()) {
+            return null;
+        }
+        return vpns.get(0);
+    }
+    
     public boolean addSite(String vpnName, String siteName) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("vpn", vpnName);

@@ -407,14 +407,37 @@ public class PortalController {
     }
      
     @RequestMapping(value = RestVpnURIConstants.GET_ALL_VPN, method = RequestMethod.GET)
-    public @ResponseBody List<RestVpn> getAllVpns() {
+    public @ResponseBody List<Vpn> getAllVpns() {
         log.info("Start getAllVpns.");
+        
+        /*
+        List<vpns> this.vpnsService.getVpns();
+        
         List<RestVpn> vpns = new ArrayList<RestVpn>();
         Set<Integer> vpnIdKeys = vpnData.keySet();
         for(Integer i : vpnIdKeys){
             vpns.add(vpnData.get(i));
         }
-        return vpns;
+        */
+        return vpnsService.getVpns();
+    }
+    
+    @RequestMapping(value = RestVpnURIConstants.GET_ALL_SITES, method = RequestMethod.GET)
+    public @ResponseBody List<NetworkSite> getAllSites(@PathVariable("id") int vpnID) {
+        log.info("Start getall sites.");
+        
+        /*
+        List<vpns> this.vpnsService.getVpns();
+        
+        List<RestVpn> vpns = new ArrayList<RestVpn>();
+        Set<Integer> vpnIdKeys = vpnData.keySet();
+        for(Integer i : vpnIdKeys){
+            vpns.add(vpnData.get(i));
+        }
+        */
+        Vpn vpn = vpnsService.getVpn(vpnID);
+        
+        return networkSitesService.getNetworkSites(vpn.getName());
     }
      
     @RequestMapping(value = RestVpnURIConstants.CREATE_VPN, method = RequestMethod.POST)
