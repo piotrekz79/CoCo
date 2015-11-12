@@ -35,5 +35,12 @@
                username="coco" password="cocorules!" driverClassName="com.mysql.jdbc.Driver"
                factory="org.apache.commons.dbcp.BasicDataSourceFactory"
                url="jdbc:mysql://localhost:3306/CoCoDB"/>
+               
+    <!-- COPY THIS TO THE SERVER IF YOU ARE REMOTE ON WINDOWS -->
+    <Resource name="jdbc/CoCoDB" auth="Container" type="javax.sql.DataSource"
+               maxActive="100" maxIdle="30" maxWait="10000"
+               username="coco" password="cocorules!" driverClassName="com.mysql.jdbc.Driver"
+               factory="org.apache.tomcat.dbcp.dbcp.BasicDataSourceFactory"
+               url="jdbc:mysql://134.221.121.203:3306/CoCoDB"/>
 
 </Context>
