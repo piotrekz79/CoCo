@@ -43,7 +43,7 @@ public class RestClient {
         //return UriBuilder.fromUri("http://134.221.121.203:8181/restconf")
         //        .build();
         
-        return UriBuilder.fromUri(env.getProperty("controller.ip"))
+        return UriBuilder.fromUri("env.getProperty("controller.url"))
                 .build();
     }
 
