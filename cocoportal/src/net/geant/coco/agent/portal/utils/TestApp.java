@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -20,6 +21,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
 
+import net.geant.coco.agent.portal.bgp.BgpRouteEntry;
+import net.geant.coco.agent.portal.bgp.BgpRouter;
 import net.geant.coco.agent.portal.dao.NetworkLink;
 import net.geant.coco.agent.portal.dao.NetworkLinkDao;
 import net.geant.coco.agent.portal.dao.NetworkSite;
@@ -52,6 +55,19 @@ public class TestApp {
 		
 		//System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "ERROR");
 
+		
+    	BgpRouter bgprouter = new BgpRouter("134.221.121.204", 7644);
+    	
+    	List<BgpRouteEntry> list = bgprouter.getVpns();
+    	
+    	Iterator<BgpRouteEntry> it = list.iterator();
+    	
+    	while(it.hasNext())
+    	{    	
+    		System.out.println(it.next());
+    	}
+		/*
+		
 		
 		BasicDataSource dataSource = new BasicDataSource();
 
@@ -233,7 +249,7 @@ public class TestApp {
                 }
             }
         }
-        
+        */
 	}
 
 }
