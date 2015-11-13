@@ -5,22 +5,22 @@ import net.geant.coco.agent.portal.dao.Vpn;
 
 public class RestSite {
 
-	private String id;
+	private int id;
 	private String name;
 
 	 public RestSite() {
 	    }
 	    
     public RestSite(NetworkSite site) {
-    	this.id = String.valueOf(site.getId());
+    	this.id = site.getId();
     	this.name = site.getName();
     }
 	    
-	public String getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -30,6 +30,10 @@ public class RestSite {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String toString() {
+		return "site(" + String.valueOf(id) + "," + name + ")";
 	}
 
 }

@@ -334,7 +334,7 @@ $('#add-nodelist').on('click', function(event) {
 	return;
   }
     
-  if ( $( "#node-" + currnode.id ).length )
+  if ( $( "#node-" + parseInt(currnode.id) ).length )
   {
 	alert("Endpoint already in list");
 	return;
@@ -342,14 +342,14 @@ $('#add-nodelist').on('click', function(event) {
 
   if ( currnode.group == "enni" )
   {	
-	populate_remote_vpn_list(currnode.id);
+	populate_remote_vpn_list(parseInt(currnode.id));
 	$('#enniModal').modal('show');
  
   }
   else
   {
   
-	$("#site-list").append("<li id=\"node-" + currnode.id + "\" href=\"#\" class=\"list-group-item\">" + currnode.label + "</li>");
+	$("#site-list").append("<li id=\"node-" + parseInt(currnode.id) + "\" href=\"#\" class=\"list-group-item\">" + currnode.label + "</li>");
   }
   add_list_on_click();
 });
@@ -465,7 +465,12 @@ function connect_sites()
 	$( "#site-list" ).find('li').each(function( index ) 
 	{
 		var site = {};
-		site["id"] = $(this).attr('id');
+		
+		/* done to remove node-x id, where x is number, we need only number for rest */
+		var tmp = "" + $(this).attr('id');
+		tmp = tmp.replace("node-", "");
+		site["id"] = parseInt(tmp);
+		//site["id"] = $(this).attr('id');
 		site["name"] = $(this).text();
 		console.log(site);
 		sitelist.push(site);
@@ -484,8 +489,8 @@ function connect_sites()
 	
 	console.log(JSON.stringify(vpn));
 	
-	/* MICHAL CHANGE THIS ! */
-	$.postJSON('../rest/vpn/create', vpn, function(response) {
+	/* MICHAL CHANGE THIS - changed ! */
+	$.postJSON('../rest/vpn/update/' + vpn["id"], vpn, function(response) {
 		// Do something with the request
 		console.log(response);
 	}, 'json');
@@ -513,7 +518,12 @@ function disconnect_sites()
 	$( "#site-list" ).find('li').each(function( index ) 
 	{
 		var site = {};
-		site["id"] = $(this).attr('id');
+		
+		/* done to remove node-x id, where x is number, we need only number for rest */
+		var tmp = "" + $(this).attr('id');
+		tmp = tmp.replace("node-", "");
+		site["id"] = parseInt(tmp);
+		//site["id"] = $(this).attr('id');
 		site["name"] = $(this).text();
 		console.log(site);
 		sitelist.push(site);
@@ -524,18 +534,18 @@ function disconnect_sites()
 	
 	
 	var vpn = {};
-	vpn["vpn"] = currentVPN;
+	vpn["id"] = parseInt(currentVPN);
+	vpn["name"] = currentVPN;
 	vpn["sites"] = sitelist;
 	
 	console.log(vpn);
 	
 	console.log(JSON.stringify(vpn));
-	/* MICHAL CHANGE THIS !
-	$.post('./json/disconnect', vpn, function(response) {
+	/* MICHAL CHANGE THIS ! - changed */
+	$.postJSON('../rest/vpn/update/' + vpn["id"], vpn, function(response) {
 		// Do something with the request
 		console.log(response);
 	}, 'json');
-	*/
 	
 	populate_sitelist(currentVPN);
 }

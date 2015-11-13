@@ -1,6 +1,7 @@
 package net.geant.coco.agent.portal.rest;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -18,13 +19,17 @@ public class RestVpn implements Serializable{
     private List<RestSite> sites;
     
     public RestVpn() {
+    	this.id = -1;
+    	this.name = "whereDoIUseThisActually?";
+    	sites = new ArrayList<RestSite>();
     }
     
     public RestVpn(Vpn vpn) {
     	this.id = vpn.getId();
     	this.name = vpn.getName();
+    	sites = new ArrayList<RestSite>();
     }
-     
+      
     public int getId() {
         return id;
     }
@@ -45,6 +50,18 @@ public class RestVpn implements Serializable{
     public void setSites(List<RestSite> sites) {
         this.sites = sites;
     }
+    
+    public void addSiteToVpn(RestSite site) {
+    	sites.add(site);
+    }
+    
+    public void deleteSiteFromVpn(RestSite site) {
+    	sites.remove(site);
+    }
+    
+    public String toString() {
+		return "vpn(" + String.valueOf(id) + "," + name + ",sites:"+ sites.toString() + ")";
+	}
     
     /*
     @JsonSerialize(using=DateSerializer.class)

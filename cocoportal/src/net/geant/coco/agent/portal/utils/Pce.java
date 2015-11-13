@@ -90,12 +90,12 @@ public class Pce {
 						entry.matchMplsLabel(topology.getNode(toSite.getProviderSwitch()).getPeMplsLabel());
 						entry.outPort(edges[i].getSrcTpNr());
 						RestClient.sendtoSwitch(switchName, "add", entry.buildFlow(), String.valueOf(flowNr));
-						try {
+						/*try {
 							Thread.sleep(100);
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
-						}
+						}*/
 					}
 				}
 			}
