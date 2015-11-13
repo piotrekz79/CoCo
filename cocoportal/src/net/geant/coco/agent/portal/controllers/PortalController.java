@@ -427,6 +427,7 @@ public class PortalController {
     	return visJson.toString();
     } 
     
+    /*
     @RequestMapping(value="student", method=RequestMethod.GET)  
     public @ResponseBody  
     Student getStudent() {  
@@ -460,13 +461,13 @@ public class PortalController {
 
 		return shop;
 
-	}
+	}*/
     
     
     //Map to store vpns, ideally we should use database
     Map<Integer, RestVpn> restVpnData = new HashMap<Integer, RestVpn>();
     
-  //Map to store sites, ideally we should use database
+    //Map to store sites, ideally we should use database
     Map<Integer, RestSite> restSiteData = new HashMap<Integer, RestSite>();
     
     @RequestMapping(value = RestVpnURIConstants.DUMMY_VPN, method = RequestMethod.GET)
