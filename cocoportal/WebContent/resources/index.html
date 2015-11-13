@@ -164,6 +164,7 @@
 				<div class="row">
 					<div class="col-md-6">
 						<div class="panel-default">
+							Sites in current VPN:
 							<ul id="site-list" class="list-group">
 								<li href="#" class="list-group-item">Site A</li>
 								<li href="#" class="list-group-item">Site B</li>
@@ -176,12 +177,13 @@
 						</div>
 					</div>
 					<div class="col-md-3">
+						<br/>
 						<p>
-						<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#connectModal">Connect</button>
+						<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#connectModal">Update Vpn</button>
 						</p>
-						<p>
+						<!-- <p>
 						<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#disconnectModal">Disconnect</button>
-						</p>
+						</p> -->
 					</div>
 					
 				</div>
@@ -328,7 +330,7 @@ $('#add-nodelist').on('click', function(event) {
    }   
   node = currnode;
 
-  if ( currnode.group == "netswitch" )
+  if ( currnode.group == "SWITCH" )
   {
 	alert("switches are not valid endpoints");
 	return;
@@ -482,7 +484,7 @@ function connect_sites()
 	
 	var vpn = {};
 	vpn["id"] = parseInt(currentVPN);
-	vpn["name"] = currentVPN;
+	vpn["name"] = "vpn" + (vpn["id"]-1).toString();
 	vpn["sites"] = sitelist;
 	
 	console.log(vpn);
@@ -535,7 +537,7 @@ function disconnect_sites()
 	
 	var vpn = {};
 	vpn["id"] = parseInt(currentVPN);
-	vpn["name"] = currentVPN;
+	vpn["name"] = "vpn" + (vpn["id"]-1).toString();
 	vpn["sites"] = sitelist;
 	
 	console.log(vpn);
