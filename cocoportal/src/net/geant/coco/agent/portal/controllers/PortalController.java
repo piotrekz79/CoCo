@@ -31,6 +31,9 @@ import net.geant.coco.agent.portal.utils.NodeType;
 import net.geant.coco.agent.portal.utils.Pce;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Controller;
@@ -48,8 +51,14 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
+@Configuration
+@PropertySource("classpath:/net/geant/coco/agent/portal/props/config.properties")
 public class PortalController {
 
+	
+	@Autowired
+    Environment env;
+	
     private NetworkSwitchesService networkSwitchesService;
     private NetworkLinksService networkLinksService;
     private NetworkSitesService networkSitesService;
@@ -519,6 +528,8 @@ public class PortalController {
     @RequestMapping("/setupEverything")
     public void initializeEverything() {
     	log.info("Initialize everything");
+    	
+    	log.warn(env.getProperty("ip"));
     	
     	log.info("Initialize network elements");
     	this.networkSwitches = networkSwitchesService.getNetworkSwitches();

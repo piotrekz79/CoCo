@@ -5,6 +5,11 @@ import java.net.URI;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
+
 import lombok.extern.slf4j.Slf4j;
 
 import com.sun.jersey.api.client.Client;
@@ -15,8 +20,13 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
 @Slf4j
+@Configuration
+@PropertySource("classpath:/net/geant/coco/agent/portal/props/config.properties")
 public class RestClient {
     private static int TIMEOUT = 3000;
+    
+    @Autowired
+    private static Environment env;
     
     public static void clearAll() {
         // Delete all flows on switches
@@ -30,7 +40,10 @@ public class RestClient {
         // return UriBuilder.fromUri("http://192.168.56.125:8181/restconf")
         //return UriBuilder.fromUri("http://192.168.255.59:8181/restconf")
                 //.build();
-        return UriBuilder.fromUri("http://134.221.121.203:8181/restconf")
+        //return UriBuilder.fromUri("http://134.221.121.203:8181/restconf")
+        //        .build();
+        
+        return UriBuilder.fromUri(env.getProperty("controller.ip"))
                 .build();
     }
 
