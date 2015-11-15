@@ -2,7 +2,7 @@
 testing
 HOW TO RUN COCO:
 
-https://www.dropbox.com/s/4ibadt8wysxwb6y/howToRunCoco.rtf?dl=0
+https://www.dropbox.com/s/tbusvk9wr9khjec/howToRunCoco.pdf?dl=0
 
 TODO:
 
