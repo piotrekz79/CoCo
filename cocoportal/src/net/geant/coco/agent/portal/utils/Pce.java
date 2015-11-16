@@ -21,6 +21,8 @@ public class Pce {
 	
 	private Topology topology;
 
+	private RestClient restClient;
+	
 	public Topology getTopology() {
 		return topology;
 	}
@@ -37,25 +39,22 @@ public class Pce {
 		return flowId;
 	}
 	
-	public Pce(List<NetworkSwitch> networkSwitches, List<NetworkSite> networkSites, List<NetworkSwitch> networkSwitchesWithEnni) {
+	public Pce(RestClient restClient, List<NetworkSwitch> networkSwitches, List<NetworkSite> networkSites, List<NetworkSwitch> networkSwitchesWithEnni) {
+		this.restClient = restClient;
 		this.networkSwitches = networkSwitches;
 		this.networkSites = networkSites;
 		this.networkSwitchesWithEnni = networkSwitchesWithEnni;
-		this.topology = new Topology(networkSites, networkSwitches, networkSwitchesWithEnni);
+		this.topology = new Topology(restClient, networkSites, networkSwitches, networkSwitchesWithEnni);
 	}
 	
-	public Pce(List<NetworkSwitch> networkSwitches, List<NetworkSite> networkSites) {
-		this.networkSwitches = networkSwitches;
-		this.networkSites = networkSites;
-		this.topology = new Topology(networkSites, networkSwitches, new ArrayList<NetworkSwitch>());
-	}
 
+	/*
 	public Pce(List<NetworkSwitch> networkSwitches, List<NetworkSite> networkSites, int lastFlowId) {
 		this.flowId = lastFlowId;
 		this.networkSwitches = networkSwitches;
 		this.networkSites = networkSites;
 		this.topology = new Topology(networkSites, networkSwitches, new ArrayList<NetworkSwitch>());
-	}
+	}*/
 
 	public void setupCoreForwarding() {
 		/*
@@ -89,7 +88,7 @@ public class Pce {
 						entry.matchEthertype(0x8847);
 						entry.matchMplsLabel(topology.getNode(toSite.getProviderSwitch()).getPeMplsLabel());
 						entry.outPort(edges[i].getSrcTpNr());
-						RestClient.sendtoSwitch(switchName, "add", entry.buildFlow(), String.valueOf(flowNr));
+						restClient.sendtoSwitch(switchName, "add", entry.buildFlow(), String.valueOf(flowNr));
 						/*try {
 							Thread.sleep(100);
 						} catch (InterruptedException e) {
@@ -127,7 +126,7 @@ public class Pce {
 							entry.matchEthertype(0x8847);
 							entry.matchMplsLabel(String.valueOf(networkSwitch.getMplsLabel()));
 							entry.outPort(edges[i].getSrcTpNr());
-							RestClient.sendtoSwitch(switchName, "add", entry.buildFlow(), String.valueOf(flowNr));
+							restClient.sendtoSwitch(switchName, "add", entry.buildFlow(), String.valueOf(flowNr));
 							try {
 								Thread.sleep(100);
 							} catch (InterruptedException e) {
@@ -174,7 +173,7 @@ public class Pce {
 				flowEntry.modVlan(String.valueOf(toSite.getVlanId()));
 				flowEntry.outPort(String.valueOf(toSite.getProviderPort()));
 				
-				RestClient.sendtoSwitch(toSite.getProviderSwitch(), "add", flowEntry.buildFlow(), String.valueOf(flowNr));
+				restClient.sendtoSwitch(toSite.getProviderSwitch(), "add", flowEntry.buildFlow(), String.valueOf(flowNr));
 
 				// build outgoing flow from 'toSite' on its PE switch
 				flowNr = getNextFlowId();
@@ -189,7 +188,7 @@ public class Pce {
 				flowEntry.setDstMAC(fromSite.getMacAddress());
 				flowEntry.modVlan(String.valueOf(fromSite.getVlanId()));
 				flowEntry.outPort(String.valueOf(fromSite.getProviderPort()));
-				RestClient.sendtoSwitch(toSite.getProviderSwitch(), "add", flowEntry.buildFlow(), String.valueOf(flowNr));
+				restClient.sendtoSwitch(toSite.getProviderSwitch(), "add", flowEntry.buildFlow(), String.valueOf(flowNr));
 			} else {
 
 				List<CoCoLink> edgesList = topology.calculatePath(fromSite.getName(), toSite.getName());
@@ -210,7 +209,7 @@ public class Pce {
 				flowEntry.pushPeMplsLabel(topology.getNode(toSite.getProviderSwitch()).getPeMplsLabel());
 				flowEntry.modVlan(String.valueOf(toSite.getVlanId()));
 				flowEntry.outPort(edges[1].getSrcTpNr());
-				RestClient.sendtoSwitch(fromSite.getProviderSwitch(), "add", flowEntry.buildFlow(), String.valueOf(flowNr));
+				restClient.sendtoSwitch(fromSite.getProviderSwitch(), "add", flowEntry.buildFlow(), String.valueOf(flowNr));
 
 				log.debug("set ingress fwd entry on PE switch of " + toSite.getName() + " --> " + fromSite.getName());
 				flowNr = getNextFlowId();
@@ -227,7 +226,7 @@ public class Pce {
 				flowEntry.pushPeMplsLabel(topology.getNode(fromSite.getProviderSwitch()).getPeMplsLabel());
 				flowEntry.modVlan(String.valueOf(fromSite.getVlanId()));
 				flowEntry.outPort(edges[edges.length - 2].getDstTpNr());
-				RestClient.sendtoSwitch(toSite.getProviderSwitch(), "add", flowEntry.buildFlow(), String.valueOf(flowNr));
+				restClient.sendtoSwitch(toSite.getProviderSwitch(), "add", flowEntry.buildFlow(), String.valueOf(flowNr));
 
 				// Michal addition 2
 				log.debug("second entry Michal on PE switch of " + toSite.getName() + " --> " + fromSite.getName());
@@ -245,7 +244,7 @@ public class Pce {
 				flowEntry.popTwoMplsLabels();
 				flowEntry.outPort(edges[edges.length - 1].getSrcTpNr());
 
-				RestClient.sendtoSwitch(toSite.getProviderSwitch(), "add", flowEntry.buildFlow(), String.valueOf(flowNr));
+				restClient.sendtoSwitch(toSite.getProviderSwitch(), "add", flowEntry.buildFlow(), String.valueOf(flowNr));
 
 				//edgesList = topology.calculatePath(toSite.getName(), fromSite.getName());
 				//edges = edgesList.toArray(new CoCoLink[0]);
@@ -265,7 +264,7 @@ public class Pce {
 				flowEntry.popTwoMplsLabels();
 				flowEntry.outPort(edges[0].getDstTpNr());
 
-				RestClient.sendtoSwitch(fromSite.getProviderSwitch(), "add", flowEntry.buildFlow(), String.valueOf(flowNr));
+				restClient.sendtoSwitch(fromSite.getProviderSwitch(), "add", flowEntry.buildFlow(), String.valueOf(flowNr));
 
 			}
 		}
@@ -278,7 +277,7 @@ public class Pce {
 		Set<String> flowIds = new HashSet<String>();
 		flowIds.addAll(topology.getNode(toSite.getName()).getFlowIds());
 		for (String id : flowIds) {
-			RestClient.sendtoSwitch("", "delete", id, "");
+			restClient.sendtoSwitch("", "delete", id, "");
 			topology.getNode(toSite.getName()).deleteFromFlowIds(id);
 			// loop through all the sites within the VPN
 			for (NetworkSite fromSite : vpnSites) {

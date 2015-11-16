@@ -47,13 +47,16 @@ public class Topology {
     private List<CoCoNode> listOfEndNodes = new ArrayList<CoCoNode>();
     private List<CoCoNode> listOfEdgeSwitches = new ArrayList<CoCoNode>();
 
-    public Topology(List<NetworkSite> networkSites, List<NetworkSwitch> networkSwitches, List<NetworkSwitch> networkSwitchesWithEnni) {
+    private RestClient restClient;
+    
+    public Topology(RestClient restClient, List<NetworkSite> networkSites, List<NetworkSwitch> networkSwitches, List<NetworkSwitch> networkSwitchesWithEnni) {
         // remove all forwarding entries from switches
         // RestClient.clearAll();
 
+    	this.restClient = restClient;
         log.info("Topology init");
         // make REST call to OpenDaylight to get topology info in JSON format
-        String jsonTopo = RestClient.getJsonTopo();
+        String jsonTopo = this.restClient.getJsonTopo();
 
         double edgeWeight = 1;
         
@@ -245,7 +248,7 @@ public class Topology {
 
     private String getPortName(String nodeId, String portId) {
         try {
-            String r = RestClient.getJSONPortInfo(nodeId, portId);
+            String r = this.restClient.getJSONPortInfo(nodeId, portId);
 
             JSONParser jsonParser = new JSONParser();
             JSONObject json = (JSONObject) jsonParser.parse(r);
@@ -375,7 +378,7 @@ public class Topology {
                                         flow.setDstMAC(dst.getMac());
                                         flow.outPort(edge.getSrcTpNr());
                                         f = flow.buildFlow();
-                                        RestClient.sendtoSwitch(s.getId(),
+                                        this.restClient.sendtoSwitch(s.getId(),
                                                 "add", f,
                                                 String.valueOf(flowId));
                                     } else {
@@ -398,7 +401,7 @@ public class Topology {
                                         // flow.setDstMAC(dst.getMac());
                                         flow.outPort(edge.getSrcTpNr());
                                         f = flow.buildFlow();
-                                        RestClient.sendtoSwitch(s.getId(),
+                                        this.restClient.sendtoSwitch(s.getId(),
                                                 "add", f,
                                                 String.valueOf(flowId));
                                     }
@@ -423,7 +426,7 @@ public class Topology {
                                     }
                                     flow.outPort(edge.getSrcTpNr());
                                     f = flow.buildFlow();
-                                    RestClient.sendtoSwitch(s.getId(), "add",
+                                    this.restClient.sendtoSwitch(s.getId(), "add",
                                             f, String.valueOf(flowId));
                                 }
                             }
@@ -482,7 +485,7 @@ public class Topology {
             }
         }
         vpns.clear();
-        RestClient.clearAll();
+        this.restClient.clearAll();
         flowId = 1;
     }
 

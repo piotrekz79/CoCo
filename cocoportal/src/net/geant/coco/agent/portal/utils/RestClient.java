@@ -21,14 +21,13 @@ import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
 @Slf4j
 @Configuration
-@PropertySource("classpath:/net/geant/coco/agent/portal/props/config.properties")
 public class RestClient {
-    private static int TIMEOUT = 3000;
+    private int TIMEOUT = 3000;
+
+    private String controllerUrl;
+    private URI controllerUri;
     
-    @Autowired
-    private static Environment env;
-    
-    public static void clearAll() {
+    public void clearAll() {
         // Delete all flows on switches
         sendtoSwitch("openflow:1", "clear", null, null);
         sendtoSwitch("openflow:2", "clear", null, null);
@@ -36,18 +35,12 @@ public class RestClient {
         sendtoSwitch("openflow:4", "clear", null, null);
     }
     
-    private static URI getBaseURI() {
-        // return UriBuilder.fromUri("http://192.168.56.125:8181/restconf")
-        //return UriBuilder.fromUri("http://192.168.255.59:8181/restconf")
-                //.build();
-        //return UriBuilder.fromUri("http://134.221.121.203:8181/restconf")
-        //        .build();
-        
-        return UriBuilder.fromUri(env.getProperty("controller.url"))
-                .build();
+    public RestClient(String controllerUrl) {
+    	this.controllerUrl = controllerUrl;
+    	controllerUri = UriBuilder.fromUri(controllerUrl).build();
     }
 
-    public static String getJsonTopo() {
+    public String getJsonTopo() {
         try {
             ClientConfig config = new DefaultClientConfig();
             Client client = Client.create(config);
@@ -56,7 +49,7 @@ public class RestClient {
 
             ClientResponse r;
             client.addFilter(new HTTPBasicAuthFilter("admin", "admin"));
-            WebResource service = client.resource(getBaseURI());
+            WebResource service = client.resource(controllerUri);
             r = service.path("operational/network-topology:network-topology")
                     .type(javax.ws.rs.core.MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON)
@@ -73,13 +66,13 @@ public class RestClient {
         return null;
     }
 
-    public static String getJSONPortInfo(String nodeId, String portId) {
+    public String getJSONPortInfo(String nodeId, String portId) {
         try {
             ClientConfig config = new DefaultClientConfig();
             Client client = Client.create(config);
             ClientResponse r;
             client.addFilter(new HTTPBasicAuthFilter("admin", "admin"));
-            WebResource service = client.resource(getBaseURI());
+            WebResource service = client.resource(controllerUri);
             String path = String.format("%s/node-connector/%s", nodeId, portId);
             r = service.path("operational/opendaylight-inventory:nodes/node")
                     .path(path)
@@ -97,7 +90,7 @@ public class RestClient {
         return null;
     }
 
-    public static void sendtoSwitch(String switchID, String command,
+    public void sendtoSwitch(String switchID, String command,
             String flow, String flowNr) {
         try {
             ClientConfig config = new DefaultClientConfig();
@@ -105,7 +98,7 @@ public class RestClient {
             ClientResponse r;
             String error = "";
             client.addFilter(new HTTPBasicAuthFilter("admin", "admin"));
-            WebResource service = client.resource(getBaseURI());
+            WebResource service = client.resource(controllerUri);
 
             if (command.equals("clear")) {
                 // Get inventory first. Needed to avoid error on DELETE???
@@ -161,7 +154,7 @@ public class RestClient {
     }
     
     
-    public static void sendtoSwitch(String switchID, String command,
+    public void sendtoSwitch(String switchID, String command,
             String flow, String flowNr, String tableId) {
         try {
             ClientConfig config = new DefaultClientConfig();
@@ -169,7 +162,7 @@ public class RestClient {
             ClientResponse r;
             String error = "";
             client.addFilter(new HTTPBasicAuthFilter("admin", "admin"));
-            WebResource service = client.resource(getBaseURI());
+            WebResource service = client.resource(controllerUri);
 
             if (command.equals("clear")) {
                 // Get inventory first. Needed to avoid error on DELETE???

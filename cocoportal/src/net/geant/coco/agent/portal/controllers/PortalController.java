@@ -29,6 +29,7 @@ import net.geant.coco.agent.portal.service.TopologyService;
 import net.geant.coco.agent.portal.service.VpnsService;
 import net.geant.coco.agent.portal.utils.NodeType;
 import net.geant.coco.agent.portal.utils.Pce;
+import net.geant.coco.agent.portal.utils.RestClient;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -132,24 +133,28 @@ public class PortalController {
 
 		class SetupThread implements Runnable {
 
+			RestClient restClient;
 			List<NetworkSwitch> networkSwitches;
 			List<NetworkSite> networkSites;
 			List<NetworkSwitch> networkSwitchesWithEnni;
 
-			public SetupThread(List<NetworkSwitch> networkSwitches, List<NetworkSite> networkSites,
+			public SetupThread(RestClient restClient, List<NetworkSwitch> networkSwitches, List<NetworkSite> networkSites,
 					List<NetworkSwitch> networkSwitchesWithEnni) {
+				this.restClient = restClient;
 				this.networkSwitches = networkSwitches;
 				this.networkSites = networkSites;
 				this.networkSwitchesWithEnni = networkSwitchesWithEnni;
 			}
 
 			public void run() {
-				pce = new Pce(networkSwitches, networkSites, networkSwitchesWithEnni);
+				pce = new Pce(restClient, networkSwitches, networkSites, networkSwitchesWithEnni);
 				pce.setupCoreForwarding();
 			}
 		}
 
-		Runnable setupThreadRunnable = new SetupThread(networkSwitches, networkSites, networkSwitchesWithEnni);
+		String controllerUrl = env.getProperty("controller.url");
+		RestClient restClient = new RestClient(controllerUrl);
+		Runnable setupThreadRunnable = new SetupThread(restClient, networkSwitches, networkSites, networkSwitchesWithEnni);
 		log.debug("Starting core provisioning thread");
 		new Thread(setupThreadRunnable).start();
 		log.debug("Started core provisioning thread");
@@ -525,8 +530,8 @@ public class PortalController {
     }
     
     @PostConstruct
-    @RequestMapping("/setupEverything")
-    public void initializeEverything() {
+    @RequestMapping("/setupAll")
+    public @ResponseBody String initializeEverything() {
     	log.info("Initialize everything");
     	
     	log.warn(env.getProperty("ip"));
@@ -559,6 +564,8 @@ public class PortalController {
 		for (RestSite restSite : restSites) {
 			restSiteData.put(restSite.getId(), restSite);
 		}
+		
+		return "everything initialized succesfully";
 		
     }
      
