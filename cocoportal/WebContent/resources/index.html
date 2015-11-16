@@ -198,10 +198,10 @@
 				<ul id="vpn-list" class="list-group">
 					<!-- vpns are added here --> 
 				</ul>
-	
+					<!--
 					<button type="button" class="btn btn-default">Add</button>
 					<button type="button" class="btn btn-default">Delete</button>
-
+					--> 
 				
 			</div>
 			</div>
@@ -244,9 +244,9 @@ function populate_vpnlist(){
 			
 			$("#vpn-list").append(
 				'<li id="vpn-' + vpn.id + '" href="#" class="list-group-item" onclick="vpn_list_on_click(\'' + vpn.id + '\');">' + vpn.name +
-				'<div class="text-right">' +
+				/* '<div class="text-right">' +
 				'	<input type="checkbox" name="' + 'vpn-checkbox-' + vpn.id + '" data-off-text="Private" data-on-text="Public" ' + checked + '>' +
-				'</div>' + 
+				'</div>' +  */
 				'</li>'
 			); 
 			
@@ -350,7 +350,11 @@ $('#add-nodelist').on('click', function(event) {
   }
   else
   {
-  
+	$('#site-list')
+	.find('h5')
+	.remove()
+	.end();
+	
 	$("#site-list").append("<li id=\"node-" + parseInt(currnode.id) + "\" href=\"#\" class=\"list-group-item\">" + currnode.label + "</li>");
   }
   add_list_on_click();
@@ -388,6 +392,10 @@ function populate_sitelist(vpnID)
 		.remove()
 		.end();
 	
+	$('#site-list')
+	.find('h5')
+	.remove()
+	.end();
 	
 	// TODO: Add parameter !
 	$.getJSON("../rest/sites/" + vpnID, function(data) {
@@ -399,6 +407,12 @@ function populate_sitelist(vpnID)
 			var site = sites[i];
 			$('#site-list').append("<li id=\"node-" + site.id + "\" href=\"#\" class=\"list-group-item\">" + site.name + "</li>");
 		}
+		
+		if ( sites.length == 0)
+		{
+			$('#site-list').append("<h5>none</h5>");
+		}
+		
 		add_list_on_click();
 
 		/*
@@ -497,7 +511,11 @@ function connect_sites()
 		console.log(response);
 	}, 'json');
 	
-	populate_sitelist(currentVPN);
+	setTimeout(function(){
+		populate_sitelist(currentVPN);
+	}, 1000);
+	
+	//populate_sitelist(currentVPN);
 
 }
 

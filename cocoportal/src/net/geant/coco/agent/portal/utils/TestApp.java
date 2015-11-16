@@ -56,7 +56,7 @@ public class TestApp {
 		//System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "ERROR");
 
 		
-    	BgpRouter bgprouter = new BgpRouter("134.221.121.204", 7644);
+    	BgpRouter bgprouter = new BgpRouter("134.221.121.203", 7644);
     	
     	List<BgpRouteEntry> list = bgprouter.getVpns();
     	
@@ -64,7 +64,9 @@ public class TestApp {
     	
     	while(it.hasNext())
     	{    	
-    		System.out.println(it.next());
+    		BgpRouteEntry entry = it.next();
+    		bgprouter.delVpn(entry.getPrefix(), entry.getRd());
+    		System.out.println(entry);
     	}
 		/*
 		

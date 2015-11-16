@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -382,9 +383,13 @@ public class PortalController {
     		int fakeId = 0;
     		if (networkElement.nodeType.equals(NetworkElement.NODE_TYPE.CUSTOMER)) {
     			fakeId = networkElement.id;
+    			if (networkElement.name.contains("tno")) {
+    				networkElement.nodeType = NetworkElement.NODE_TYPE.EXTERNAL_AS;
+    			}
 			}
 			else if (networkElement.nodeType.equals(NetworkElement.NODE_TYPE.EXTERNAL_AS)) {
-				fakeId = 100 + networkElement.id;
+				//fakeId = 100 + networkElement.id;
+				continue;
 			}
 	    	else if (networkElement.nodeType.equals(NetworkElement.NODE_TYPE.SWITCH)) {
 	    		fakeId = 200 + networkElement.id;
@@ -402,6 +407,15 @@ public class PortalController {
     	visJson.append("],");
     	visJson.append("\"edges\" : [");
     	
+    	//removing entries from as table
+    	for (Iterator<NetworkInterface> iterator = networkInterfaces.iterator(); iterator.hasNext();) {
+    		NetworkInterface networkInterface = iterator.next();
+    	    if (networkInterface.ifType == NetworkInterface.IF_TYPE.ENNI) {
+    	        // Remove the current element from the iterator and the list.
+    	        iterator.remove();
+    	    }
+    	}
+    	
     	for (NetworkInterface networkInterface : networkInterfaces) {
     		int fakeId = 0;
     		NetworkElement networkElement;
@@ -412,7 +426,8 @@ public class PortalController {
     			fakeId = networkElement.id;
 			}
 			else if (networkElement.nodeType.equals(NetworkElement.NODE_TYPE.EXTERNAL_AS)) {
-				fakeId = 100 + networkElement.id;
+				//fakeId = 100 + networkElement.id;
+				fakeId = networkElement.id;
 			}
 	    	else if (networkElement.nodeType.equals(NetworkElement.NODE_TYPE.SWITCH)) {
 	    		fakeId = 200 + networkElement.id;
@@ -426,7 +441,8 @@ public class PortalController {
     			fakeId = networkElement.id;
 			}
 			else if (networkElement.nodeType.equals(NetworkElement.NODE_TYPE.EXTERNAL_AS)) {
-				fakeId = 100 + networkElement.id;
+				//fakeId = 100 + networkElement.id;
+				fakeId = networkElement.id;
 			}
 	    	else if (networkElement.nodeType.equals(NetworkElement.NODE_TYPE.SWITCH)) {
 	    		fakeId = 200 + networkElement.id;
@@ -517,12 +533,19 @@ public class PortalController {
     	sitesToRemove.removeAll(vpnNew.getSites());
     	
     	for (RestSite restSite : sitesToAdd) {
-    		restAddSiteToVpn(vpnCurrent.getName(), restSite.getName());	
-        	networkAddSiteToVpn(vpnCurrent.getName(), restSite.getName());
+    		restAddSiteToVpn(vpnCurrent.getName(), restSite.getName());
+        	//networkAddSiteToVpn(vpnCurrent.getName(), restSite.getName());
 		}
     	
     	for (RestSite restSite : sitesToRemove) {
     		restDeleteSiteFromVpn(vpnCurrent.getName(), restSite.getName());	
+    		//networkDeleteSiteFromVpn(vpnCurrent.getName(), restSite.getName());
+		}
+    	
+    	for (RestSite restSite : sitesToAdd) {
+        	networkAddSiteToVpn(vpnCurrent.getName(), restSite.getName());
+		}
+    	for (RestSite restSite : sitesToRemove) {
     		networkDeleteSiteFromVpn(vpnCurrent.getName(), restSite.getName());
 		}
     	
