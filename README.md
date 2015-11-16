@@ -1,5 +1,8 @@
 # CoCo
 testing
+HOW TO RUN COCO:
+
+https://www.dropbox.com/s/tbusvk9wr9khjec/howToRunCoco.pdf?dl=0
 
 TODO:
 
