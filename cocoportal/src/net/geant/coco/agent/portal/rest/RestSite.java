@@ -35,5 +35,19 @@ public class RestSite {
 	public String toString() {
 		return "site(" + String.valueOf(id) + "," + name + ")";
 	}
+	
+	@Override
+	public boolean equals(Object other){
+	    if (other == null) return false;
+	    if (other == this) return true;
+	    if (!(other instanceof RestSite))return false;
+	    RestSite otherMyClass = (RestSite)other;
+	    if (this.id == otherMyClass.id && this.name.equals(otherMyClass.getName())) {
+	    	return true;
+	    }
+	    else {
+	    	return false;
+	    }
+	}
 
 }
