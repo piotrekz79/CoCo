@@ -380,6 +380,12 @@ public class PortalController {
 		}
     	visJson.append("{\"nodes\" : [ ");
     	for (NetworkElement networkElement : nodeSet) {
+    		
+    		// ignore fake sites that are created "per vpn"
+    		if (networkElement.name.contains("vpn")) {
+    			continue;
+    		}
+    		
     		int fakeId = 0;
     		if (networkElement.nodeType.equals(NetworkElement.NODE_TYPE.CUSTOMER)) {
     			fakeId = networkElement.id;
@@ -531,6 +537,49 @@ public class PortalController {
     	sitesToAdd.removeAll(vpnCurrent.getSites());
     	List<RestSite> sitesToRemove = new ArrayList<RestSite>(vpnCurrent.getSites());
     	sitesToRemove.removeAll(vpnNew.getSites());
+    	
+    	// FIX FOR SITE PER VPN
+    	RestSite possibleSiteToRemove = null;
+    	RestSite possibleSiteToAdd = null;
+    	
+    	for (RestSite restSite : sitesToAdd) {
+    		if (restSite.getName().contains("tno")) {
+    			possibleSiteToRemove = restSite;
+    		}
+		}
+    	
+    	if (possibleSiteToRemove != null) {
+    		sitesToAdd.remove(possibleSiteToRemove);
+    		
+    		for (RestSite restSite : restSiteData.values()) {
+        		if (restSite.getName().contains(vpnCurrent.getName())) {
+        			possibleSiteToAdd = restSite;
+        			sitesToAdd.add(possibleSiteToAdd);
+        			continue;
+        		}
+    		}
+    	}
+    	
+    	possibleSiteToRemove = null;
+    	possibleSiteToAdd = null;
+    	
+    	for (RestSite restSite : sitesToRemove) {
+    		if (restSite.getName().contains("tno")) {
+    			possibleSiteToRemove = restSite;
+    		}
+		}
+    	
+    	if (possibleSiteToRemove != null) {
+    		sitesToRemove.remove(possibleSiteToRemove);
+    		
+    		for (RestSite restSite : restSiteData.values()) {
+        		if (restSite.getName().contains(vpnCurrent.getName())) {
+        			possibleSiteToAdd = restSite;
+        			sitesToRemove.add(possibleSiteToAdd);
+        			continue;
+        		}
+    		}
+    	}
     	
     	for (RestSite restSite : sitesToAdd) {
     		restAddSiteToVpn(vpnCurrent.getName(), restSite.getName());
