@@ -20,8 +20,7 @@ public class BgpRouter {
 		this.ipAddress = ipAddress;
 		this.port = port;
 	}
-	
-	
+
 	public void addPeer(String ipAddress, int asNumber)
 	{
 		
@@ -42,7 +41,7 @@ public class BgpRouter {
 		
 	}
 	
-	public void addVpn(String prefix, String rd, int tag)
+	public void addVpn(int aclNum, int routeMapNum, int seqNum, String prefix, String wildcard, String neighborIpAddress, int vpnNum)
 	{
 		try {
 		      TTransport transport;
@@ -53,7 +52,7 @@ public class BgpRouter {
 		      TProtocol protocol = new  TBinaryProtocol(transport);
 		      BgpConfigurator.Client client = new BgpConfigurator.Client(protocol);
 
-		      client.pushRoute(prefix, "", rd, tag);
+		      client.pushRoute(aclNum, routeMapNum, seqNum, prefix, wildcard, neighborIpAddress, vpnNum);
 
 		      transport.close();
 		    } catch (TException x) {
@@ -62,7 +61,7 @@ public class BgpRouter {
 		
 	}
 	
-	public void delVpn(String prefix,String rd) {
+	public void delVpn(int aclNum, int routeMapNum, int seqNum, String prefix, String neighborIpAddress) {
 
 		try {
 			TTransport transport;
@@ -72,8 +71,8 @@ public class BgpRouter {
 			TProtocol protocol = new TBinaryProtocol(transport);
 			BgpConfigurator.Client client = new BgpConfigurator.Client(protocol);
 
-			client.withdrawRoute(prefix, rd);
-
+			client.withdrawRoute(aclNum, routeMapNum, seqNum, prefix, neighborIpAddress);
+			
 			transport.close();
 		} catch (TException x) {
 			x.printStackTrace();
@@ -113,6 +112,29 @@ public class BgpRouter {
 			x.printStackTrace();
 		}
 		return null;
+	}
+	
+	public String getRouteTarget(String prefix)
+	{
+		String routeTarget = "";
+		try {
+		      TTransport transport;
+		      transport = new TSocket(this.ipAddress, this.port);
+		      transport.open();
+		      
+
+		      TProtocol protocol = new  TBinaryProtocol(transport);
+		      BgpConfigurator.Client client = new BgpConfigurator.Client(protocol);
+
+		      routeTarget = client.getRouteTarget(prefix);
+		      
+		      transport.close();
+		    } catch (TException x) {
+		      x.printStackTrace();
+		    } 
+		
+		return routeTarget;
+		
 	}
 	
 	
