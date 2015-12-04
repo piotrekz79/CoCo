@@ -65,9 +65,20 @@ public class TestApp {
     	while(it.hasNext())
     	{    	
     		BgpRouteEntry entry = it.next();
-    		bgprouter.delVpn(entry.getPrefix(), entry.getRd());
+    		//bgprouter.delVpn(entry.getPrefix(), entry.getRd());
     		System.out.println(entry);
     	}
+    	
+    	/*
+    	String prefix = "10.2.1.0/24";
+    	String routeTarget = bgprouter.getRouteTarget(prefix);
+    	System.out.println("Route Target");
+    	System.out.println(routeTarget);
+    	*/
+    	//bgprouter.addVpn(1, 1, 1, "10.2.1.0", "0.0.0.255", "10.3.0.254", 15);
+    	
+    	bgprouter.delVpn(1, 1, 1, "10.2.1.0/24", "10.3.0.254");
+    	
 		/*
 		
 		

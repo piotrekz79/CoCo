@@ -330,6 +330,36 @@ $('#add-nodelist').on('click', function(event) {
    }   
   node = currnode;
 
+  
+ /*  var isNodeInAnotherVpn = 0;
+  
+  $.getJSON("../rest/vpns", function(data) {
+	  var vpns = data;
+	  var i;
+		for ( i =0; i < vpns.length; i++)
+		{
+			var vpn = vpns[i];
+			for ( i =0; i < vpn.sites.length; i++)
+			{
+				var site = vpn.sites[i];
+				
+				if (site.name == node.label)
+				{
+					alert("dupa");
+					isNodeInAnotherVpn = 1;
+				}
+			}
+		}
+  });
+		
+  if (isNodeInAnotherVpn == 1)
+	{
+	  alert("Node already belongs to another VPN");
+	  return;
+	 }	 */
+  
+  
+  
   if ( currnode.group == "SWITCH" )
   {
 	alert("switches are not valid endpoints");
