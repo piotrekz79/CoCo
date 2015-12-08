@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,6 +12,8 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 
+import net.geant.coco.agent.portal.bgp.BgpRouteEntry;
+import net.geant.coco.agent.portal.bgp.BgpRouter;
 import net.geant.coco.agent.portal.dao.NetworkElement;
 import net.geant.coco.agent.portal.dao.NetworkInterface;
 import net.geant.coco.agent.portal.dao.NetworkLink;
@@ -158,6 +161,58 @@ public class PortalController {
 		log.debug("Starting core provisioning thread");
 		new Thread(setupThreadRunnable).start();
 		log.debug("Started core provisioning thread");
+		
+		
+		
+		class BgpThread implements Runnable {
+
+		    private NetworkSwitchesService networkSwitchesService;
+		    private NetworkLinksService networkLinksService;
+		    private NetworkSitesService networkSitesService;
+		    private BgpRouter bgpRouter;
+		    
+			public BgpThread(NetworkSwitchesService networkSwitchesService, NetworkLinksService networkLinksService, NetworkSitesService networkSitesService, BgpRouter bgpRouter) {
+				this.networkSwitchesService = networkSwitchesService;
+				this.networkLinksService = networkLinksService;
+				this.networkSitesService = networkSitesService;
+				this.bgpRouter = bgpRouter;
+
+			}
+
+			public void run() {
+				while (true) {
+					List<BgpRouteEntry> list = bgpRouter.getVpns();
+			    	
+			    	Iterator<BgpRouteEntry> it = list.iterator();
+			    	
+			    	while(it.hasNext())
+			    	{
+			    		BgpRouteEntry routeEntry = it.next();
+			    		System.out.println(routeEntry);
+			    		String prefix = routeEntry.getPrefix();
+			    		String routeTarget = bgpRouter.getRouteTarget(prefix);
+			    		System.out.println("RT:" + routeTarget);
+			    	}
+			    	String routeTarget = bgpRouter.getRouteTarget("10.0.0.1/24");
+			    	System.out.println("RT:" + routeTarget);
+			    	
+			    	try {
+						Thread.sleep(2000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		
+		String bgpIp = env.getProperty("ip");
+    	BgpRouter bgprouter = new BgpRouter(bgpIp, 7644);
+		Runnable bgpThreadRunnable = new BgpThread(networkSwitchesService, networkLinksService, networkSitesService, bgprouter);
+		log.debug("Starting bgp thread");
+		new Thread(bgpThreadRunnable).start();
+		log.debug("Started bgp thread");
+		
 	}
 
     @RequestMapping("/addsite")

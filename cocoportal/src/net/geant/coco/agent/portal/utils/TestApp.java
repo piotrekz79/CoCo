@@ -55,7 +55,7 @@ public class TestApp {
 		
 		//System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "ERROR");
 
-		/*
+		
     	BgpRouter bgprouter = new BgpRouter("134.221.121.203", 7644);
 
     	//bgprouter.addVpn(1, 1, 1, "10.3.1.0", wildcard, neighborIpAddress, vpnNum);
@@ -69,9 +69,11 @@ public class TestApp {
     		System.out.println(routeEntry);
     		String prefix = routeEntry.getPrefix();
     		String routeTarget = bgprouter.getRouteTarget(prefix);
+    		System.out.println("RT:" + routeTarget);
     	}
-		*/
-				
+    	String routeTarget = bgprouter.getRouteTarget("10.0.0.1/24");
+    	System.out.println("RT:" + routeTarget);
+		/*		
 		BasicDataSource dataSource = new BasicDataSource();
 
 		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
@@ -114,7 +116,7 @@ public class TestApp {
 		
 		result = networkSitesService.deleteNetworkSite("test");
 		System.out.println(String.valueOf(result));
-		
+		*/
 		/*
 		List<NetworkSwitch> networkSwitches = networkSwitchesService.getNetworkSwitches();
 		List<NetworkSwitch> networkSwitchesWithEnni = networkSwitchesService.getNetworkSwitchesWithNni();

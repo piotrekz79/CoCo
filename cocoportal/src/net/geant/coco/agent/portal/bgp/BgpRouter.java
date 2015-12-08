@@ -127,7 +127,7 @@ public class BgpRouter {
 		      BgpConfigurator.Client client = new BgpConfigurator.Client(protocol);
 
 		      routeTarget = client.getRouteTarget(prefix);
-		      
+
 		      transport.close();
 		    } catch (TException x) {
 		      x.printStackTrace();
