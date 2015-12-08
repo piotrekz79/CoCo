@@ -55,26 +55,29 @@ public class TestApp {
 		
 		//System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "ERROR");
 
-		
-    	BgpRouter bgprouter = new BgpRouter("134.221.121.204", 7644);
-    	
+		/*
+    	BgpRouter bgprouter = new BgpRouter("134.221.121.203", 7644);
+
+    	//bgprouter.addVpn(1, 1, 1, "10.3.1.0", wildcard, neighborIpAddress, vpnNum);
     	List<BgpRouteEntry> list = bgprouter.getVpns();
     	
     	Iterator<BgpRouteEntry> it = list.iterator();
     	
     	while(it.hasNext())
-    	{    	
-    		System.out.println(it.next());
+    	{
+    		BgpRouteEntry routeEntry = it.next();
+    		System.out.println(routeEntry);
+    		String prefix = routeEntry.getPrefix();
+    		String routeTarget = bgprouter.getRouteTarget(prefix);
     	}
-		/*
-		
-		
+		*/
+				
 		BasicDataSource dataSource = new BasicDataSource();
 
 		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
 		dataSource.setUsername("coco");
 		dataSource.setPassword("cocorules!");
-		dataSource.setUrl("jdbc:mysql://134.221.121.203:3306/CoCoDB");
+		dataSource.setUrl("jdbc:mysql://134.221.121.203:3306/CoCoDBTN");
 		dataSource.setMaxActive(10);
 		dataSource.setMaxIdle(5);
 		dataSource.setInitialSize(5);
@@ -100,6 +103,19 @@ public class TestApp {
 		vpnsService = new VpnsService();
 		vpnsService.setVpnDao(vpnsDao);
 		
+		int result = networkSitesService.insertNetworkSite("test", 1, 2, 3, 11, "test", "test");
+		System.out.println(String.valueOf(result));
+		
+		try {
+		    Thread.sleep(5000);                 //1000 milliseconds is one second.
+		} catch(InterruptedException ex) {
+		    Thread.currentThread().interrupt();
+		}
+		
+		result = networkSitesService.deleteNetworkSite("test");
+		System.out.println(String.valueOf(result));
+		
+		/*
 		List<NetworkSwitch> networkSwitches = networkSwitchesService.getNetworkSwitches();
 		List<NetworkSwitch> networkSwitchesWithEnni = networkSwitchesService.getNetworkSwitchesWithNni();
 		List<NetworkLink> networkLinks = networkLinksService.getNetworkLinks();
