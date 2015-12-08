@@ -52,6 +52,8 @@ public class BgpRouter {
 		      TProtocol protocol = new  TBinaryProtocol(transport);
 		      BgpConfigurator.Client client = new BgpConfigurator.Client(protocol);
 
+		      // aclNum and seqNum are the same (per site)
+		      // routeMapNum are per neighbor
 		      client.pushRoute(aclNum, routeMapNum, seqNum, prefix, wildcard, neighborIpAddress, vpnNum);
 
 		      transport.close();
@@ -99,8 +101,9 @@ public class BgpRouter {
 			while(it.hasNext())
 			{
 				Update update = it.next();
-				
-				retRoutes.add(new BgpRouteEntry(update.prefix + "/" + update.prefixlen, update.rd, update.nexthop, update.label));
+				String prefixWithLength = update.prefix + "/" + update.prefixlen;
+				String routeTarget = client.getRouteTarget(prefixWithLength);
+				retRoutes.add(new BgpRouteEntry(update.prefix + "/" + update.prefixlen, update.rd, update.nexthop, update.label, routeTarget));
 
 				
 			}

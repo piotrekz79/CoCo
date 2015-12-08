@@ -6,13 +6,15 @@ public class BgpRouteEntry {
 	private String rd;
 	private String nexthop;
 	private int label;
+	private String routeTarget;
 	
-	public BgpRouteEntry(String prefix, String rd, String nexthop, int label) {
+	public BgpRouteEntry(String prefix, String rd, String nexthop, int label, String routeTarget) {
 		super();
 		this.prefix = prefix;
 		this.rd = rd;
 		this.nexthop = nexthop;
 		this.label = label;
+		this.routeTarget = routeTarget;
 	}
 
 	public String getPrefix()
@@ -35,6 +37,11 @@ public class BgpRouteEntry {
 		return this.label;
 	}
 	
+	public String getRouteTarget()
+	{
+		return this.routeTarget;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -43,6 +50,7 @@ public class BgpRouteEntry {
 		result = prime * result + ((nexthop == null) ? 0 : nexthop.hashCode());
 		result = prime * result + ((prefix == null) ? 0 : prefix.hashCode());
 		result = prime * result + ((rd == null) ? 0 : rd.hashCode());
+		result = prime * result + ((routeTarget == null) ? 0 : routeTarget.hashCode());
 		return result;
 	}
 
@@ -72,12 +80,17 @@ public class BgpRouteEntry {
 				return false;
 		} else if (!rd.equals(other.rd))
 			return false;
+		if (routeTarget == null) {
+			if (other.routeTarget != null)
+				return false;
+		} else if (!routeTarget.equals(other.routeTarget))
+			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "BgpRouteEntry [prefix=" + prefix + ", rd=" + rd + ", nexthop=" + nexthop + ", label=" + label + "]";
+		return "BgpRouteEntry [prefix=" + prefix + ", rd=" + rd + ", nexthop=" + nexthop + ", label=" + label + ", routeTarget=" + routeTarget + "]";
 	}
 
 	

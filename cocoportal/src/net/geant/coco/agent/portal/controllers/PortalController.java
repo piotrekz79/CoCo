@@ -33,6 +33,7 @@ import net.geant.coco.agent.portal.service.VpnsService;
 import net.geant.coco.agent.portal.utils.NodeType;
 import net.geant.coco.agent.portal.utils.Pce;
 import net.geant.coco.agent.portal.utils.RestClient;
+import net.geant.coco.agent.portal.threads.BgpThread;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -76,6 +77,8 @@ public class PortalController {
     List<Vpn> vpns;
     
     private Pce pce;
+
+	private BgpRouter bgpRouter;
 
     @Autowired
     public void setNetworkSwitchService(
@@ -154,7 +157,7 @@ public class PortalController {
 				pce.setupCoreForwarding();
 			}
 		}
-
+		
 		String controllerUrl = env.getProperty("controller.url");
 		RestClient restClient = new RestClient(controllerUrl);
 		Runnable setupThreadRunnable = new SetupThread(restClient, networkSwitches, networkSites, networkSwitchesWithEnni);
@@ -162,53 +165,7 @@ public class PortalController {
 		new Thread(setupThreadRunnable).start();
 		log.debug("Started core provisioning thread");
 		
-		
-		
-		class BgpThread implements Runnable {
-
-		    private NetworkSwitchesService networkSwitchesService;
-		    private NetworkLinksService networkLinksService;
-		    private NetworkSitesService networkSitesService;
-		    private BgpRouter bgpRouter;
-		    
-			public BgpThread(NetworkSwitchesService networkSwitchesService, NetworkLinksService networkLinksService, NetworkSitesService networkSitesService, BgpRouter bgpRouter) {
-				this.networkSwitchesService = networkSwitchesService;
-				this.networkLinksService = networkLinksService;
-				this.networkSitesService = networkSitesService;
-				this.bgpRouter = bgpRouter;
-
-			}
-
-			public void run() {
-				while (true) {
-					List<BgpRouteEntry> list = bgpRouter.getVpns();
-			    	
-			    	Iterator<BgpRouteEntry> it = list.iterator();
-			    	
-			    	while(it.hasNext())
-			    	{
-			    		BgpRouteEntry routeEntry = it.next();
-			    		System.out.println(routeEntry);
-			    		String prefix = routeEntry.getPrefix();
-			    		String routeTarget = bgpRouter.getRouteTarget(prefix);
-			    		System.out.println("RT:" + routeTarget);
-			    	}
-			    	String routeTarget = bgpRouter.getRouteTarget("10.0.0.1/24");
-			    	System.out.println("RT:" + routeTarget);
-			    	
-			    	try {
-						Thread.sleep(2000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-		}
-		
-		String bgpIp = env.getProperty("ip");
-    	BgpRouter bgprouter = new BgpRouter(bgpIp, 7644);
-		Runnable bgpThreadRunnable = new BgpThread(networkSwitchesService, networkLinksService, networkSitesService, bgprouter);
+		Runnable bgpThreadRunnable = new BgpThread(networkSwitchesService, networkLinksService, networkSitesService, bgpRouter);
 		log.debug("Starting bgp thread");
 		new Thread(bgpThreadRunnable).start();
 		log.debug("Started bgp thread");
@@ -392,6 +349,8 @@ public class PortalController {
                 Vpn vpn = vpnsService.getVpn(vpnName);
                 log.info("MPLS label for " + vpnName + " is " + vpn.getMplsLabel());
                 pce.addSiteToVpn(networkSite, vpn.getMplsLabel(), networkSitesService.getNetworkSites(vpnName));
+                
+                //bgpRouter.addVpn(aclNum, routeMapNum, seqNum, networkSite.getIpv4Prefix(), "0.0.0.255", "", vpnNew.getId());
             }
         }
     }
@@ -599,6 +558,9 @@ public class PortalController {
     	this.vpns = vpnsService.getVpns();
     	
     	log.info("Initialize PCE object");
+		String bgpIp = env.getProperty("ip");
+    	bgpRouter = new BgpRouter(bgpIp, 7644);
+    	
     	setUpPce(networkSwitches, networkSites, networkSwitchesWithEnni);
     	
     	List<Vpn> vpnsFromDao = vpnsService.getVpns();

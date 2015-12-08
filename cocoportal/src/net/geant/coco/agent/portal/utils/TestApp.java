@@ -67,9 +67,6 @@ public class TestApp {
     	{
     		BgpRouteEntry routeEntry = it.next();
     		System.out.println(routeEntry);
-    		String prefix = routeEntry.getPrefix();
-    		String routeTarget = bgprouter.getRouteTarget(prefix);
-    		System.out.println("RT:" + routeTarget);
     	}
     	String routeTarget = bgprouter.getRouteTarget("10.0.0.1/24");
     	System.out.println("RT:" + routeTarget);
