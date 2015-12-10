@@ -49,7 +49,7 @@ public class TestApp {
     private static NetworkLinksService networkLinksService;
     private static NetworkSitesService networkSitesService;
     private static VpnsService vpnsService;
-    private static Pce pce;
+    public static Pce pce;
 	private static long testTime;
 	
 	private static final String lastFlowFilename = "lastFlowNumber.txt";
@@ -57,6 +57,13 @@ public class TestApp {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		log.info("Start test app");
+		
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "trace");
     	
@@ -117,6 +124,14 @@ public class TestApp {
 		new Thread(bgpThreadRunnable).start();
 		log.debug("Started bgp thread");
 		
+		
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
     	String siteIpPrefix = "10.2.1.0/24";
     	String neighborIp = "10.3.0.254";
     	String neighborName = "tno-south";
@@ -130,14 +145,6 @@ public class TestApp {
 		pce.updatePceElement(newNetworkSites);
 
 		networkAddSiteToVpn("vpn1", neighborName + "-" + siteIpPrefix);
-		
-		System.out.println(String.valueOf(result));
-		
-		try {
-		    Thread.sleep(5000);                 //1000 milliseconds is one second.
-		} catch(InterruptedException ex) {
-		    Thread.currentThread().interrupt();
-		}
 		
 		
 		/*
@@ -293,7 +300,7 @@ public class TestApp {
         */
 	}
 	
-	private static void networkAddSiteToVpn(String vpnName, String addSiteName) {
+	public static void networkAddSiteToVpn(String vpnName, String addSiteName) {
     	vpnsService.addSite(vpnName, addSiteName);
         // find site object
         for (NetworkSite networkSite : networkSitesService.getNetworkSites()) {

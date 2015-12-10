@@ -2,6 +2,7 @@ package net.geant.coco.agent.portal.threads;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -10,9 +11,11 @@ import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import net.geant.coco.agent.portal.bgp.BgpRouteEntry;
 import net.geant.coco.agent.portal.bgp.BgpRouter;
+import net.geant.coco.agent.portal.dao.NetworkSite;
 import net.geant.coco.agent.portal.service.NetworkLinksService;
 import net.geant.coco.agent.portal.service.NetworkSitesService;
 import net.geant.coco.agent.portal.service.NetworkSwitchesService;
+import net.geant.coco.agent.portal.utils.TestApp;
 
 @Slf4j
 public class BgpThread implements Runnable {
@@ -48,9 +51,9 @@ public class BgpThread implements Runnable {
 		
 		while (true) {
 			
-			Map<String, BgpRouteEntry> newPrefixToBgpRouteEntry = new HashMap<String, BgpRouteEntry>();
-		    
-			List<BgpRouteEntry> bgpRouteEntryListNew = getNewRouteEntries(this.prefixToBgpRouteEntry, newPrefixToBgpRouteEntry);
+			Map<String, BgpRouteEntry> newPrefixToBgpRouteEntry = getPrefixToBgpRouteEntryMap();
+
+			List<BgpRouteEntry> bgpRouteEntryListNew = getNewRouteEntries(new HashMap<String, BgpRouteEntry>(this.prefixToBgpRouteEntry), newPrefixToBgpRouteEntry);
 			
 			if (!bgpRouteEntryListNew.isEmpty()) {
 				
@@ -77,6 +80,11 @@ public class BgpThread implements Runnable {
 	
 	private void addVirtualSiteExternal(String prefix, int vlanId, String neighborIp) {
 		networkSitesService.insertNetworkSite(prefix, vlanId, neighborIp);
+		
+		List<NetworkSite> newNetworkSites = networkSitesService.getNetworkSites();
+		TestApp.pce.updatePceElement(newNetworkSites);
+		
+		TestApp.networkAddSiteToVpn("vpn1", "tno-north-" + prefix);
 	}
 
 	private Map<String, BgpRouteEntry> getPrefixToBgpRouteEntryMap() {
@@ -101,8 +109,8 @@ public class BgpThread implements Runnable {
 	private List<BgpRouteEntry> getNewRouteEntries(Map<String, BgpRouteEntry> oldPrefixToBgpRouteEntry, Map<String, BgpRouteEntry> newPrefixToBgpRouteEntry) {
 		List<BgpRouteEntry> bgpRouteEntryList = new ArrayList<BgpRouteEntry>();
 		
-		Set<String> oldPrefixes = oldPrefixToBgpRouteEntry.keySet();
-		Set<String> newPrefixes = newPrefixToBgpRouteEntry.keySet();
+		Set<String> oldPrefixes = new HashSet<String>(oldPrefixToBgpRouteEntry.keySet());
+		Set<String> newPrefixes = new HashSet<String>(newPrefixToBgpRouteEntry.keySet());
 		
 		newPrefixes.removeAll(oldPrefixes);
 		
