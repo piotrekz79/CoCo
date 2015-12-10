@@ -41,7 +41,7 @@ public class BgpRouter {
 		
 	}
 	
-	public void addVpn(int aclNum, int routeMapNum, int seqNum, String prefix, String wildcard, String neighborIpAddress, int vpnNum)
+	public void addVpn(String prefix, String neighborIpAddress, int vpnNum)
 	{
 		try {
 		      TTransport transport;
@@ -54,7 +54,7 @@ public class BgpRouter {
 
 		      // aclNum and seqNum are the same (per site)
 		      // routeMapNum are per neighbor
-		      client.pushRoute(aclNum, routeMapNum, seqNum, prefix, wildcard, neighborIpAddress, vpnNum);
+		      client.pushRoute(prefix, vpnNum, neighborIpAddress);
 
 		      transport.close();
 		    } catch (TException x) {
@@ -63,7 +63,7 @@ public class BgpRouter {
 		
 	}
 	
-	public void delVpn(int aclNum, int routeMapNum, int seqNum, String prefix, String neighborIpAddress) {
+	public void delVpn(String prefix, String neighborIpAddress, int vpnNum) {
 
 		try {
 			TTransport transport;
@@ -73,7 +73,7 @@ public class BgpRouter {
 			TProtocol protocol = new TBinaryProtocol(transport);
 			BgpConfigurator.Client client = new BgpConfigurator.Client(protocol);
 
-			client.withdrawRoute(aclNum, routeMapNum, seqNum, prefix, neighborIpAddress);
+			client.withdrawRoute(prefix, vpnNum, neighborIpAddress);
 			
 			transport.close();
 		} catch (TException x) {

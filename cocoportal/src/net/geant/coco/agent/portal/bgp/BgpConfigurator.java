@@ -41,17 +41,17 @@ public class BgpConfigurator {
 
     public int deletePeer(String neighborIpAddress) throws org.apache.thrift.TException;
 
-    public int addRouteMapToMPBGPPeer(String neighborIpAddress, int routeMapNumber) throws org.apache.thrift.TException;
+    public int addRouteMapToMPBGPPeer(String neighborIpAddress) throws org.apache.thrift.TException;
 
-    public int deleteRouteMapToMPBGPPeer(String neighborIpAddress, int routeMapNumber) throws org.apache.thrift.TException;
+    public int deleteRouteMapToMPBGPPeer(String neighborIpAddress) throws org.apache.thrift.TException;
 
     public int addVrf(String rd, List<String> irts, List<String> erts) throws org.apache.thrift.TException;
 
     public int delVrf(String rd) throws org.apache.thrift.TException;
 
-    public int pushRoute(int aclNum, int routeMapNum, int seqNum, String prefix, String wildcard, String neighborIpAddress, int vpnNum) throws org.apache.thrift.TException;
+    public int pushRoute(String prefix, int vpnNum, String neighborIpAddress) throws org.apache.thrift.TException;
 
-    public int withdrawRoute(int aclNum, int routeMapNum, int seqNum, String prefix, String neighborIpAddress) throws org.apache.thrift.TException;
+    public int withdrawRoute(String prefix, int vpnNum, String neighborIpAddress) throws org.apache.thrift.TException;
 
     public Routes getRoutes(int optype, int winSize) throws org.apache.thrift.TException;
 
@@ -69,17 +69,17 @@ public class BgpConfigurator {
 
     public void deletePeer(String neighborIpAddress, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.deletePeer_call> resultHandler) throws org.apache.thrift.TException;
 
-    public void addRouteMapToMPBGPPeer(String neighborIpAddress, int routeMapNumber, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.addRouteMapToMPBGPPeer_call> resultHandler) throws org.apache.thrift.TException;
+    public void addRouteMapToMPBGPPeer(String neighborIpAddress, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.addRouteMapToMPBGPPeer_call> resultHandler) throws org.apache.thrift.TException;
 
-    public void deleteRouteMapToMPBGPPeer(String neighborIpAddress, int routeMapNumber, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.deleteRouteMapToMPBGPPeer_call> resultHandler) throws org.apache.thrift.TException;
+    public void deleteRouteMapToMPBGPPeer(String neighborIpAddress, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.deleteRouteMapToMPBGPPeer_call> resultHandler) throws org.apache.thrift.TException;
 
     public void addVrf(String rd, List<String> irts, List<String> erts, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.addVrf_call> resultHandler) throws org.apache.thrift.TException;
 
     public void delVrf(String rd, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.delVrf_call> resultHandler) throws org.apache.thrift.TException;
 
-    public void pushRoute(int aclNum, int routeMapNum, int seqNum, String prefix, String wildcard, String neighborIpAddress, int vpnNum, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.pushRoute_call> resultHandler) throws org.apache.thrift.TException;
+    public void pushRoute(String prefix, int vpnNum, String neighborIpAddress, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.pushRoute_call> resultHandler) throws org.apache.thrift.TException;
 
-    public void withdrawRoute(int aclNum, int routeMapNum, int seqNum, String prefix, String neighborIpAddress, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.withdrawRoute_call> resultHandler) throws org.apache.thrift.TException;
+    public void withdrawRoute(String prefix, int vpnNum, String neighborIpAddress, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.withdrawRoute_call> resultHandler) throws org.apache.thrift.TException;
 
     public void getRoutes(int optype, int winSize, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.getRoutes_call> resultHandler) throws org.apache.thrift.TException;
 
@@ -203,17 +203,16 @@ public class BgpConfigurator {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "deletePeer failed: unknown result");
     }
 
-    public int addRouteMapToMPBGPPeer(String neighborIpAddress, int routeMapNumber) throws org.apache.thrift.TException
+    public int addRouteMapToMPBGPPeer(String neighborIpAddress) throws org.apache.thrift.TException
     {
-      send_addRouteMapToMPBGPPeer(neighborIpAddress, routeMapNumber);
+      send_addRouteMapToMPBGPPeer(neighborIpAddress);
       return recv_addRouteMapToMPBGPPeer();
     }
 
-    public void send_addRouteMapToMPBGPPeer(String neighborIpAddress, int routeMapNumber) throws org.apache.thrift.TException
+    public void send_addRouteMapToMPBGPPeer(String neighborIpAddress) throws org.apache.thrift.TException
     {
       addRouteMapToMPBGPPeer_args args = new addRouteMapToMPBGPPeer_args();
       args.setNeighborIpAddress(neighborIpAddress);
-      args.setRouteMapNumber(routeMapNumber);
       sendBase("addRouteMapToMPBGPPeer", args);
     }
 
@@ -227,17 +226,16 @@ public class BgpConfigurator {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "addRouteMapToMPBGPPeer failed: unknown result");
     }
 
-    public int deleteRouteMapToMPBGPPeer(String neighborIpAddress, int routeMapNumber) throws org.apache.thrift.TException
+    public int deleteRouteMapToMPBGPPeer(String neighborIpAddress) throws org.apache.thrift.TException
     {
-      send_deleteRouteMapToMPBGPPeer(neighborIpAddress, routeMapNumber);
+      send_deleteRouteMapToMPBGPPeer(neighborIpAddress);
       return recv_deleteRouteMapToMPBGPPeer();
     }
 
-    public void send_deleteRouteMapToMPBGPPeer(String neighborIpAddress, int routeMapNumber) throws org.apache.thrift.TException
+    public void send_deleteRouteMapToMPBGPPeer(String neighborIpAddress) throws org.apache.thrift.TException
     {
       deleteRouteMapToMPBGPPeer_args args = new deleteRouteMapToMPBGPPeer_args();
       args.setNeighborIpAddress(neighborIpAddress);
-      args.setRouteMapNumber(routeMapNumber);
       sendBase("deleteRouteMapToMPBGPPeer", args);
     }
 
@@ -299,22 +297,18 @@ public class BgpConfigurator {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "delVrf failed: unknown result");
     }
 
-    public int pushRoute(int aclNum, int routeMapNum, int seqNum, String prefix, String wildcard, String neighborIpAddress, int vpnNum) throws org.apache.thrift.TException
+    public int pushRoute(String prefix, int vpnNum, String neighborIpAddress) throws org.apache.thrift.TException
     {
-      send_pushRoute(aclNum, routeMapNum, seqNum, prefix, wildcard, neighborIpAddress, vpnNum);
+      send_pushRoute(prefix, vpnNum, neighborIpAddress);
       return recv_pushRoute();
     }
 
-    public void send_pushRoute(int aclNum, int routeMapNum, int seqNum, String prefix, String wildcard, String neighborIpAddress, int vpnNum) throws org.apache.thrift.TException
+    public void send_pushRoute(String prefix, int vpnNum, String neighborIpAddress) throws org.apache.thrift.TException
     {
       pushRoute_args args = new pushRoute_args();
-      args.setAclNum(aclNum);
-      args.setRouteMapNum(routeMapNum);
-      args.setSeqNum(seqNum);
       args.setPrefix(prefix);
-      args.setWildcard(wildcard);
-      args.setNeighborIpAddress(neighborIpAddress);
       args.setVpnNum(vpnNum);
+      args.setNeighborIpAddress(neighborIpAddress);
       sendBase("pushRoute", args);
     }
 
@@ -328,19 +322,17 @@ public class BgpConfigurator {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "pushRoute failed: unknown result");
     }
 
-    public int withdrawRoute(int aclNum, int routeMapNum, int seqNum, String prefix, String neighborIpAddress) throws org.apache.thrift.TException
+    public int withdrawRoute(String prefix, int vpnNum, String neighborIpAddress) throws org.apache.thrift.TException
     {
-      send_withdrawRoute(aclNum, routeMapNum, seqNum, prefix, neighborIpAddress);
+      send_withdrawRoute(prefix, vpnNum, neighborIpAddress);
       return recv_withdrawRoute();
     }
 
-    public void send_withdrawRoute(int aclNum, int routeMapNum, int seqNum, String prefix, String neighborIpAddress) throws org.apache.thrift.TException
+    public void send_withdrawRoute(String prefix, int vpnNum, String neighborIpAddress) throws org.apache.thrift.TException
     {
       withdrawRoute_args args = new withdrawRoute_args();
-      args.setAclNum(aclNum);
-      args.setRouteMapNum(routeMapNum);
-      args.setSeqNum(seqNum);
       args.setPrefix(prefix);
+      args.setVpnNum(vpnNum);
       args.setNeighborIpAddress(neighborIpAddress);
       sendBase("withdrawRoute", args);
     }
@@ -560,27 +552,24 @@ public class BgpConfigurator {
       }
     }
 
-    public void addRouteMapToMPBGPPeer(String neighborIpAddress, int routeMapNumber, org.apache.thrift.async.AsyncMethodCallback<addRouteMapToMPBGPPeer_call> resultHandler) throws org.apache.thrift.TException {
+    public void addRouteMapToMPBGPPeer(String neighborIpAddress, org.apache.thrift.async.AsyncMethodCallback<addRouteMapToMPBGPPeer_call> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      addRouteMapToMPBGPPeer_call method_call = new addRouteMapToMPBGPPeer_call(neighborIpAddress, routeMapNumber, resultHandler, this, ___protocolFactory, ___transport);
+      addRouteMapToMPBGPPeer_call method_call = new addRouteMapToMPBGPPeer_call(neighborIpAddress, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class addRouteMapToMPBGPPeer_call extends org.apache.thrift.async.TAsyncMethodCall {
       private String neighborIpAddress;
-      private int routeMapNumber;
-      public addRouteMapToMPBGPPeer_call(String neighborIpAddress, int routeMapNumber, org.apache.thrift.async.AsyncMethodCallback<addRouteMapToMPBGPPeer_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public addRouteMapToMPBGPPeer_call(String neighborIpAddress, org.apache.thrift.async.AsyncMethodCallback<addRouteMapToMPBGPPeer_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.neighborIpAddress = neighborIpAddress;
-        this.routeMapNumber = routeMapNumber;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("addRouteMapToMPBGPPeer", org.apache.thrift.protocol.TMessageType.CALL, 0));
         addRouteMapToMPBGPPeer_args args = new addRouteMapToMPBGPPeer_args();
         args.setNeighborIpAddress(neighborIpAddress);
-        args.setRouteMapNumber(routeMapNumber);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -595,27 +584,24 @@ public class BgpConfigurator {
       }
     }
 
-    public void deleteRouteMapToMPBGPPeer(String neighborIpAddress, int routeMapNumber, org.apache.thrift.async.AsyncMethodCallback<deleteRouteMapToMPBGPPeer_call> resultHandler) throws org.apache.thrift.TException {
+    public void deleteRouteMapToMPBGPPeer(String neighborIpAddress, org.apache.thrift.async.AsyncMethodCallback<deleteRouteMapToMPBGPPeer_call> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      deleteRouteMapToMPBGPPeer_call method_call = new deleteRouteMapToMPBGPPeer_call(neighborIpAddress, routeMapNumber, resultHandler, this, ___protocolFactory, ___transport);
+      deleteRouteMapToMPBGPPeer_call method_call = new deleteRouteMapToMPBGPPeer_call(neighborIpAddress, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class deleteRouteMapToMPBGPPeer_call extends org.apache.thrift.async.TAsyncMethodCall {
       private String neighborIpAddress;
-      private int routeMapNumber;
-      public deleteRouteMapToMPBGPPeer_call(String neighborIpAddress, int routeMapNumber, org.apache.thrift.async.AsyncMethodCallback<deleteRouteMapToMPBGPPeer_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public deleteRouteMapToMPBGPPeer_call(String neighborIpAddress, org.apache.thrift.async.AsyncMethodCallback<deleteRouteMapToMPBGPPeer_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.neighborIpAddress = neighborIpAddress;
-        this.routeMapNumber = routeMapNumber;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("deleteRouteMapToMPBGPPeer", org.apache.thrift.protocol.TMessageType.CALL, 0));
         deleteRouteMapToMPBGPPeer_args args = new deleteRouteMapToMPBGPPeer_args();
         args.setNeighborIpAddress(neighborIpAddress);
-        args.setRouteMapNumber(routeMapNumber);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -700,42 +686,30 @@ public class BgpConfigurator {
       }
     }
 
-    public void pushRoute(int aclNum, int routeMapNum, int seqNum, String prefix, String wildcard, String neighborIpAddress, int vpnNum, org.apache.thrift.async.AsyncMethodCallback<pushRoute_call> resultHandler) throws org.apache.thrift.TException {
+    public void pushRoute(String prefix, int vpnNum, String neighborIpAddress, org.apache.thrift.async.AsyncMethodCallback<pushRoute_call> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      pushRoute_call method_call = new pushRoute_call(aclNum, routeMapNum, seqNum, prefix, wildcard, neighborIpAddress, vpnNum, resultHandler, this, ___protocolFactory, ___transport);
+      pushRoute_call method_call = new pushRoute_call(prefix, vpnNum, neighborIpAddress, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class pushRoute_call extends org.apache.thrift.async.TAsyncMethodCall {
-      private int aclNum;
-      private int routeMapNum;
-      private int seqNum;
       private String prefix;
-      private String wildcard;
-      private String neighborIpAddress;
       private int vpnNum;
-      public pushRoute_call(int aclNum, int routeMapNum, int seqNum, String prefix, String wildcard, String neighborIpAddress, int vpnNum, org.apache.thrift.async.AsyncMethodCallback<pushRoute_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private String neighborIpAddress;
+      public pushRoute_call(String prefix, int vpnNum, String neighborIpAddress, org.apache.thrift.async.AsyncMethodCallback<pushRoute_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
-        this.aclNum = aclNum;
-        this.routeMapNum = routeMapNum;
-        this.seqNum = seqNum;
         this.prefix = prefix;
-        this.wildcard = wildcard;
-        this.neighborIpAddress = neighborIpAddress;
         this.vpnNum = vpnNum;
+        this.neighborIpAddress = neighborIpAddress;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("pushRoute", org.apache.thrift.protocol.TMessageType.CALL, 0));
         pushRoute_args args = new pushRoute_args();
-        args.setAclNum(aclNum);
-        args.setRouteMapNum(routeMapNum);
-        args.setSeqNum(seqNum);
         args.setPrefix(prefix);
-        args.setWildcard(wildcard);
-        args.setNeighborIpAddress(neighborIpAddress);
         args.setVpnNum(vpnNum);
+        args.setNeighborIpAddress(neighborIpAddress);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -750,35 +724,29 @@ public class BgpConfigurator {
       }
     }
 
-    public void withdrawRoute(int aclNum, int routeMapNum, int seqNum, String prefix, String neighborIpAddress, org.apache.thrift.async.AsyncMethodCallback<withdrawRoute_call> resultHandler) throws org.apache.thrift.TException {
+    public void withdrawRoute(String prefix, int vpnNum, String neighborIpAddress, org.apache.thrift.async.AsyncMethodCallback<withdrawRoute_call> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      withdrawRoute_call method_call = new withdrawRoute_call(aclNum, routeMapNum, seqNum, prefix, neighborIpAddress, resultHandler, this, ___protocolFactory, ___transport);
+      withdrawRoute_call method_call = new withdrawRoute_call(prefix, vpnNum, neighborIpAddress, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class withdrawRoute_call extends org.apache.thrift.async.TAsyncMethodCall {
-      private int aclNum;
-      private int routeMapNum;
-      private int seqNum;
       private String prefix;
+      private int vpnNum;
       private String neighborIpAddress;
-      public withdrawRoute_call(int aclNum, int routeMapNum, int seqNum, String prefix, String neighborIpAddress, org.apache.thrift.async.AsyncMethodCallback<withdrawRoute_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public withdrawRoute_call(String prefix, int vpnNum, String neighborIpAddress, org.apache.thrift.async.AsyncMethodCallback<withdrawRoute_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
-        this.aclNum = aclNum;
-        this.routeMapNum = routeMapNum;
-        this.seqNum = seqNum;
         this.prefix = prefix;
+        this.vpnNum = vpnNum;
         this.neighborIpAddress = neighborIpAddress;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("withdrawRoute", org.apache.thrift.protocol.TMessageType.CALL, 0));
         withdrawRoute_args args = new withdrawRoute_args();
-        args.setAclNum(aclNum);
-        args.setRouteMapNum(routeMapNum);
-        args.setSeqNum(seqNum);
         args.setPrefix(prefix);
+        args.setVpnNum(vpnNum);
         args.setNeighborIpAddress(neighborIpAddress);
         args.write(prot);
         prot.writeMessageEnd();
@@ -988,7 +956,7 @@ public class BgpConfigurator {
 
       public addRouteMapToMPBGPPeer_result getResult(I iface, addRouteMapToMPBGPPeer_args args) throws org.apache.thrift.TException {
         addRouteMapToMPBGPPeer_result result = new addRouteMapToMPBGPPeer_result();
-        result.success = iface.addRouteMapToMPBGPPeer(args.neighborIpAddress, args.routeMapNumber);
+        result.success = iface.addRouteMapToMPBGPPeer(args.neighborIpAddress);
         result.setSuccessIsSet(true);
         return result;
       }
@@ -1009,7 +977,7 @@ public class BgpConfigurator {
 
       public deleteRouteMapToMPBGPPeer_result getResult(I iface, deleteRouteMapToMPBGPPeer_args args) throws org.apache.thrift.TException {
         deleteRouteMapToMPBGPPeer_result result = new deleteRouteMapToMPBGPPeer_result();
-        result.success = iface.deleteRouteMapToMPBGPPeer(args.neighborIpAddress, args.routeMapNumber);
+        result.success = iface.deleteRouteMapToMPBGPPeer(args.neighborIpAddress);
         result.setSuccessIsSet(true);
         return result;
       }
@@ -1072,7 +1040,7 @@ public class BgpConfigurator {
 
       public pushRoute_result getResult(I iface, pushRoute_args args) throws org.apache.thrift.TException {
         pushRoute_result result = new pushRoute_result();
-        result.success = iface.pushRoute(args.aclNum, args.routeMapNum, args.seqNum, args.prefix, args.wildcard, args.neighborIpAddress, args.vpnNum);
+        result.success = iface.pushRoute(args.prefix, args.vpnNum, args.neighborIpAddress);
         result.setSuccessIsSet(true);
         return result;
       }
@@ -1093,7 +1061,7 @@ public class BgpConfigurator {
 
       public withdrawRoute_result getResult(I iface, withdrawRoute_args args) throws org.apache.thrift.TException {
         withdrawRoute_result result = new withdrawRoute_result();
-        result.success = iface.withdrawRoute(args.aclNum, args.routeMapNum, args.seqNum, args.prefix, args.neighborIpAddress);
+        result.success = iface.withdrawRoute(args.prefix, args.vpnNum, args.neighborIpAddress);
         result.setSuccessIsSet(true);
         return result;
       }
@@ -4347,7 +4315,6 @@ public class BgpConfigurator {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("addRouteMapToMPBGPPeer_args");
 
     private static final org.apache.thrift.protocol.TField NEIGHBOR_IP_ADDRESS_FIELD_DESC = new org.apache.thrift.protocol.TField("neighborIpAddress", org.apache.thrift.protocol.TType.STRING, (short)1);
-    private static final org.apache.thrift.protocol.TField ROUTE_MAP_NUMBER_FIELD_DESC = new org.apache.thrift.protocol.TField("routeMapNumber", org.apache.thrift.protocol.TType.I32, (short)2);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -4356,12 +4323,10 @@ public class BgpConfigurator {
     }
 
     public String neighborIpAddress; // required
-    public int routeMapNumber; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      NEIGHBOR_IP_ADDRESS((short)1, "neighborIpAddress"),
-      ROUTE_MAP_NUMBER((short)2, "routeMapNumber");
+      NEIGHBOR_IP_ADDRESS((short)1, "neighborIpAddress");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -4378,8 +4343,6 @@ public class BgpConfigurator {
         switch(fieldId) {
           case 1: // NEIGHBOR_IP_ADDRESS
             return NEIGHBOR_IP_ADDRESS;
-          case 2: // ROUTE_MAP_NUMBER
-            return ROUTE_MAP_NUMBER;
           default:
             return null;
         }
@@ -4420,15 +4383,11 @@ public class BgpConfigurator {
     }
 
     // isset id assignments
-    private static final int __ROUTEMAPNUMBER_ISSET_ID = 0;
-    private byte __isset_bitfield = 0;
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.NEIGHBOR_IP_ADDRESS, new org.apache.thrift.meta_data.FieldMetaData("neighborIpAddress", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-      tmpMap.put(_Fields.ROUTE_MAP_NUMBER, new org.apache.thrift.meta_data.FieldMetaData("routeMapNumber", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(addRouteMapToMPBGPPeer_args.class, metaDataMap);
     }
@@ -4437,24 +4396,19 @@ public class BgpConfigurator {
     }
 
     public addRouteMapToMPBGPPeer_args(
-      String neighborIpAddress,
-      int routeMapNumber)
+      String neighborIpAddress)
     {
       this();
       this.neighborIpAddress = neighborIpAddress;
-      this.routeMapNumber = routeMapNumber;
-      setRouteMapNumberIsSet(true);
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
     public addRouteMapToMPBGPPeer_args(addRouteMapToMPBGPPeer_args other) {
-      __isset_bitfield = other.__isset_bitfield;
       if (other.isSetNeighborIpAddress()) {
         this.neighborIpAddress = other.neighborIpAddress;
       }
-      this.routeMapNumber = other.routeMapNumber;
     }
 
     public addRouteMapToMPBGPPeer_args deepCopy() {
@@ -4464,8 +4418,6 @@ public class BgpConfigurator {
     @Override
     public void clear() {
       this.neighborIpAddress = null;
-      setRouteMapNumberIsSet(false);
-      this.routeMapNumber = 0;
     }
 
     public String getNeighborIpAddress() {
@@ -4492,29 +4444,6 @@ public class BgpConfigurator {
       }
     }
 
-    public int getRouteMapNumber() {
-      return this.routeMapNumber;
-    }
-
-    public addRouteMapToMPBGPPeer_args setRouteMapNumber(int routeMapNumber) {
-      this.routeMapNumber = routeMapNumber;
-      setRouteMapNumberIsSet(true);
-      return this;
-    }
-
-    public void unsetRouteMapNumber() {
-      __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __ROUTEMAPNUMBER_ISSET_ID);
-    }
-
-    /** Returns true if field routeMapNumber is set (has been assigned a value) and false otherwise */
-    public boolean isSetRouteMapNumber() {
-      return EncodingUtils.testBit(__isset_bitfield, __ROUTEMAPNUMBER_ISSET_ID);
-    }
-
-    public void setRouteMapNumberIsSet(boolean value) {
-      __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __ROUTEMAPNUMBER_ISSET_ID, value);
-    }
-
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case NEIGHBOR_IP_ADDRESS:
@@ -4525,14 +4454,6 @@ public class BgpConfigurator {
         }
         break;
 
-      case ROUTE_MAP_NUMBER:
-        if (value == null) {
-          unsetRouteMapNumber();
-        } else {
-          setRouteMapNumber((Integer)value);
-        }
-        break;
-
       }
     }
 
@@ -4540,9 +4461,6 @@ public class BgpConfigurator {
       switch (field) {
       case NEIGHBOR_IP_ADDRESS:
         return getNeighborIpAddress();
-
-      case ROUTE_MAP_NUMBER:
-        return Integer.valueOf(getRouteMapNumber());
 
       }
       throw new IllegalStateException();
@@ -4557,8 +4475,6 @@ public class BgpConfigurator {
       switch (field) {
       case NEIGHBOR_IP_ADDRESS:
         return isSetNeighborIpAddress();
-      case ROUTE_MAP_NUMBER:
-        return isSetRouteMapNumber();
       }
       throw new IllegalStateException();
     }
@@ -4585,15 +4501,6 @@ public class BgpConfigurator {
           return false;
       }
 
-      boolean this_present_routeMapNumber = true;
-      boolean that_present_routeMapNumber = true;
-      if (this_present_routeMapNumber || that_present_routeMapNumber) {
-        if (!(this_present_routeMapNumber && that_present_routeMapNumber))
-          return false;
-        if (this.routeMapNumber != that.routeMapNumber)
-          return false;
-      }
-
       return true;
     }
 
@@ -4616,16 +4523,6 @@ public class BgpConfigurator {
       }
       if (isSetNeighborIpAddress()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.neighborIpAddress, typedOther.neighborIpAddress);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      lastComparison = Boolean.valueOf(isSetRouteMapNumber()).compareTo(typedOther.isSetRouteMapNumber());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetRouteMapNumber()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.routeMapNumber, typedOther.routeMapNumber);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -4657,10 +4554,6 @@ public class BgpConfigurator {
         sb.append(this.neighborIpAddress);
       }
       first = false;
-      if (!first) sb.append(", ");
-      sb.append("routeMapNumber:");
-      sb.append(this.routeMapNumber);
-      first = false;
       sb.append(")");
       return sb.toString();
     }
@@ -4680,8 +4573,6 @@ public class BgpConfigurator {
 
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
-        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
-        __isset_bitfield = 0;
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
@@ -4714,14 +4605,6 @@ public class BgpConfigurator {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
-            case 2: // ROUTE_MAP_NUMBER
-              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-                struct.routeMapNumber = iprot.readI32();
-                struct.setRouteMapNumberIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -4742,9 +4625,6 @@ public class BgpConfigurator {
           oprot.writeString(struct.neighborIpAddress);
           oprot.writeFieldEnd();
         }
-        oprot.writeFieldBegin(ROUTE_MAP_NUMBER_FIELD_DESC);
-        oprot.writeI32(struct.routeMapNumber);
-        oprot.writeFieldEnd();
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -4766,29 +4646,19 @@ public class BgpConfigurator {
         if (struct.isSetNeighborIpAddress()) {
           optionals.set(0);
         }
-        if (struct.isSetRouteMapNumber()) {
-          optionals.set(1);
-        }
-        oprot.writeBitSet(optionals, 2);
+        oprot.writeBitSet(optionals, 1);
         if (struct.isSetNeighborIpAddress()) {
           oprot.writeString(struct.neighborIpAddress);
-        }
-        if (struct.isSetRouteMapNumber()) {
-          oprot.writeI32(struct.routeMapNumber);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, addRouteMapToMPBGPPeer_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(2);
+        BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           struct.neighborIpAddress = iprot.readString();
           struct.setNeighborIpAddressIsSet(true);
-        }
-        if (incoming.get(1)) {
-          struct.routeMapNumber = iprot.readI32();
-          struct.setRouteMapNumberIsSet(true);
         }
       }
     }
@@ -5153,7 +5023,6 @@ public class BgpConfigurator {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("deleteRouteMapToMPBGPPeer_args");
 
     private static final org.apache.thrift.protocol.TField NEIGHBOR_IP_ADDRESS_FIELD_DESC = new org.apache.thrift.protocol.TField("neighborIpAddress", org.apache.thrift.protocol.TType.STRING, (short)1);
-    private static final org.apache.thrift.protocol.TField ROUTE_MAP_NUMBER_FIELD_DESC = new org.apache.thrift.protocol.TField("routeMapNumber", org.apache.thrift.protocol.TType.I32, (short)2);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -5162,12 +5031,10 @@ public class BgpConfigurator {
     }
 
     public String neighborIpAddress; // required
-    public int routeMapNumber; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      NEIGHBOR_IP_ADDRESS((short)1, "neighborIpAddress"),
-      ROUTE_MAP_NUMBER((short)2, "routeMapNumber");
+      NEIGHBOR_IP_ADDRESS((short)1, "neighborIpAddress");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -5184,8 +5051,6 @@ public class BgpConfigurator {
         switch(fieldId) {
           case 1: // NEIGHBOR_IP_ADDRESS
             return NEIGHBOR_IP_ADDRESS;
-          case 2: // ROUTE_MAP_NUMBER
-            return ROUTE_MAP_NUMBER;
           default:
             return null;
         }
@@ -5226,15 +5091,11 @@ public class BgpConfigurator {
     }
 
     // isset id assignments
-    private static final int __ROUTEMAPNUMBER_ISSET_ID = 0;
-    private byte __isset_bitfield = 0;
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.NEIGHBOR_IP_ADDRESS, new org.apache.thrift.meta_data.FieldMetaData("neighborIpAddress", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-      tmpMap.put(_Fields.ROUTE_MAP_NUMBER, new org.apache.thrift.meta_data.FieldMetaData("routeMapNumber", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(deleteRouteMapToMPBGPPeer_args.class, metaDataMap);
     }
@@ -5243,24 +5104,19 @@ public class BgpConfigurator {
     }
 
     public deleteRouteMapToMPBGPPeer_args(
-      String neighborIpAddress,
-      int routeMapNumber)
+      String neighborIpAddress)
     {
       this();
       this.neighborIpAddress = neighborIpAddress;
-      this.routeMapNumber = routeMapNumber;
-      setRouteMapNumberIsSet(true);
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
     public deleteRouteMapToMPBGPPeer_args(deleteRouteMapToMPBGPPeer_args other) {
-      __isset_bitfield = other.__isset_bitfield;
       if (other.isSetNeighborIpAddress()) {
         this.neighborIpAddress = other.neighborIpAddress;
       }
-      this.routeMapNumber = other.routeMapNumber;
     }
 
     public deleteRouteMapToMPBGPPeer_args deepCopy() {
@@ -5270,8 +5126,6 @@ public class BgpConfigurator {
     @Override
     public void clear() {
       this.neighborIpAddress = null;
-      setRouteMapNumberIsSet(false);
-      this.routeMapNumber = 0;
     }
 
     public String getNeighborIpAddress() {
@@ -5298,29 +5152,6 @@ public class BgpConfigurator {
       }
     }
 
-    public int getRouteMapNumber() {
-      return this.routeMapNumber;
-    }
-
-    public deleteRouteMapToMPBGPPeer_args setRouteMapNumber(int routeMapNumber) {
-      this.routeMapNumber = routeMapNumber;
-      setRouteMapNumberIsSet(true);
-      return this;
-    }
-
-    public void unsetRouteMapNumber() {
-      __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __ROUTEMAPNUMBER_ISSET_ID);
-    }
-
-    /** Returns true if field routeMapNumber is set (has been assigned a value) and false otherwise */
-    public boolean isSetRouteMapNumber() {
-      return EncodingUtils.testBit(__isset_bitfield, __ROUTEMAPNUMBER_ISSET_ID);
-    }
-
-    public void setRouteMapNumberIsSet(boolean value) {
-      __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __ROUTEMAPNUMBER_ISSET_ID, value);
-    }
-
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case NEIGHBOR_IP_ADDRESS:
@@ -5331,14 +5162,6 @@ public class BgpConfigurator {
         }
         break;
 
-      case ROUTE_MAP_NUMBER:
-        if (value == null) {
-          unsetRouteMapNumber();
-        } else {
-          setRouteMapNumber((Integer)value);
-        }
-        break;
-
       }
     }
 
@@ -5346,9 +5169,6 @@ public class BgpConfigurator {
       switch (field) {
       case NEIGHBOR_IP_ADDRESS:
         return getNeighborIpAddress();
-
-      case ROUTE_MAP_NUMBER:
-        return Integer.valueOf(getRouteMapNumber());
 
       }
       throw new IllegalStateException();
@@ -5363,8 +5183,6 @@ public class BgpConfigurator {
       switch (field) {
       case NEIGHBOR_IP_ADDRESS:
         return isSetNeighborIpAddress();
-      case ROUTE_MAP_NUMBER:
-        return isSetRouteMapNumber();
       }
       throw new IllegalStateException();
     }
@@ -5391,15 +5209,6 @@ public class BgpConfigurator {
           return false;
       }
 
-      boolean this_present_routeMapNumber = true;
-      boolean that_present_routeMapNumber = true;
-      if (this_present_routeMapNumber || that_present_routeMapNumber) {
-        if (!(this_present_routeMapNumber && that_present_routeMapNumber))
-          return false;
-        if (this.routeMapNumber != that.routeMapNumber)
-          return false;
-      }
-
       return true;
     }
 
@@ -5422,16 +5231,6 @@ public class BgpConfigurator {
       }
       if (isSetNeighborIpAddress()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.neighborIpAddress, typedOther.neighborIpAddress);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      lastComparison = Boolean.valueOf(isSetRouteMapNumber()).compareTo(typedOther.isSetRouteMapNumber());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetRouteMapNumber()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.routeMapNumber, typedOther.routeMapNumber);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -5463,10 +5262,6 @@ public class BgpConfigurator {
         sb.append(this.neighborIpAddress);
       }
       first = false;
-      if (!first) sb.append(", ");
-      sb.append("routeMapNumber:");
-      sb.append(this.routeMapNumber);
-      first = false;
       sb.append(")");
       return sb.toString();
     }
@@ -5486,8 +5281,6 @@ public class BgpConfigurator {
 
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
-        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
-        __isset_bitfield = 0;
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
@@ -5520,14 +5313,6 @@ public class BgpConfigurator {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
-            case 2: // ROUTE_MAP_NUMBER
-              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-                struct.routeMapNumber = iprot.readI32();
-                struct.setRouteMapNumberIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -5548,9 +5333,6 @@ public class BgpConfigurator {
           oprot.writeString(struct.neighborIpAddress);
           oprot.writeFieldEnd();
         }
-        oprot.writeFieldBegin(ROUTE_MAP_NUMBER_FIELD_DESC);
-        oprot.writeI32(struct.routeMapNumber);
-        oprot.writeFieldEnd();
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -5572,29 +5354,19 @@ public class BgpConfigurator {
         if (struct.isSetNeighborIpAddress()) {
           optionals.set(0);
         }
-        if (struct.isSetRouteMapNumber()) {
-          optionals.set(1);
-        }
-        oprot.writeBitSet(optionals, 2);
+        oprot.writeBitSet(optionals, 1);
         if (struct.isSetNeighborIpAddress()) {
           oprot.writeString(struct.neighborIpAddress);
-        }
-        if (struct.isSetRouteMapNumber()) {
-          oprot.writeI32(struct.routeMapNumber);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, deleteRouteMapToMPBGPPeer_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(2);
+        BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           struct.neighborIpAddress = iprot.readString();
           struct.setNeighborIpAddressIsSet(true);
-        }
-        if (incoming.get(1)) {
-          struct.routeMapNumber = iprot.readI32();
-          struct.setRouteMapNumberIsSet(true);
         }
       }
     }
@@ -7678,13 +7450,9 @@ public class BgpConfigurator {
   public static class pushRoute_args implements org.apache.thrift.TBase<pushRoute_args, pushRoute_args._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("pushRoute_args");
 
-    private static final org.apache.thrift.protocol.TField ACL_NUM_FIELD_DESC = new org.apache.thrift.protocol.TField("aclNum", org.apache.thrift.protocol.TType.I32, (short)1);
-    private static final org.apache.thrift.protocol.TField ROUTE_MAP_NUM_FIELD_DESC = new org.apache.thrift.protocol.TField("routeMapNum", org.apache.thrift.protocol.TType.I32, (short)2);
-    private static final org.apache.thrift.protocol.TField SEQ_NUM_FIELD_DESC = new org.apache.thrift.protocol.TField("seqNum", org.apache.thrift.protocol.TType.I32, (short)3);
-    private static final org.apache.thrift.protocol.TField PREFIX_FIELD_DESC = new org.apache.thrift.protocol.TField("prefix", org.apache.thrift.protocol.TType.STRING, (short)4);
-    private static final org.apache.thrift.protocol.TField WILDCARD_FIELD_DESC = new org.apache.thrift.protocol.TField("wildcard", org.apache.thrift.protocol.TType.STRING, (short)5);
-    private static final org.apache.thrift.protocol.TField NEIGHBOR_IP_ADDRESS_FIELD_DESC = new org.apache.thrift.protocol.TField("neighborIpAddress", org.apache.thrift.protocol.TType.STRING, (short)6);
-    private static final org.apache.thrift.protocol.TField VPN_NUM_FIELD_DESC = new org.apache.thrift.protocol.TField("vpnNum", org.apache.thrift.protocol.TType.I32, (short)7);
+    private static final org.apache.thrift.protocol.TField PREFIX_FIELD_DESC = new org.apache.thrift.protocol.TField("prefix", org.apache.thrift.protocol.TType.STRING, (short)1);
+    private static final org.apache.thrift.protocol.TField VPN_NUM_FIELD_DESC = new org.apache.thrift.protocol.TField("vpnNum", org.apache.thrift.protocol.TType.I32, (short)2);
+    private static final org.apache.thrift.protocol.TField NEIGHBOR_IP_ADDRESS_FIELD_DESC = new org.apache.thrift.protocol.TField("neighborIpAddress", org.apache.thrift.protocol.TType.STRING, (short)3);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -7692,23 +7460,15 @@ public class BgpConfigurator {
       schemes.put(TupleScheme.class, new pushRoute_argsTupleSchemeFactory());
     }
 
-    public int aclNum; // required
-    public int routeMapNum; // required
-    public int seqNum; // required
     public String prefix; // required
-    public String wildcard; // required
-    public String neighborIpAddress; // required
     public int vpnNum; // required
+    public String neighborIpAddress; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      ACL_NUM((short)1, "aclNum"),
-      ROUTE_MAP_NUM((short)2, "routeMapNum"),
-      SEQ_NUM((short)3, "seqNum"),
-      PREFIX((short)4, "prefix"),
-      WILDCARD((short)5, "wildcard"),
-      NEIGHBOR_IP_ADDRESS((short)6, "neighborIpAddress"),
-      VPN_NUM((short)7, "vpnNum");
+      PREFIX((short)1, "prefix"),
+      VPN_NUM((short)2, "vpnNum"),
+      NEIGHBOR_IP_ADDRESS((short)3, "neighborIpAddress");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -7723,20 +7483,12 @@ public class BgpConfigurator {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
-          case 1: // ACL_NUM
-            return ACL_NUM;
-          case 2: // ROUTE_MAP_NUM
-            return ROUTE_MAP_NUM;
-          case 3: // SEQ_NUM
-            return SEQ_NUM;
-          case 4: // PREFIX
+          case 1: // PREFIX
             return PREFIX;
-          case 5: // WILDCARD
-            return WILDCARD;
-          case 6: // NEIGHBOR_IP_ADDRESS
-            return NEIGHBOR_IP_ADDRESS;
-          case 7: // VPN_NUM
+          case 2: // VPN_NUM
             return VPN_NUM;
+          case 3: // NEIGHBOR_IP_ADDRESS
+            return NEIGHBOR_IP_ADDRESS;
           default:
             return null;
         }
@@ -7777,28 +7529,17 @@ public class BgpConfigurator {
     }
 
     // isset id assignments
-    private static final int __ACLNUM_ISSET_ID = 0;
-    private static final int __ROUTEMAPNUM_ISSET_ID = 1;
-    private static final int __SEQNUM_ISSET_ID = 2;
-    private static final int __VPNNUM_ISSET_ID = 3;
+    private static final int __VPNNUM_ISSET_ID = 0;
     private byte __isset_bitfield = 0;
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.ACL_NUM, new org.apache.thrift.meta_data.FieldMetaData("aclNum", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.ROUTE_MAP_NUM, new org.apache.thrift.meta_data.FieldMetaData("routeMapNum", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.SEQ_NUM, new org.apache.thrift.meta_data.FieldMetaData("seqNum", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       tmpMap.put(_Fields.PREFIX, new org.apache.thrift.meta_data.FieldMetaData("prefix", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-      tmpMap.put(_Fields.WILDCARD, new org.apache.thrift.meta_data.FieldMetaData("wildcard", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-      tmpMap.put(_Fields.NEIGHBOR_IP_ADDRESS, new org.apache.thrift.meta_data.FieldMetaData("neighborIpAddress", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       tmpMap.put(_Fields.VPN_NUM, new org.apache.thrift.meta_data.FieldMetaData("vpnNum", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.NEIGHBOR_IP_ADDRESS, new org.apache.thrift.meta_data.FieldMetaData("neighborIpAddress", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(pushRoute_args.class, metaDataMap);
     }
@@ -7807,26 +7548,15 @@ public class BgpConfigurator {
     }
 
     public pushRoute_args(
-      int aclNum,
-      int routeMapNum,
-      int seqNum,
       String prefix,
-      String wildcard,
-      String neighborIpAddress,
-      int vpnNum)
+      int vpnNum,
+      String neighborIpAddress)
     {
       this();
-      this.aclNum = aclNum;
-      setAclNumIsSet(true);
-      this.routeMapNum = routeMapNum;
-      setRouteMapNumIsSet(true);
-      this.seqNum = seqNum;
-      setSeqNumIsSet(true);
       this.prefix = prefix;
-      this.wildcard = wildcard;
-      this.neighborIpAddress = neighborIpAddress;
       this.vpnNum = vpnNum;
       setVpnNumIsSet(true);
+      this.neighborIpAddress = neighborIpAddress;
     }
 
     /**
@@ -7834,19 +7564,13 @@ public class BgpConfigurator {
      */
     public pushRoute_args(pushRoute_args other) {
       __isset_bitfield = other.__isset_bitfield;
-      this.aclNum = other.aclNum;
-      this.routeMapNum = other.routeMapNum;
-      this.seqNum = other.seqNum;
       if (other.isSetPrefix()) {
         this.prefix = other.prefix;
       }
-      if (other.isSetWildcard()) {
-        this.wildcard = other.wildcard;
-      }
+      this.vpnNum = other.vpnNum;
       if (other.isSetNeighborIpAddress()) {
         this.neighborIpAddress = other.neighborIpAddress;
       }
-      this.vpnNum = other.vpnNum;
     }
 
     public pushRoute_args deepCopy() {
@@ -7855,86 +7579,10 @@ public class BgpConfigurator {
 
     @Override
     public void clear() {
-      setAclNumIsSet(false);
-      this.aclNum = 0;
-      setRouteMapNumIsSet(false);
-      this.routeMapNum = 0;
-      setSeqNumIsSet(false);
-      this.seqNum = 0;
       this.prefix = null;
-      this.wildcard = null;
-      this.neighborIpAddress = null;
       setVpnNumIsSet(false);
       this.vpnNum = 0;
-    }
-
-    public int getAclNum() {
-      return this.aclNum;
-    }
-
-    public pushRoute_args setAclNum(int aclNum) {
-      this.aclNum = aclNum;
-      setAclNumIsSet(true);
-      return this;
-    }
-
-    public void unsetAclNum() {
-      __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __ACLNUM_ISSET_ID);
-    }
-
-    /** Returns true if field aclNum is set (has been assigned a value) and false otherwise */
-    public boolean isSetAclNum() {
-      return EncodingUtils.testBit(__isset_bitfield, __ACLNUM_ISSET_ID);
-    }
-
-    public void setAclNumIsSet(boolean value) {
-      __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __ACLNUM_ISSET_ID, value);
-    }
-
-    public int getRouteMapNum() {
-      return this.routeMapNum;
-    }
-
-    public pushRoute_args setRouteMapNum(int routeMapNum) {
-      this.routeMapNum = routeMapNum;
-      setRouteMapNumIsSet(true);
-      return this;
-    }
-
-    public void unsetRouteMapNum() {
-      __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __ROUTEMAPNUM_ISSET_ID);
-    }
-
-    /** Returns true if field routeMapNum is set (has been assigned a value) and false otherwise */
-    public boolean isSetRouteMapNum() {
-      return EncodingUtils.testBit(__isset_bitfield, __ROUTEMAPNUM_ISSET_ID);
-    }
-
-    public void setRouteMapNumIsSet(boolean value) {
-      __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __ROUTEMAPNUM_ISSET_ID, value);
-    }
-
-    public int getSeqNum() {
-      return this.seqNum;
-    }
-
-    public pushRoute_args setSeqNum(int seqNum) {
-      this.seqNum = seqNum;
-      setSeqNumIsSet(true);
-      return this;
-    }
-
-    public void unsetSeqNum() {
-      __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __SEQNUM_ISSET_ID);
-    }
-
-    /** Returns true if field seqNum is set (has been assigned a value) and false otherwise */
-    public boolean isSetSeqNum() {
-      return EncodingUtils.testBit(__isset_bitfield, __SEQNUM_ISSET_ID);
-    }
-
-    public void setSeqNumIsSet(boolean value) {
-      __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __SEQNUM_ISSET_ID, value);
+      this.neighborIpAddress = null;
     }
 
     public String getPrefix() {
@@ -7961,28 +7609,27 @@ public class BgpConfigurator {
       }
     }
 
-    public String getWildcard() {
-      return this.wildcard;
+    public int getVpnNum() {
+      return this.vpnNum;
     }
 
-    public pushRoute_args setWildcard(String wildcard) {
-      this.wildcard = wildcard;
+    public pushRoute_args setVpnNum(int vpnNum) {
+      this.vpnNum = vpnNum;
+      setVpnNumIsSet(true);
       return this;
     }
 
-    public void unsetWildcard() {
-      this.wildcard = null;
+    public void unsetVpnNum() {
+      __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __VPNNUM_ISSET_ID);
     }
 
-    /** Returns true if field wildcard is set (has been assigned a value) and false otherwise */
-    public boolean isSetWildcard() {
-      return this.wildcard != null;
+    /** Returns true if field vpnNum is set (has been assigned a value) and false otherwise */
+    public boolean isSetVpnNum() {
+      return EncodingUtils.testBit(__isset_bitfield, __VPNNUM_ISSET_ID);
     }
 
-    public void setWildcardIsSet(boolean value) {
-      if (!value) {
-        this.wildcard = null;
-      }
+    public void setVpnNumIsSet(boolean value) {
+      __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __VPNNUM_ISSET_ID, value);
     }
 
     public String getNeighborIpAddress() {
@@ -8009,76 +7656,13 @@ public class BgpConfigurator {
       }
     }
 
-    public int getVpnNum() {
-      return this.vpnNum;
-    }
-
-    public pushRoute_args setVpnNum(int vpnNum) {
-      this.vpnNum = vpnNum;
-      setVpnNumIsSet(true);
-      return this;
-    }
-
-    public void unsetVpnNum() {
-      __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __VPNNUM_ISSET_ID);
-    }
-
-    /** Returns true if field vpnNum is set (has been assigned a value) and false otherwise */
-    public boolean isSetVpnNum() {
-      return EncodingUtils.testBit(__isset_bitfield, __VPNNUM_ISSET_ID);
-    }
-
-    public void setVpnNumIsSet(boolean value) {
-      __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __VPNNUM_ISSET_ID, value);
-    }
-
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
-      case ACL_NUM:
-        if (value == null) {
-          unsetAclNum();
-        } else {
-          setAclNum((Integer)value);
-        }
-        break;
-
-      case ROUTE_MAP_NUM:
-        if (value == null) {
-          unsetRouteMapNum();
-        } else {
-          setRouteMapNum((Integer)value);
-        }
-        break;
-
-      case SEQ_NUM:
-        if (value == null) {
-          unsetSeqNum();
-        } else {
-          setSeqNum((Integer)value);
-        }
-        break;
-
       case PREFIX:
         if (value == null) {
           unsetPrefix();
         } else {
           setPrefix((String)value);
-        }
-        break;
-
-      case WILDCARD:
-        if (value == null) {
-          unsetWildcard();
-        } else {
-          setWildcard((String)value);
-        }
-        break;
-
-      case NEIGHBOR_IP_ADDRESS:
-        if (value == null) {
-          unsetNeighborIpAddress();
-        } else {
-          setNeighborIpAddress((String)value);
         }
         break;
 
@@ -8090,31 +7674,27 @@ public class BgpConfigurator {
         }
         break;
 
+      case NEIGHBOR_IP_ADDRESS:
+        if (value == null) {
+          unsetNeighborIpAddress();
+        } else {
+          setNeighborIpAddress((String)value);
+        }
+        break;
+
       }
     }
 
     public Object getFieldValue(_Fields field) {
       switch (field) {
-      case ACL_NUM:
-        return Integer.valueOf(getAclNum());
-
-      case ROUTE_MAP_NUM:
-        return Integer.valueOf(getRouteMapNum());
-
-      case SEQ_NUM:
-        return Integer.valueOf(getSeqNum());
-
       case PREFIX:
         return getPrefix();
 
-      case WILDCARD:
-        return getWildcard();
+      case VPN_NUM:
+        return Integer.valueOf(getVpnNum());
 
       case NEIGHBOR_IP_ADDRESS:
         return getNeighborIpAddress();
-
-      case VPN_NUM:
-        return Integer.valueOf(getVpnNum());
 
       }
       throw new IllegalStateException();
@@ -8127,20 +7707,12 @@ public class BgpConfigurator {
       }
 
       switch (field) {
-      case ACL_NUM:
-        return isSetAclNum();
-      case ROUTE_MAP_NUM:
-        return isSetRouteMapNum();
-      case SEQ_NUM:
-        return isSetSeqNum();
       case PREFIX:
         return isSetPrefix();
-      case WILDCARD:
-        return isSetWildcard();
-      case NEIGHBOR_IP_ADDRESS:
-        return isSetNeighborIpAddress();
       case VPN_NUM:
         return isSetVpnNum();
+      case NEIGHBOR_IP_ADDRESS:
+        return isSetNeighborIpAddress();
       }
       throw new IllegalStateException();
     }
@@ -8158,33 +7730,6 @@ public class BgpConfigurator {
       if (that == null)
         return false;
 
-      boolean this_present_aclNum = true;
-      boolean that_present_aclNum = true;
-      if (this_present_aclNum || that_present_aclNum) {
-        if (!(this_present_aclNum && that_present_aclNum))
-          return false;
-        if (this.aclNum != that.aclNum)
-          return false;
-      }
-
-      boolean this_present_routeMapNum = true;
-      boolean that_present_routeMapNum = true;
-      if (this_present_routeMapNum || that_present_routeMapNum) {
-        if (!(this_present_routeMapNum && that_present_routeMapNum))
-          return false;
-        if (this.routeMapNum != that.routeMapNum)
-          return false;
-      }
-
-      boolean this_present_seqNum = true;
-      boolean that_present_seqNum = true;
-      if (this_present_seqNum || that_present_seqNum) {
-        if (!(this_present_seqNum && that_present_seqNum))
-          return false;
-        if (this.seqNum != that.seqNum)
-          return false;
-      }
-
       boolean this_present_prefix = true && this.isSetPrefix();
       boolean that_present_prefix = true && that.isSetPrefix();
       if (this_present_prefix || that_present_prefix) {
@@ -8194,12 +7739,12 @@ public class BgpConfigurator {
           return false;
       }
 
-      boolean this_present_wildcard = true && this.isSetWildcard();
-      boolean that_present_wildcard = true && that.isSetWildcard();
-      if (this_present_wildcard || that_present_wildcard) {
-        if (!(this_present_wildcard && that_present_wildcard))
+      boolean this_present_vpnNum = true;
+      boolean that_present_vpnNum = true;
+      if (this_present_vpnNum || that_present_vpnNum) {
+        if (!(this_present_vpnNum && that_present_vpnNum))
           return false;
-        if (!this.wildcard.equals(that.wildcard))
+        if (this.vpnNum != that.vpnNum)
           return false;
       }
 
@@ -8209,15 +7754,6 @@ public class BgpConfigurator {
         if (!(this_present_neighborIpAddress && that_present_neighborIpAddress))
           return false;
         if (!this.neighborIpAddress.equals(that.neighborIpAddress))
-          return false;
-      }
-
-      boolean this_present_vpnNum = true;
-      boolean that_present_vpnNum = true;
-      if (this_present_vpnNum || that_present_vpnNum) {
-        if (!(this_present_vpnNum && that_present_vpnNum))
-          return false;
-        if (this.vpnNum != that.vpnNum)
           return false;
       }
 
@@ -8237,36 +7773,6 @@ public class BgpConfigurator {
       int lastComparison = 0;
       pushRoute_args typedOther = (pushRoute_args)other;
 
-      lastComparison = Boolean.valueOf(isSetAclNum()).compareTo(typedOther.isSetAclNum());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetAclNum()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.aclNum, typedOther.aclNum);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      lastComparison = Boolean.valueOf(isSetRouteMapNum()).compareTo(typedOther.isSetRouteMapNum());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetRouteMapNum()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.routeMapNum, typedOther.routeMapNum);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      lastComparison = Boolean.valueOf(isSetSeqNum()).compareTo(typedOther.isSetSeqNum());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetSeqNum()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.seqNum, typedOther.seqNum);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
       lastComparison = Boolean.valueOf(isSetPrefix()).compareTo(typedOther.isSetPrefix());
       if (lastComparison != 0) {
         return lastComparison;
@@ -8277,12 +7783,12 @@ public class BgpConfigurator {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetWildcard()).compareTo(typedOther.isSetWildcard());
+      lastComparison = Boolean.valueOf(isSetVpnNum()).compareTo(typedOther.isSetVpnNum());
       if (lastComparison != 0) {
         return lastComparison;
       }
-      if (isSetWildcard()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.wildcard, typedOther.wildcard);
+      if (isSetVpnNum()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.vpnNum, typedOther.vpnNum);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -8293,16 +7799,6 @@ public class BgpConfigurator {
       }
       if (isSetNeighborIpAddress()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.neighborIpAddress, typedOther.neighborIpAddress);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      lastComparison = Boolean.valueOf(isSetVpnNum()).compareTo(typedOther.isSetVpnNum());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetVpnNum()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.vpnNum, typedOther.vpnNum);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -8327,18 +7823,6 @@ public class BgpConfigurator {
       StringBuilder sb = new StringBuilder("pushRoute_args(");
       boolean first = true;
 
-      sb.append("aclNum:");
-      sb.append(this.aclNum);
-      first = false;
-      if (!first) sb.append(", ");
-      sb.append("routeMapNum:");
-      sb.append(this.routeMapNum);
-      first = false;
-      if (!first) sb.append(", ");
-      sb.append("seqNum:");
-      sb.append(this.seqNum);
-      first = false;
-      if (!first) sb.append(", ");
       sb.append("prefix:");
       if (this.prefix == null) {
         sb.append("null");
@@ -8347,12 +7831,8 @@ public class BgpConfigurator {
       }
       first = false;
       if (!first) sb.append(", ");
-      sb.append("wildcard:");
-      if (this.wildcard == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.wildcard);
-      }
+      sb.append("vpnNum:");
+      sb.append(this.vpnNum);
       first = false;
       if (!first) sb.append(", ");
       sb.append("neighborIpAddress:");
@@ -8361,10 +7841,6 @@ public class BgpConfigurator {
       } else {
         sb.append(this.neighborIpAddress);
       }
-      first = false;
-      if (!first) sb.append(", ");
-      sb.append("vpnNum:");
-      sb.append(this.vpnNum);
       first = false;
       sb.append(")");
       return sb.toString();
@@ -8411,31 +7887,7 @@ public class BgpConfigurator {
             break;
           }
           switch (schemeField.id) {
-            case 1: // ACL_NUM
-              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-                struct.aclNum = iprot.readI32();
-                struct.setAclNumIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            case 2: // ROUTE_MAP_NUM
-              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-                struct.routeMapNum = iprot.readI32();
-                struct.setRouteMapNumIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            case 3: // SEQ_NUM
-              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-                struct.seqNum = iprot.readI32();
-                struct.setSeqNumIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            case 4: // PREFIX
+            case 1: // PREFIX
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                 struct.prefix = iprot.readString();
                 struct.setPrefixIsSet(true);
@@ -8443,26 +7895,18 @@ public class BgpConfigurator {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
-            case 5: // WILDCARD
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-                struct.wildcard = iprot.readString();
-                struct.setWildcardIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            case 6: // NEIGHBOR_IP_ADDRESS
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-                struct.neighborIpAddress = iprot.readString();
-                struct.setNeighborIpAddressIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            case 7: // VPN_NUM
+            case 2: // VPN_NUM
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.vpnNum = iprot.readI32();
                 struct.setVpnNumIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 3: // NEIGHBOR_IP_ADDRESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.neighborIpAddress = iprot.readString();
+                struct.setNeighborIpAddressIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
@@ -8482,33 +7926,19 @@ public class BgpConfigurator {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
-        oprot.writeFieldBegin(ACL_NUM_FIELD_DESC);
-        oprot.writeI32(struct.aclNum);
-        oprot.writeFieldEnd();
-        oprot.writeFieldBegin(ROUTE_MAP_NUM_FIELD_DESC);
-        oprot.writeI32(struct.routeMapNum);
-        oprot.writeFieldEnd();
-        oprot.writeFieldBegin(SEQ_NUM_FIELD_DESC);
-        oprot.writeI32(struct.seqNum);
-        oprot.writeFieldEnd();
         if (struct.prefix != null) {
           oprot.writeFieldBegin(PREFIX_FIELD_DESC);
           oprot.writeString(struct.prefix);
           oprot.writeFieldEnd();
         }
-        if (struct.wildcard != null) {
-          oprot.writeFieldBegin(WILDCARD_FIELD_DESC);
-          oprot.writeString(struct.wildcard);
-          oprot.writeFieldEnd();
-        }
+        oprot.writeFieldBegin(VPN_NUM_FIELD_DESC);
+        oprot.writeI32(struct.vpnNum);
+        oprot.writeFieldEnd();
         if (struct.neighborIpAddress != null) {
           oprot.writeFieldBegin(NEIGHBOR_IP_ADDRESS_FIELD_DESC);
           oprot.writeString(struct.neighborIpAddress);
           oprot.writeFieldEnd();
         }
-        oprot.writeFieldBegin(VPN_NUM_FIELD_DESC);
-        oprot.writeI32(struct.vpnNum);
-        oprot.writeFieldEnd();
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -8527,82 +7957,42 @@ public class BgpConfigurator {
       public void write(org.apache.thrift.protocol.TProtocol prot, pushRoute_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
-        if (struct.isSetAclNum()) {
+        if (struct.isSetPrefix()) {
           optionals.set(0);
         }
-        if (struct.isSetRouteMapNum()) {
+        if (struct.isSetVpnNum()) {
           optionals.set(1);
         }
-        if (struct.isSetSeqNum()) {
+        if (struct.isSetNeighborIpAddress()) {
           optionals.set(2);
         }
-        if (struct.isSetPrefix()) {
-          optionals.set(3);
-        }
-        if (struct.isSetWildcard()) {
-          optionals.set(4);
-        }
-        if (struct.isSetNeighborIpAddress()) {
-          optionals.set(5);
-        }
-        if (struct.isSetVpnNum()) {
-          optionals.set(6);
-        }
-        oprot.writeBitSet(optionals, 7);
-        if (struct.isSetAclNum()) {
-          oprot.writeI32(struct.aclNum);
-        }
-        if (struct.isSetRouteMapNum()) {
-          oprot.writeI32(struct.routeMapNum);
-        }
-        if (struct.isSetSeqNum()) {
-          oprot.writeI32(struct.seqNum);
-        }
+        oprot.writeBitSet(optionals, 3);
         if (struct.isSetPrefix()) {
           oprot.writeString(struct.prefix);
         }
-        if (struct.isSetWildcard()) {
-          oprot.writeString(struct.wildcard);
+        if (struct.isSetVpnNum()) {
+          oprot.writeI32(struct.vpnNum);
         }
         if (struct.isSetNeighborIpAddress()) {
           oprot.writeString(struct.neighborIpAddress);
-        }
-        if (struct.isSetVpnNum()) {
-          oprot.writeI32(struct.vpnNum);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, pushRoute_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(7);
+        BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
-          struct.aclNum = iprot.readI32();
-          struct.setAclNumIsSet(true);
-        }
-        if (incoming.get(1)) {
-          struct.routeMapNum = iprot.readI32();
-          struct.setRouteMapNumIsSet(true);
-        }
-        if (incoming.get(2)) {
-          struct.seqNum = iprot.readI32();
-          struct.setSeqNumIsSet(true);
-        }
-        if (incoming.get(3)) {
           struct.prefix = iprot.readString();
           struct.setPrefixIsSet(true);
         }
-        if (incoming.get(4)) {
-          struct.wildcard = iprot.readString();
-          struct.setWildcardIsSet(true);
-        }
-        if (incoming.get(5)) {
-          struct.neighborIpAddress = iprot.readString();
-          struct.setNeighborIpAddressIsSet(true);
-        }
-        if (incoming.get(6)) {
+        if (incoming.get(1)) {
           struct.vpnNum = iprot.readI32();
           struct.setVpnNumIsSet(true);
+        }
+        if (incoming.get(2)) {
+          struct.neighborIpAddress = iprot.readString();
+          struct.setNeighborIpAddressIsSet(true);
         }
       }
     }
@@ -8966,11 +8356,9 @@ public class BgpConfigurator {
   public static class withdrawRoute_args implements org.apache.thrift.TBase<withdrawRoute_args, withdrawRoute_args._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("withdrawRoute_args");
 
-    private static final org.apache.thrift.protocol.TField ACL_NUM_FIELD_DESC = new org.apache.thrift.protocol.TField("aclNum", org.apache.thrift.protocol.TType.I32, (short)1);
-    private static final org.apache.thrift.protocol.TField ROUTE_MAP_NUM_FIELD_DESC = new org.apache.thrift.protocol.TField("routeMapNum", org.apache.thrift.protocol.TType.I32, (short)2);
-    private static final org.apache.thrift.protocol.TField SEQ_NUM_FIELD_DESC = new org.apache.thrift.protocol.TField("seqNum", org.apache.thrift.protocol.TType.I32, (short)3);
-    private static final org.apache.thrift.protocol.TField PREFIX_FIELD_DESC = new org.apache.thrift.protocol.TField("prefix", org.apache.thrift.protocol.TType.STRING, (short)4);
-    private static final org.apache.thrift.protocol.TField NEIGHBOR_IP_ADDRESS_FIELD_DESC = new org.apache.thrift.protocol.TField("neighborIpAddress", org.apache.thrift.protocol.TType.STRING, (short)5);
+    private static final org.apache.thrift.protocol.TField PREFIX_FIELD_DESC = new org.apache.thrift.protocol.TField("prefix", org.apache.thrift.protocol.TType.STRING, (short)1);
+    private static final org.apache.thrift.protocol.TField VPN_NUM_FIELD_DESC = new org.apache.thrift.protocol.TField("vpnNum", org.apache.thrift.protocol.TType.I32, (short)2);
+    private static final org.apache.thrift.protocol.TField NEIGHBOR_IP_ADDRESS_FIELD_DESC = new org.apache.thrift.protocol.TField("neighborIpAddress", org.apache.thrift.protocol.TType.STRING, (short)3);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -8978,19 +8366,15 @@ public class BgpConfigurator {
       schemes.put(TupleScheme.class, new withdrawRoute_argsTupleSchemeFactory());
     }
 
-    public int aclNum; // required
-    public int routeMapNum; // required
-    public int seqNum; // required
     public String prefix; // required
+    public int vpnNum; // required
     public String neighborIpAddress; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      ACL_NUM((short)1, "aclNum"),
-      ROUTE_MAP_NUM((short)2, "routeMapNum"),
-      SEQ_NUM((short)3, "seqNum"),
-      PREFIX((short)4, "prefix"),
-      NEIGHBOR_IP_ADDRESS((short)5, "neighborIpAddress");
+      PREFIX((short)1, "prefix"),
+      VPN_NUM((short)2, "vpnNum"),
+      NEIGHBOR_IP_ADDRESS((short)3, "neighborIpAddress");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -9005,15 +8389,11 @@ public class BgpConfigurator {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
-          case 1: // ACL_NUM
-            return ACL_NUM;
-          case 2: // ROUTE_MAP_NUM
-            return ROUTE_MAP_NUM;
-          case 3: // SEQ_NUM
-            return SEQ_NUM;
-          case 4: // PREFIX
+          case 1: // PREFIX
             return PREFIX;
-          case 5: // NEIGHBOR_IP_ADDRESS
+          case 2: // VPN_NUM
+            return VPN_NUM;
+          case 3: // NEIGHBOR_IP_ADDRESS
             return NEIGHBOR_IP_ADDRESS;
           default:
             return null;
@@ -9055,21 +8435,15 @@ public class BgpConfigurator {
     }
 
     // isset id assignments
-    private static final int __ACLNUM_ISSET_ID = 0;
-    private static final int __ROUTEMAPNUM_ISSET_ID = 1;
-    private static final int __SEQNUM_ISSET_ID = 2;
+    private static final int __VPNNUM_ISSET_ID = 0;
     private byte __isset_bitfield = 0;
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.ACL_NUM, new org.apache.thrift.meta_data.FieldMetaData("aclNum", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.ROUTE_MAP_NUM, new org.apache.thrift.meta_data.FieldMetaData("routeMapNum", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.SEQ_NUM, new org.apache.thrift.meta_data.FieldMetaData("seqNum", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       tmpMap.put(_Fields.PREFIX, new org.apache.thrift.meta_data.FieldMetaData("prefix", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+      tmpMap.put(_Fields.VPN_NUM, new org.apache.thrift.meta_data.FieldMetaData("vpnNum", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       tmpMap.put(_Fields.NEIGHBOR_IP_ADDRESS, new org.apache.thrift.meta_data.FieldMetaData("neighborIpAddress", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
@@ -9080,20 +8454,14 @@ public class BgpConfigurator {
     }
 
     public withdrawRoute_args(
-      int aclNum,
-      int routeMapNum,
-      int seqNum,
       String prefix,
+      int vpnNum,
       String neighborIpAddress)
     {
       this();
-      this.aclNum = aclNum;
-      setAclNumIsSet(true);
-      this.routeMapNum = routeMapNum;
-      setRouteMapNumIsSet(true);
-      this.seqNum = seqNum;
-      setSeqNumIsSet(true);
       this.prefix = prefix;
+      this.vpnNum = vpnNum;
+      setVpnNumIsSet(true);
       this.neighborIpAddress = neighborIpAddress;
     }
 
@@ -9102,12 +8470,10 @@ public class BgpConfigurator {
      */
     public withdrawRoute_args(withdrawRoute_args other) {
       __isset_bitfield = other.__isset_bitfield;
-      this.aclNum = other.aclNum;
-      this.routeMapNum = other.routeMapNum;
-      this.seqNum = other.seqNum;
       if (other.isSetPrefix()) {
         this.prefix = other.prefix;
       }
+      this.vpnNum = other.vpnNum;
       if (other.isSetNeighborIpAddress()) {
         this.neighborIpAddress = other.neighborIpAddress;
       }
@@ -9119,83 +8485,10 @@ public class BgpConfigurator {
 
     @Override
     public void clear() {
-      setAclNumIsSet(false);
-      this.aclNum = 0;
-      setRouteMapNumIsSet(false);
-      this.routeMapNum = 0;
-      setSeqNumIsSet(false);
-      this.seqNum = 0;
       this.prefix = null;
+      setVpnNumIsSet(false);
+      this.vpnNum = 0;
       this.neighborIpAddress = null;
-    }
-
-    public int getAclNum() {
-      return this.aclNum;
-    }
-
-    public withdrawRoute_args setAclNum(int aclNum) {
-      this.aclNum = aclNum;
-      setAclNumIsSet(true);
-      return this;
-    }
-
-    public void unsetAclNum() {
-      __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __ACLNUM_ISSET_ID);
-    }
-
-    /** Returns true if field aclNum is set (has been assigned a value) and false otherwise */
-    public boolean isSetAclNum() {
-      return EncodingUtils.testBit(__isset_bitfield, __ACLNUM_ISSET_ID);
-    }
-
-    public void setAclNumIsSet(boolean value) {
-      __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __ACLNUM_ISSET_ID, value);
-    }
-
-    public int getRouteMapNum() {
-      return this.routeMapNum;
-    }
-
-    public withdrawRoute_args setRouteMapNum(int routeMapNum) {
-      this.routeMapNum = routeMapNum;
-      setRouteMapNumIsSet(true);
-      return this;
-    }
-
-    public void unsetRouteMapNum() {
-      __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __ROUTEMAPNUM_ISSET_ID);
-    }
-
-    /** Returns true if field routeMapNum is set (has been assigned a value) and false otherwise */
-    public boolean isSetRouteMapNum() {
-      return EncodingUtils.testBit(__isset_bitfield, __ROUTEMAPNUM_ISSET_ID);
-    }
-
-    public void setRouteMapNumIsSet(boolean value) {
-      __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __ROUTEMAPNUM_ISSET_ID, value);
-    }
-
-    public int getSeqNum() {
-      return this.seqNum;
-    }
-
-    public withdrawRoute_args setSeqNum(int seqNum) {
-      this.seqNum = seqNum;
-      setSeqNumIsSet(true);
-      return this;
-    }
-
-    public void unsetSeqNum() {
-      __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __SEQNUM_ISSET_ID);
-    }
-
-    /** Returns true if field seqNum is set (has been assigned a value) and false otherwise */
-    public boolean isSetSeqNum() {
-      return EncodingUtils.testBit(__isset_bitfield, __SEQNUM_ISSET_ID);
-    }
-
-    public void setSeqNumIsSet(boolean value) {
-      __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __SEQNUM_ISSET_ID, value);
     }
 
     public String getPrefix() {
@@ -9220,6 +8513,29 @@ public class BgpConfigurator {
       if (!value) {
         this.prefix = null;
       }
+    }
+
+    public int getVpnNum() {
+      return this.vpnNum;
+    }
+
+    public withdrawRoute_args setVpnNum(int vpnNum) {
+      this.vpnNum = vpnNum;
+      setVpnNumIsSet(true);
+      return this;
+    }
+
+    public void unsetVpnNum() {
+      __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __VPNNUM_ISSET_ID);
+    }
+
+    /** Returns true if field vpnNum is set (has been assigned a value) and false otherwise */
+    public boolean isSetVpnNum() {
+      return EncodingUtils.testBit(__isset_bitfield, __VPNNUM_ISSET_ID);
+    }
+
+    public void setVpnNumIsSet(boolean value) {
+      __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __VPNNUM_ISSET_ID, value);
     }
 
     public String getNeighborIpAddress() {
@@ -9248,35 +8564,19 @@ public class BgpConfigurator {
 
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
-      case ACL_NUM:
-        if (value == null) {
-          unsetAclNum();
-        } else {
-          setAclNum((Integer)value);
-        }
-        break;
-
-      case ROUTE_MAP_NUM:
-        if (value == null) {
-          unsetRouteMapNum();
-        } else {
-          setRouteMapNum((Integer)value);
-        }
-        break;
-
-      case SEQ_NUM:
-        if (value == null) {
-          unsetSeqNum();
-        } else {
-          setSeqNum((Integer)value);
-        }
-        break;
-
       case PREFIX:
         if (value == null) {
           unsetPrefix();
         } else {
           setPrefix((String)value);
+        }
+        break;
+
+      case VPN_NUM:
+        if (value == null) {
+          unsetVpnNum();
+        } else {
+          setVpnNum((Integer)value);
         }
         break;
 
@@ -9293,17 +8593,11 @@ public class BgpConfigurator {
 
     public Object getFieldValue(_Fields field) {
       switch (field) {
-      case ACL_NUM:
-        return Integer.valueOf(getAclNum());
-
-      case ROUTE_MAP_NUM:
-        return Integer.valueOf(getRouteMapNum());
-
-      case SEQ_NUM:
-        return Integer.valueOf(getSeqNum());
-
       case PREFIX:
         return getPrefix();
+
+      case VPN_NUM:
+        return Integer.valueOf(getVpnNum());
 
       case NEIGHBOR_IP_ADDRESS:
         return getNeighborIpAddress();
@@ -9319,14 +8613,10 @@ public class BgpConfigurator {
       }
 
       switch (field) {
-      case ACL_NUM:
-        return isSetAclNum();
-      case ROUTE_MAP_NUM:
-        return isSetRouteMapNum();
-      case SEQ_NUM:
-        return isSetSeqNum();
       case PREFIX:
         return isSetPrefix();
+      case VPN_NUM:
+        return isSetVpnNum();
       case NEIGHBOR_IP_ADDRESS:
         return isSetNeighborIpAddress();
       }
@@ -9346,39 +8636,21 @@ public class BgpConfigurator {
       if (that == null)
         return false;
 
-      boolean this_present_aclNum = true;
-      boolean that_present_aclNum = true;
-      if (this_present_aclNum || that_present_aclNum) {
-        if (!(this_present_aclNum && that_present_aclNum))
-          return false;
-        if (this.aclNum != that.aclNum)
-          return false;
-      }
-
-      boolean this_present_routeMapNum = true;
-      boolean that_present_routeMapNum = true;
-      if (this_present_routeMapNum || that_present_routeMapNum) {
-        if (!(this_present_routeMapNum && that_present_routeMapNum))
-          return false;
-        if (this.routeMapNum != that.routeMapNum)
-          return false;
-      }
-
-      boolean this_present_seqNum = true;
-      boolean that_present_seqNum = true;
-      if (this_present_seqNum || that_present_seqNum) {
-        if (!(this_present_seqNum && that_present_seqNum))
-          return false;
-        if (this.seqNum != that.seqNum)
-          return false;
-      }
-
       boolean this_present_prefix = true && this.isSetPrefix();
       boolean that_present_prefix = true && that.isSetPrefix();
       if (this_present_prefix || that_present_prefix) {
         if (!(this_present_prefix && that_present_prefix))
           return false;
         if (!this.prefix.equals(that.prefix))
+          return false;
+      }
+
+      boolean this_present_vpnNum = true;
+      boolean that_present_vpnNum = true;
+      if (this_present_vpnNum || that_present_vpnNum) {
+        if (!(this_present_vpnNum && that_present_vpnNum))
+          return false;
+        if (this.vpnNum != that.vpnNum)
           return false;
       }
 
@@ -9407,42 +8679,22 @@ public class BgpConfigurator {
       int lastComparison = 0;
       withdrawRoute_args typedOther = (withdrawRoute_args)other;
 
-      lastComparison = Boolean.valueOf(isSetAclNum()).compareTo(typedOther.isSetAclNum());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetAclNum()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.aclNum, typedOther.aclNum);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      lastComparison = Boolean.valueOf(isSetRouteMapNum()).compareTo(typedOther.isSetRouteMapNum());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetRouteMapNum()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.routeMapNum, typedOther.routeMapNum);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      lastComparison = Boolean.valueOf(isSetSeqNum()).compareTo(typedOther.isSetSeqNum());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetSeqNum()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.seqNum, typedOther.seqNum);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
       lastComparison = Boolean.valueOf(isSetPrefix()).compareTo(typedOther.isSetPrefix());
       if (lastComparison != 0) {
         return lastComparison;
       }
       if (isSetPrefix()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.prefix, typedOther.prefix);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetVpnNum()).compareTo(typedOther.isSetVpnNum());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetVpnNum()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.vpnNum, typedOther.vpnNum);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -9477,24 +8729,16 @@ public class BgpConfigurator {
       StringBuilder sb = new StringBuilder("withdrawRoute_args(");
       boolean first = true;
 
-      sb.append("aclNum:");
-      sb.append(this.aclNum);
-      first = false;
-      if (!first) sb.append(", ");
-      sb.append("routeMapNum:");
-      sb.append(this.routeMapNum);
-      first = false;
-      if (!first) sb.append(", ");
-      sb.append("seqNum:");
-      sb.append(this.seqNum);
-      first = false;
-      if (!first) sb.append(", ");
       sb.append("prefix:");
       if (this.prefix == null) {
         sb.append("null");
       } else {
         sb.append(this.prefix);
       }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("vpnNum:");
+      sb.append(this.vpnNum);
       first = false;
       if (!first) sb.append(", ");
       sb.append("neighborIpAddress:");
@@ -9549,31 +8793,7 @@ public class BgpConfigurator {
             break;
           }
           switch (schemeField.id) {
-            case 1: // ACL_NUM
-              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-                struct.aclNum = iprot.readI32();
-                struct.setAclNumIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            case 2: // ROUTE_MAP_NUM
-              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-                struct.routeMapNum = iprot.readI32();
-                struct.setRouteMapNumIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            case 3: // SEQ_NUM
-              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-                struct.seqNum = iprot.readI32();
-                struct.setSeqNumIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            case 4: // PREFIX
+            case 1: // PREFIX
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                 struct.prefix = iprot.readString();
                 struct.setPrefixIsSet(true);
@@ -9581,7 +8801,15 @@ public class BgpConfigurator {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
-            case 5: // NEIGHBOR_IP_ADDRESS
+            case 2: // VPN_NUM
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.vpnNum = iprot.readI32();
+                struct.setVpnNumIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 3: // NEIGHBOR_IP_ADDRESS
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                 struct.neighborIpAddress = iprot.readString();
                 struct.setNeighborIpAddressIsSet(true);
@@ -9604,20 +8832,14 @@ public class BgpConfigurator {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
-        oprot.writeFieldBegin(ACL_NUM_FIELD_DESC);
-        oprot.writeI32(struct.aclNum);
-        oprot.writeFieldEnd();
-        oprot.writeFieldBegin(ROUTE_MAP_NUM_FIELD_DESC);
-        oprot.writeI32(struct.routeMapNum);
-        oprot.writeFieldEnd();
-        oprot.writeFieldBegin(SEQ_NUM_FIELD_DESC);
-        oprot.writeI32(struct.seqNum);
-        oprot.writeFieldEnd();
         if (struct.prefix != null) {
           oprot.writeFieldBegin(PREFIX_FIELD_DESC);
           oprot.writeString(struct.prefix);
           oprot.writeFieldEnd();
         }
+        oprot.writeFieldBegin(VPN_NUM_FIELD_DESC);
+        oprot.writeI32(struct.vpnNum);
+        oprot.writeFieldEnd();
         if (struct.neighborIpAddress != null) {
           oprot.writeFieldBegin(NEIGHBOR_IP_ADDRESS_FIELD_DESC);
           oprot.writeString(struct.neighborIpAddress);
@@ -9641,33 +8863,21 @@ public class BgpConfigurator {
       public void write(org.apache.thrift.protocol.TProtocol prot, withdrawRoute_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
-        if (struct.isSetAclNum()) {
+        if (struct.isSetPrefix()) {
           optionals.set(0);
         }
-        if (struct.isSetRouteMapNum()) {
+        if (struct.isSetVpnNum()) {
           optionals.set(1);
         }
-        if (struct.isSetSeqNum()) {
+        if (struct.isSetNeighborIpAddress()) {
           optionals.set(2);
         }
-        if (struct.isSetPrefix()) {
-          optionals.set(3);
-        }
-        if (struct.isSetNeighborIpAddress()) {
-          optionals.set(4);
-        }
-        oprot.writeBitSet(optionals, 5);
-        if (struct.isSetAclNum()) {
-          oprot.writeI32(struct.aclNum);
-        }
-        if (struct.isSetRouteMapNum()) {
-          oprot.writeI32(struct.routeMapNum);
-        }
-        if (struct.isSetSeqNum()) {
-          oprot.writeI32(struct.seqNum);
-        }
+        oprot.writeBitSet(optionals, 3);
         if (struct.isSetPrefix()) {
           oprot.writeString(struct.prefix);
+        }
+        if (struct.isSetVpnNum()) {
+          oprot.writeI32(struct.vpnNum);
         }
         if (struct.isSetNeighborIpAddress()) {
           oprot.writeString(struct.neighborIpAddress);
@@ -9677,24 +8887,16 @@ public class BgpConfigurator {
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, withdrawRoute_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(5);
+        BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
-          struct.aclNum = iprot.readI32();
-          struct.setAclNumIsSet(true);
-        }
-        if (incoming.get(1)) {
-          struct.routeMapNum = iprot.readI32();
-          struct.setRouteMapNumIsSet(true);
-        }
-        if (incoming.get(2)) {
-          struct.seqNum = iprot.readI32();
-          struct.setSeqNumIsSet(true);
-        }
-        if (incoming.get(3)) {
           struct.prefix = iprot.readString();
           struct.setPrefixIsSet(true);
         }
-        if (incoming.get(4)) {
+        if (incoming.get(1)) {
+          struct.vpnNum = iprot.readI32();
+          struct.setVpnNumIsSet(true);
+        }
+        if (incoming.get(2)) {
           struct.neighborIpAddress = iprot.readString();
           struct.setNeighborIpAddressIsSet(true);
         }
