@@ -231,7 +231,14 @@ public class NetworkSiteDao {
         
         int updateResultSiteLinks = jdbc.update(query, params);
         
-        return updateResultSites * updateResultSiteLinks;
+        params = new MapSqlParameterSource();
+        params.addValue("site", newSiteId);
+        query = "INSERT INTO site2vpn (vpnid, siteid) VALUES "
+        		+ "(1, :site);";
+        
+        int updateResultSiteToVpn = jdbc.update(query, params);
+        
+        return updateResultSites * updateResultSiteLinks * updateResultSiteToVpn;
     }
     
     public int deleteNetworkSite(String ipPrefix) {

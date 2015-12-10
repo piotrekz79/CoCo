@@ -17,8 +17,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.jgrapht.Graph;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import net.geant.coco.agent.portal.bgp.BgpRouteEntry;
@@ -35,11 +39,12 @@ import net.geant.coco.agent.portal.service.NetworkLinksService;
 import net.geant.coco.agent.portal.service.NetworkSitesService;
 import net.geant.coco.agent.portal.service.NetworkSwitchesService;
 import net.geant.coco.agent.portal.service.VpnsService;
+import net.geant.coco.agent.portal.threads.BgpThread;
 
 @Slf4j
 @Component
 public class TestApp {
-	
+
 	private static NetworkSwitchesService networkSwitchesService;
     private static NetworkLinksService networkLinksService;
     private static NetworkSitesService networkSitesService;
@@ -53,27 +58,9 @@ public class TestApp {
 		// TODO Auto-generated method stub
 		log.info("Start test app");
 		
-		//System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "ERROR");
-
-		
-    	//BgpRouter bgprouter = new BgpRouter("134.221.121.203", 7644);
+		System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "trace");
     	
-    	//bgprouter.addVpn(1, 1, 1, "10.3.1.0", wildcard, neighborIpAddress, vpnNum);
-    	
-    	/*
-    	List<BgpRouteEntry> list = bgprouter.getVpns();
-    	
-    	Iterator<BgpRouteEntry> it = list.iterator();
-    	
-    	while(it.hasNext())
-    	{
-    		BgpRouteEntry routeEntry = it.next();
-    		System.out.println(routeEntry);
-    	}
-    	String routeTarget = bgprouter.getRouteTarget("10.0.0.1/24");
-    	System.out.println("RT:" + routeTarget);
-		*/
-		
+		log.debug("dupa");
 		BasicDataSource dataSource = new BasicDataSource();
 
 		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
@@ -105,9 +92,45 @@ public class TestApp {
 		vpnsService = new VpnsService();
 		vpnsService.setVpnDao(vpnsDao);
 		
-		int result = networkSitesService.insertNetworkSite("10.1.2.3/24", 999, "10.3.0.254");
+		List<NetworkSwitch> networkSwitches = networkSwitchesService.getNetworkSwitches();
+		List<NetworkSwitch> networkSwitchesWithEnni = networkSwitchesService.getNetworkSwitchesWithNni();
+		List<NetworkLink> networkLinks = networkLinksService.getNetworkLinks();
+        List<NetworkSite> networkSites = networkSitesService.getNetworkSites();
+        List<Vpn> vpns = vpnsService.getVpns();
+        
+        
+        String controllerUrl = "http://134.221.121.203:8181/restconf";
+		RestClient restClient = new RestClient(controllerUrl);
 		
-		//int result = networkSitesService.insertNetworkSite("test", 1, 1, 3, 11, "ipPrefix", "0000");
+        log.info("Creating Pce object...");
+        pce = new Pce(restClient, networkSwitches, networkSites, networkSwitchesWithEnni);
+        log.info("Pce object creataion done");
+       
+        log.info("Setting up core forwarding...");
+        pce.setupCoreForwarding();
+        
+
+        BgpRouter bgpRouter = new BgpRouter("134.221.121.203", 7644);
+        
+		Runnable bgpThreadRunnable = new BgpThread(networkSwitchesService, networkLinksService, networkSitesService, bgpRouter);
+		log.debug("Starting bgp thread");
+		new Thread(bgpThreadRunnable).start();
+		log.debug("Started bgp thread");
+		
+    	String siteIpPrefix = "10.2.1.0/24";
+    	String neighborIp = "10.3.0.254";
+    	String neighborName = "tno-south";
+    	
+    	bgpRouter.addVpn(siteIpPrefix, neighborIp, 1);
+		
+    	networkAddSiteToVpn("vpn1", "tn-ce1");
+    	
+		int result = networkSitesService.insertNetworkSite(siteIpPrefix, 1, neighborIp);
+		List<NetworkSite> newNetworkSites = networkSitesService.getNetworkSites();
+		pce.updatePceElement(newNetworkSites);
+
+		networkAddSiteToVpn("vpn1", neighborName + "-" + siteIpPrefix);
+		
 		System.out.println(String.valueOf(result));
 		
 		try {
@@ -116,8 +139,6 @@ public class TestApp {
 		    Thread.currentThread().interrupt();
 		}
 		
-		result = networkSitesService.deleteNetworkSite("test");
-		System.out.println(String.valueOf(result));
 		
 		/*
 		List<NetworkSwitch> networkSwitches = networkSwitchesService.getNetworkSwitches();
@@ -271,5 +292,19 @@ public class TestApp {
         }
         */
 	}
+	
+	private static void networkAddSiteToVpn(String vpnName, String addSiteName) {
+    	vpnsService.addSite(vpnName, addSiteName);
+        // find site object
+        for (NetworkSite networkSite : networkSitesService.getNetworkSites()) {
+            if (networkSite.getName().equals(addSiteName)) {
+                Vpn vpn = vpnsService.getVpn(vpnName);
+                log.info("MPLS label for " + vpnName + " is " + vpn.getMplsLabel());
+                pce.addSiteToVpn(networkSite, vpn.getMplsLabel(), networkSitesService.getNetworkSites(vpnName));
+                
+                //bgpRouter.addVpn(aclNum, routeMapNum, seqNum, networkSite.getIpv4Prefix(), "0.0.0.255", "", vpnNew.getId());
+            }
+        }
+    }
 
 }

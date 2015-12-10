@@ -47,6 +47,10 @@ public class Pce {
 		this.topology = new Topology(restClient, networkSites, networkSwitches, networkSwitchesWithEnni);
 	}
 	
+	public void updatePceElement(List<NetworkSite> networkSites) {
+		this.networkSites = networkSites;
+		this.topology = new Topology(restClient, this.networkSites, networkSwitches, networkSwitchesWithEnni);
+	}
 
 	/*
 	public Pce(List<NetworkSwitch> networkSwitches, List<NetworkSite> networkSites, int lastFlowId) {

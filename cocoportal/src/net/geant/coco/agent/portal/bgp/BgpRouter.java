@@ -104,7 +104,18 @@ public class BgpRouter {
 				String prefixWithLength = update.prefix + "/" + update.prefixlen;
 				// TODO update Thrift interface so that route target is int not string
 				String routeTargetString = client.getRouteTarget(prefixWithLength);
-				int routeTargetInt = Integer.valueOf(routeTargetString);
+				
+				int routeTargetInt = -1;
+				if (routeTargetString.equals("")) {
+					routeTargetInt = -1;
+				}
+				else if (routeTargetString.contains("work")) {
+					routeTargetInt = -2;
+				}
+				else {
+					routeTargetInt = Integer.valueOf(routeTargetString);
+				}
+				
 				retRoutes.add(new BgpRouteEntry(update.prefix + "/" + update.prefixlen, update.rd, update.nexthop, update.label, routeTargetInt));
 
 				
