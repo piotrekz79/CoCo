@@ -16,6 +16,8 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -217,7 +219,19 @@ public class NetworkSiteDao {
                 + "AND sites.name = :name;";*/
         log.trace("insertNetworkSite " + name + "  " + query);
         
-        return jdbc.update(query, params);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        int updateResultSites = jdbc.update(query, params, keyHolder);
+        int newSiteId = keyHolder.getKey().intValue();
+        
+        params = new MapSqlParameterSource();
+        params.addValue("site", newSiteId);
+        params.addValue("switch", switchNumber);
+        query = "INSERT INTO sitelinks (site, switch) VALUES "
+        		+ "(:site, :switch);";
+        
+        int updateResultSiteLinks = jdbc.update(query, params);
+        
+        return updateResultSites * updateResultSiteLinks;
     }
     
     public int deleteNetworkSite(String ipPrefix) {
@@ -233,4 +247,43 @@ public class NetworkSiteDao {
         
         return jdbc.update(query, params);
     }
+
+	public int insertNetworkSite(String prefix, int vlanId, String neighborIp) {
+		
+		MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("neighbor_ip", neighborIp);
+        
+        //sites.name, sites.switch, sites.remote_port
+        String query = "SELECT sites.name, sites.switch, sites.remote_port "
+        		+ "FROM sites INNER JOIN ases ON sites.name = ases.as_name "
+        		+ "WHERE ases.bgp_ip = :neighbor_ip;";
+        
+        
+        class AsData {
+            public String asSiteName;
+            public int asSiteSwitch;
+            public int asRemotePort;
+        }
+        
+        AsData asData = jdbc.query(query, params, new ResultSetExtractor<AsData>() {
+
+            @Override
+            public AsData extractData(ResultSet rs) throws SQLException {
+            	AsData asData = new AsData();
+            	
+            	if(rs.next()){
+	            	asData.asSiteName = rs.getString("name");
+			        asData.asSiteSwitch = rs.getInt("switch");
+			        asData.asRemotePort = rs.getInt("remote_port");
+            	}
+            	
+                return asData;
+            }
+        });
+        
+        String newSiteName = asData.asSiteName + "-" + prefix;
+        this.insertNetworkSite(newSiteName, asData.asSiteSwitch, asData.asRemotePort, 1, vlanId, prefix, "00:00:00:00:00:00");
+        
+		return 0;
+	}
 }

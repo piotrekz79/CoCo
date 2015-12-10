@@ -6,9 +6,9 @@ public class BgpRouteEntry {
 	private String rd;
 	private String nexthop;
 	private int label;
-	private String routeTarget;
+	private int routeTarget;
 	
-	public BgpRouteEntry(String prefix, String rd, String nexthop, int label, String routeTarget) {
+	public BgpRouteEntry(String prefix, String rd, String nexthop, int label, int routeTarget) {
 		super();
 		this.prefix = prefix;
 		this.rd = rd;
@@ -37,7 +37,7 @@ public class BgpRouteEntry {
 		return this.label;
 	}
 	
-	public String getRouteTarget()
+	public int getRouteTarget()
 	{
 		return this.routeTarget;
 	}
@@ -50,7 +50,7 @@ public class BgpRouteEntry {
 		result = prime * result + ((nexthop == null) ? 0 : nexthop.hashCode());
 		result = prime * result + ((prefix == null) ? 0 : prefix.hashCode());
 		result = prime * result + ((rd == null) ? 0 : rd.hashCode());
-		result = prime * result + ((routeTarget == null) ? 0 : routeTarget.hashCode());
+		result = prime * result + routeTarget;
 		return result;
 	}
 
@@ -80,10 +80,7 @@ public class BgpRouteEntry {
 				return false;
 		} else if (!rd.equals(other.rd))
 			return false;
-		if (routeTarget == null) {
-			if (other.routeTarget != null)
-				return false;
-		} else if (!routeTarget.equals(other.routeTarget))
+		if (routeTarget != other.routeTarget)
 			return false;
 		return true;
 	}

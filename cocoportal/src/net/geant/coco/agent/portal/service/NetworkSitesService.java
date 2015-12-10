@@ -36,4 +36,8 @@ public class NetworkSitesService {
 	public int deleteNetworkSite(String ipPrefix) {
 		return networkSiteDao.deleteNetworkSite(ipPrefix);
 	}
+
+	public int insertNetworkSite(String prefix, int vlanId, String neighborIp) {
+		return networkSiteDao.insertNetworkSite(prefix, vlanId, neighborIp);
+	}
 }

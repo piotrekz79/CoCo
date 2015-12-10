@@ -56,7 +56,7 @@ public class BgpThread implements Runnable {
 				
 				for (BgpRouteEntry bgpRouteEntry : bgpRouteEntryListNew) {
 					String prefix = bgpRouteEntry.getPrefix();
-					String vlanId = bgpRouteEntry.getRouteTarget();
+					int vlanId = bgpRouteEntry.getRouteTarget();
 					String neighborIp = bgpRouteEntry.getNexthop();
 					
 					addVirtualSiteExternal(prefix, vlanId, neighborIp);
@@ -75,9 +75,8 @@ public class BgpThread implements Runnable {
 		}
 	}
 	
-	private void addVirtualSiteExternal(String prefix, String vlanId, String neighborIp) {
-		// TODO Auto-generated method stub
-		
+	private void addVirtualSiteExternal(String prefix, int vlanId, String neighborIp) {
+		networkSitesService.insertNetworkSite(prefix, vlanId, neighborIp);
 	}
 
 	private Map<String, BgpRouteEntry> getPrefixToBgpRouteEntryMap() {
